@@ -1,0 +1,9 @@
+name: FireAPI
+main: fr.glowstoner.fireapi.bukkit.BukkitMain
+version: 2.4.0.2
+authors: [Glowstoner, _goldocelot_]
+commands:
+ ping:
+  description: Permet de faire un test de latence !
+ at:
+  description: Utilise /at help pour voir la liste des commandes !
