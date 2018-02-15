@@ -10,6 +10,7 @@ import fr.glowstoner.fireapi.gediminas.console.commands.ExecuteCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.HelpCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.ListCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.NameCommand;
+import fr.glowstoner.fireapi.gediminas.console.commands.SpyCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.StatusCommand;
 import fr.glowstoner.fireapi.gediminas.spy.GediminasSpy;
 
@@ -29,8 +30,12 @@ public class Gediminas {
 		System.out.println("by Glowstoner");
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
+		System.out.println("[Gediminas] Initialisation SPY ...");
+		
 		GediminasSpy gs = new GediminasSpy();
 		gs.initFolder();
+		
+		System.out.println("[Gediminas] SPY initialisé !");
 		
 		System.out.println("[Gediminas] Lancement listeners ...");
 		
@@ -55,6 +60,7 @@ public class Gediminas {
 		getListeners().registerCommand("status", new StatusCommand());
 		getListeners().registerCommand("list", new ListCommand(gl));
 		getListeners().registerCommand("execute", new ExecuteCommand(gl));
+		getListeners().registerCommand("spy", new SpyCommand());
 		
 		getListeners().addAlias("help", "aide");
 		getListeners().addAlias("help", "?");
