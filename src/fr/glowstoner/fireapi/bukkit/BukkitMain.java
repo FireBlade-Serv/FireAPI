@@ -78,9 +78,6 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		
 		this.injector = new PacketInjector();
 		
-		super.getServer().getPluginManager().registerEvents(new Events(this, this.injector), this);
-		super.getServer().getPluginManager().registerEvents(new EventsAT(this), this);
-		
 		try {
 			ConnectionsAPI.init();
 			
@@ -123,6 +120,9 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			ch.sendPacket(new PacketLogin(this.log.getKey(), this.log.getPassword()));
 			ch.sendPacket(new PacketVersion(VersionType.SPIGOT_VERSION));
 			ch.sendPacket(new PacketCommand("name "+this.id));
+			
+			super.getServer().getPluginManager().registerEvents(new Events(this, ch, this.id, this.injector), this);
+			super.getServer().getPluginManager().registerEvents(new EventsAT(this), this);
 			
 			super.getCommand("ping").setExecutor(new Ping(ch));
 			super.getCommand("at").setExecutor(new AdminToolsCmd(this));

@@ -177,6 +177,10 @@ public class GediminasListener implements ServerListener{
 					this.gs.updateDataFile(spy.getPlayerName(),
 							GediminasSpyUtils.mergeHistory(this.gs.getHistory(spy.getPlayerName()), spy));
 				}else {
+					GediminasSpyHistory gh = new GediminasSpyHistory(spy.getPlayerName(), spy.getIP());
+					
+					gh.putMessage(spy.getActionDate(), spy.getAction(), spy.getFormatedMsg());
+					
 					this.gs.createNewDataFile(spy.getPlayerName(),
 							new GediminasSpyHistory(spy.getPlayerName(), spy.getIP()));
 				}

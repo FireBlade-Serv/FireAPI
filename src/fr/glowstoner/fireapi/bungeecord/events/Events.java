@@ -104,6 +104,14 @@ public class Events implements Listener {
 		pp.connect(this.instance.getBungeePlugin().getProxy().getServerInfo("hub"));
 		
 		this.friends.sendFriendsAlert(pp);
+		
+		try {
+			this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress()
+					.getHostAddress(),
+					"Le joueur vient de passer les sécurités du login.", SpyAction.PLAYER_LOGGED));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	@EventHandler
@@ -189,6 +197,13 @@ public class Events implements Listener {
 					this.instance.getAuthentification().getLoginTitle().send(pp);
 				}
 			}
+		}else {
+			try {
+				this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
+						e.getMessage(), SpyAction.PLAYER_CHAT));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -198,6 +213,10 @@ public class Events implements Listener {
 			for(ProxiedPlayer players : this.friends.getOnlineFriends(e.getPlayer())) {
 				players.sendMessage(new TextComponent(this.pre+"§c- §r"+e.getPlayer().getName()+" s'est §cdéconnecté"));
 			}
+			
+			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), 
+					e.getPlayer().getAddress().getAddress().getHostAddress(), "Déconnection du proxy principal.",
+					SpyAction.PLAYER_LEAVE));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

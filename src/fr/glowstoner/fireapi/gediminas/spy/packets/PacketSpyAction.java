@@ -46,7 +46,7 @@ public class PacketSpyAction extends Packet implements Serializable{
 	}
 	
 	public String getFormatedMsg() {
-		return this.action.name()+"@"+this.getFormatedDate()+"@"+this.getActionMsg();
+		return this.action.name()+" @ "+this.getFormatedDate()+" @ "+this.getActionMsg();
 	}
 	
 	@Override
