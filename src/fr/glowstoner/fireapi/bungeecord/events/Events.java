@@ -7,8 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bungeecord.friends.Friends;
+import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.Rank;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,11 +35,13 @@ public class Events implements Listener {
 	private Friends friends;
 	private FireAPI instance;
 	private List<ProxiedPlayer> stillconnected;
+	private Client c;
 	
-	public Events(Friends friends, FireAPI api) {
+	public Events(Client c, Friends friends, FireAPI api) {
 		this.friends = friends;
 		this.instance = api;
 		this.stillconnected = new ArrayList<>();
+		this.c = c;
 	}
 
 	@EventHandler
@@ -47,6 +52,17 @@ public class Events implements Listener {
 		
 		if(!this.instance.getSQL().hasFireAccount(pp.getName())) {
 			this.instance.getSQL().createFireAccount(pp);
+		}
+		
+		PacketSpyAction ps = new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
+				"Connection sur le proxy principal.", SpyAction.PLAYER_JOIN);
+		
+		ps.setDateToNow();
+		
+		try {
+			this.c.sendPacket(ps);
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 		
 		this.stillconnected.add(pp);

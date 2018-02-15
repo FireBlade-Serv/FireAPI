@@ -141,7 +141,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 		man.registerCommand(this, new LoginCmd("login", this.auth, this));
 		man.registerCommand(this, new FireWhiteList("firewl", this));
 		
-		man.registerListener(this, new Events(this.friends, this));
+		man.registerListener(this, new Events(this.c, this.friends, this));
 	}
 	
 	@Override
