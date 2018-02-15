@@ -65,11 +65,11 @@ public class GediminasSpy {
 	
 	public void createNewDataFile(String name, GediminasSpyHistory history) {
 		if(!this.ifDataFileExists(name)) {
-			File f = new File(this.folder.getPath()+"/"+name+".firespy");
+			File f = new File(this.folder.getPath()+name+".firespy");
 			
 			try {
 				System.out.println("[Gediminas] Création d'un fichier pour "+name+" : "+
-						this.folder.getPath()+"/"+name+".firespy");
+						this.folder.getPath()+name+".firespy");
 				
 				f.createNewFile();
 				
@@ -87,7 +87,23 @@ public class GediminasSpy {
 	}
 	
 	public boolean ifDataFileExists(String name) {
-		return new File(this.folder.getPath()+"/"+name+".firespy").exists();
+		Path path = null;
+		
+		try {
+			path = Paths.get(ClassLoader.getSystemResource("").toURI());
+			
+			for(File files : path.toFile().listFiles()) {
+				if(files.getName().equals(name+".firespy")){
+					if(files.isFile()) {
+						return true;
+					}
+				}
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 	public void updateDataFile(String name, GediminasSpyHistory history) {
