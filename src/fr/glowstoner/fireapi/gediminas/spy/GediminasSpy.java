@@ -53,8 +53,9 @@ public class GediminasSpy {
 			try {
 				path = Paths.get(ClassLoader.getSystemResource("").toURI());
 				
-				File file = new File(path.toString() + "\\spy\\");
-				file.mkdirs();
+				File file = new File(path.toString() + "/spy/");
+				
+				System.out.println("[Gediminas] Création du dossier spy \""+file.getPath()+"\"en cours ... Résulat = "+file.mkdirs());
 				
 				this.folder = file;
 			} catch (URISyntaxException e) {
@@ -65,11 +66,11 @@ public class GediminasSpy {
 	
 	public void createNewDataFile(String name, GediminasSpyHistory history) {
 		if(!this.ifDataFileExists(name)) {
-			File f = new File(this.folder.getPath()+name+".firespy");
+			File f = new File(this.folder.getPath()+"/"+name+".firespy");
 			
 			try {
 				System.out.println("[Gediminas] Création d'un fichier pour "+name+" : "+
-						this.folder.getPath()+name+".firespy");
+						this.folder.getPath()+"/"+name+".firespy");
 				
 				f.createNewFile();
 				
@@ -93,9 +94,11 @@ public class GediminasSpy {
 			path = Paths.get(ClassLoader.getSystemResource("").toURI());
 			
 			for(File files : path.toFile().listFiles()) {
-				if(files.getName().equals(name+".firespy")){
-					if(files.isFile()) {
-						return true;
+				if(files.getParentFile().getName().equals("spy")) {
+					if(files.getName().equals(name+".firespy")){
+						if(files.isFile()) {
+							return true;
+						}
 					}
 				}
 			}
