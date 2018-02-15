@@ -18,10 +18,6 @@ public class GediminasSpyHistory implements Serializable{
 		this.data = new HashMap<>();
 	}
 	
-	public GediminasSpyHistory() {
-		
-	}
-	
 	public void putMessage(Calendar date, SpyAction action, String actionMsg) {
 		if(this.data.size() == 0) {
 			this.data.put(0, new GediminasSpyHistoryData(action, actionMsg, date));

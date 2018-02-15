@@ -55,7 +55,8 @@ public class GediminasSpy {
 				
 				File file = new File(path.toString() + "/spy/");
 				
-				System.out.println("[Gediminas] Création du dossier spy \""+file.getPath()+"\"en cours ... Résulat = "+file.mkdirs());
+				System.out.println("[Gediminas] Création du dossier spy \""+file.getPath()+
+						"\" en cours ... Résulat = "+file.mkdirs());
 				
 				this.folder = file;
 			} catch (URISyntaxException e) {
@@ -94,11 +95,9 @@ public class GediminasSpy {
 			path = Paths.get(ClassLoader.getSystemResource("").toURI());
 			
 			for(File files : path.toFile().listFiles()) {
-				if(files.getParentFile().getName().equals("spy")) {
-					if(files.getName().equals(name+".firespy")){
-						if(files.isFile()) {
-							return true;
-						}
+				if(files.isDirectory() && files.getName().equals("spy")) {
+					if(new File(files.getPath()+"/"+name+".firespy").exists()) {
+						return true;
 					}
 				}
 			}
