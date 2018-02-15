@@ -37,16 +37,16 @@ public class PacketSpyAction extends Packet implements Serializable{
 		int ms = this.date.get(Calendar.MILLISECOND);
 		int s = this.date.get(Calendar.SECOND);
 		int m = this.date.get(Calendar.MINUTE);
-		int h = this.date.get(Calendar.HOUR);
+		int h = this.date.get(Calendar.HOUR_OF_DAY);
 		int d = this.date.get(Calendar.DAY_OF_MONTH);
 		int mo = this.date.get(Calendar.MONTH);
 		int y = this.date.get(Calendar.YEAR);
 		
-		return ms+"-"+s+"-"+m+"-"+h+"/"+d+"-"+mo+"-"+y;
+		return h+"h"+m+"min"+s+"sec"+ms+"ms - "+d+"/"+mo+"/"+y;
 	}
 	
 	public String getFormatedMsg() {
-		return this.getFormatedDate()+"*"+this.action.name()+"*"+this.getActionMsg();
+		return this.action.name()+"@"+this.getFormatedDate()+"@"+this.getFormatedMsg();
 	}
 	
 	@Override

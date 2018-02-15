@@ -16,6 +16,9 @@ public class GediminasSpyHistory implements Serializable{
 	
 	public GediminasSpyHistory(String name, String ip) {
 		this.data = new HashMap<>();
+		
+		this.setIP(ip);
+		this.setPlayerName(name);
 	}
 	
 	public void putMessage(Calendar date, SpyAction action, String actionMsg) {
