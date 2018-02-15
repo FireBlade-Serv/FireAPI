@@ -14,7 +14,7 @@ public class SpyCommand implements CommandExecutor {
 			try {
 				GediminasSpyUtils.sendInfosToClient(c, args[0]);
 			}catch (Exception e) {
-				c.sendMessageWithPrefix("Erreur, ce joueur n'a pas été trouvé !");
+				c.sendMessageWithPrefix("Erreur, ce joueur n'a pas été trouvé ! "+e.getClass().getSimpleName());
 			}
 		}
 	}

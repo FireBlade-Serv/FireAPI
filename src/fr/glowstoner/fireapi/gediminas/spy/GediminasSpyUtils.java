@@ -24,7 +24,7 @@ public class GediminasSpyUtils {
 		
 		Path path = Paths.get(ClassLoader.getSystemResource("").toURI());
 		
-		File f = new File(path.toString()+"/"+name+".firespy");
+		File f = new File(path.toString()+"/spy/"+name+".firespy");
 		FileInputStream fi = new FileInputStream(f);
 		ObjectInputStream oi = new ObjectInputStream(fi);
 		
@@ -39,7 +39,7 @@ public class GediminasSpyUtils {
 		for(int i = 0 ; i < h.getMessages().size() ; i++) {
 			GediminasSpyHistoryData dat = h.getMessages().get(i);
 			
-			System.out.println(dat.getMessage());
+			c.sendMessageWithPrefix(dat.getMessage());
 		}
 		
 		oi.close();
