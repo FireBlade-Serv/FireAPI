@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class GediminasSpy {
 	
@@ -16,13 +19,48 @@ public class GediminasSpy {
 	}
 	
 	public void initFolder() {
-		File f = new File("/spy/");
+		if(!this.hasFolder()) {
+			this.createFolder();
+		}
+	}
+	
+	public boolean hasFolder() {
+		Path path = null;
 		
-		if(!f.exists()) {
-			f.mkdirs();
+		try {
+			path = Paths.get(ClassLoader.getSystemResource("").toURI());
+			
+			for(File files : path.toFile().listFiles()) {
+				if(files.getName().equals("spy")){
+					if(files.isDirectory()) {
+						this.folder = files;
+						
+						return true;
+					}
+				}
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
 		
-		this.folder = f;
+		return false;
+	}
+
+	public void createFolder() {
+		if(!hasFolder()) {
+			Path path = null;
+			
+			try {
+				path = Paths.get(ClassLoader.getSystemResource("").toURI());
+				
+				File file = new File(path.toString() + "\\spy\\");
+				file.mkdirs();
+				
+				this.folder = file;
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void createNewDataFile(String name, GediminasSpyHistory history) {
@@ -49,12 +87,12 @@ public class GediminasSpy {
 	}
 	
 	public boolean ifDataFileExists(String name) {
-		return new File(this.folder.getPath()+"/"+name+".dat").exists();
+		return new File(this.folder.getPath()+"/"+name+".firespy").exists();
 	}
 	
 	public void updateDataFile(String name, GediminasSpyHistory history) {
 		if(this.ifDataFileExists(name)) {
-			File f = new File(this.folder.getPath()+"/"+name+".dat");
+			File f = new File(this.folder.getPath()+"/"+name+".firespy");
 			
 			try {
 				FileOutputStream fo = new FileOutputStream(f);
@@ -72,7 +110,7 @@ public class GediminasSpy {
 	
 	public GediminasSpyHistory getHistory(String name) {
 		if(this.ifDataFileExists(name)) {
-			File f = new File(this.folder.getPath()+"/"+name+".dat");
+			File f = new File(this.folder.getPath()+"/"+name+".firespy");
 			
 			try {
 				FileInputStream fi = new FileInputStream(f);
