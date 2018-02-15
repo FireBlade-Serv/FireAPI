@@ -63,11 +63,13 @@ public class GediminasListener implements ServerListener{
 			
 			String name = (server.getName().equals("default-name")) ? server.getIP() : server.getName();
 			
-			if(!(packet instanceof PacketPing) || !(packet instanceof PacketSpyAction)) {
-				System.out.println("[Gediminas] Packet reçu : "+name+" -> "+packet.getClass().getSimpleName());
-			}else if(packet instanceof PacketSpyAction) {
-				System.out.println("[Gediminas] Packet reçu : "+name+" -> "+packet.getClass().getSimpleName()
-						+" : "+((PacketSpyAction) packet).getAction().name());
+			if(!(packet instanceof PacketPing)) {
+				if(!(packet instanceof PacketSpyAction)) {
+					System.out.println("[Gediminas] Packet reçu : "+name+" -> "+packet.getClass().getSimpleName());
+				}else {
+					System.out.println("[Gediminas] Packet reçu : "+name+" -> "+
+							packet.getClass().getSimpleName()+" / "+((PacketSpyAction) packet).getAction().name());
+				}
 			}
 			
 			if(server.isLogged().equals(LoginResult.NOT_LOGGED)) {
