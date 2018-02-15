@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +31,6 @@ import fr.glowstoner.fireapi.gediminas.console.packets.ping.enums.PingState;
 import fr.glowstoner.fireapi.gediminas.spy.GediminasSpy;
 import fr.glowstoner.fireapi.gediminas.spy.GediminasSpyHistory;
 import fr.glowstoner.fireapi.gediminas.spy.GediminasSpyUtils;
-import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 
@@ -180,14 +176,6 @@ public class GediminasListener implements ServerListener{
 				}else {
 					this.gs.createNewDataFile(spy.getPlayerName(),
 							new GediminasSpyHistory(spy.getPlayerName(), spy.getIP()));
-					
-					Calendar c = GregorianCalendar.getInstance();
-					c.setTime(new Date());
-					
-					this.gs.getHistory(spy.getPlayerName()).putMessage(c, SpyAction.INIT, "Joueur initialisé.");
-					
-					this.gs.updateDataFile(spy.getPlayerName(),
-							GediminasSpyUtils.mergeHistory(this.gs.getHistory(spy.getPlayerName()), spy));
 				}
 			}
 		}catch (Exception e) {

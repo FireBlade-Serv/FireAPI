@@ -2,6 +2,8 @@ package fr.glowstoner.fireapi.gediminas.spy;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +21,11 @@ public class GediminasSpyHistory implements Serializable{
 		
 		this.setIP(ip);
 		this.setPlayerName(name);
+		
+		Calendar c = GregorianCalendar.getInstance();
+		c.setTime(new Date());
+		
+		this.putMessage(c, SpyAction.INIT, "Joueur initialisé.");
 	}
 	
 	public void putMessage(Calendar date, SpyAction action, String actionMsg) {
