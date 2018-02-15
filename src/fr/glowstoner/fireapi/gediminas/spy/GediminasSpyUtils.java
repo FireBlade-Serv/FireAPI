@@ -19,37 +19,30 @@ public class GediminasSpyUtils {
 		return base;
 	}
 
-	public static void sendInfosToClient(ConnectionHandler c, String name) {
-		try {
-			Path path = Paths.get(ClassLoader.getSystemResource("").toURI());
+	public static void sendInfosToClient(ConnectionHandler c, String name) throws IOException, 
+		ClassNotFoundException, URISyntaxException {
+		
+		Path path = Paths.get(ClassLoader.getSystemResource("").toURI());
+		
+		File f = new File(path.toString()+"/"+name+".firespy");
+		FileInputStream fi = new FileInputStream(f);
+		ObjectInputStream oi = new ObjectInputStream(fi);
+		
+		GediminasSpyHistory h = (GediminasSpyHistory) oi.readObject();
+		
+		c.sendMessageWithPrefix("--------------SPY--------------");
+		c.sendMessageWithPrefix("size = "+h.getMessages().size());
+		c.sendMessageWithPrefix("name = "+h.getPlayerName());
+		c.sendMessageWithPrefix("IP = "+h.getIP());
+		c.sendMessageWithPrefix("-------------------------------\n");
+		
+		for(int i = 0 ; i < h.getMessages().size() ; i++) {
+			GediminasSpyHistoryData dat = h.getMessages().get(i);
 			
-			File f = new File(path.toString()+"/"+name+".firespy");
-			
-			try {
-				FileInputStream fi = new FileInputStream(f);
-				ObjectInputStream oi = new ObjectInputStream(fi);
-				
-				GediminasSpyHistory h = (GediminasSpyHistory) oi.readObject();
-				
-				c.sendMessageWithPrefix("--------------SPY--------------");
-				c.sendMessageWithPrefix("size = "+h.getMessages().size());
-				c.sendMessageWithPrefix("name = "+h.getPlayerName());
-				c.sendMessageWithPrefix("IP = "+h.getIP());
-				c.sendMessageWithPrefix("-------------------------------\n");
-				
-				for(int i = 0 ; i < h.getMessages().size() ; i++) {
-					GediminasSpyHistoryData dat = h.getMessages().get(i);
-					
-					System.out.println(dat.getMessage());
-				}
-				
-				oi.close();
-				fi.close();
-			}catch(IOException | ClassNotFoundException ex) {
-				ex.printStackTrace();
-			}
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			System.out.println(dat.getMessage());
 		}
+		
+		oi.close();
+		fi.close();
 	}
 }
