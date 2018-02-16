@@ -32,6 +32,8 @@ import fr.glowstoner.fireapi.gediminas.spy.GediminasSpy;
 import fr.glowstoner.fireapi.gediminas.spy.GediminasSpyHistory;
 import fr.glowstoner.fireapi.gediminas.spy.GediminasSpyUtils;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
+import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyHistoryGetter;
+import fr.glowstoner.fireapi.gediminas.spy.packets.enums.GediminasSpyHistoryGetterState;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 
 public class GediminasListener implements ServerListener{
@@ -185,6 +187,16 @@ public class GediminasListener implements ServerListener{
 					
 					this.gs.createNewDataFile(spy.getPlayerName(),
 							new GediminasSpyHistory(spy.getPlayerName(), spy.getIP()));
+				}
+			}else if(packet instanceof PacketSpyHistoryGetter) {
+				PacketSpyHistoryGetter get = (PacketSpyHistoryGetter) packet;
+				
+				if(get.getState().equals(GediminasSpyHistoryGetterState.REQUEST)) {
+					get.setState(GediminasSpyHistoryGetterState.SEND);
+					
+					get.setHistory(this.gs.getHistory(get.getPlayerName()));
+					
+					server.sendPacket(get);
 				}
 			}
 		}catch (Exception e) {
