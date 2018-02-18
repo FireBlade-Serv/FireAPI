@@ -91,7 +91,10 @@ public class GediminasSpyUtils {
 			GediminasSpyHistoryData data = history.getMessages().get(i);
 			
 			if(data.getAction().equals(SpyAction.PLAYER_CHAT)) {
-				if(data.getMessage().contains(message)) {
+				String lmsg = message.toLowerCase();
+				String ldata = data.getMessage().toLowerCase();
+				
+				if(ldata.contains(lmsg)) {
 					list.add(data);
 				}
 			}
