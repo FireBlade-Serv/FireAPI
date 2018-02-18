@@ -60,7 +60,7 @@ public class Gediminas {
 		getListeners().registerCommand("status", new StatusCommand());
 		getListeners().registerCommand("list", new ListCommand(gl));
 		getListeners().registerCommand("execute", new ExecuteCommand(gl));
-		getListeners().registerCommand("spy", new SpyCommand());
+		getListeners().registerCommand("spy", new SpyCommand(gs));
 		
 		getListeners().addAlias("help", "aide");
 		getListeners().addAlias("help", "?");

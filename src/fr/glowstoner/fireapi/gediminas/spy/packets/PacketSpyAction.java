@@ -49,6 +49,10 @@ public class PacketSpyAction extends Packet implements Serializable{
 		return this.action.name()+" @ "+this.getFormatedDate()+" @ "+this.getActionMsg();
 	}
 	
+	public String getRawMsg() {
+		return this.actionMsg;
+	}
+	
 	@Override
 	public boolean isCrypted() {
 		return false;

@@ -10,10 +10,10 @@ public class GediminasSpyHistoryData implements Serializable{
 	private static final long serialVersionUID = -569491528358996172L;
 
 	private SpyAction action;
-	private String msg;
+	private String msg, formatedMessage;
 	private Calendar date;
 	
-	public GediminasSpyHistoryData(SpyAction action, String msg, Calendar date) {
+	public GediminasSpyHistoryData(SpyAction action, String formatedMessage, String msg, Calendar date) {
 		this.action = action;
 		this.msg = msg;
 		this.date = date;
@@ -29,5 +29,13 @@ public class GediminasSpyHistoryData implements Serializable{
 	
 	public Calendar getDate() {
 		return this.date;
+	}
+
+	public String getFormatedMessage() {
+		return formatedMessage;
+	}
+
+	public void setFormatedMessage(String formatedMessage) {
+		this.formatedMessage = formatedMessage;
 	}
 }

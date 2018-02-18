@@ -25,14 +25,14 @@ public class GediminasSpyHistory implements Serializable{
 		Calendar c = GregorianCalendar.getInstance();
 		c.setTime(new Date());
 		
-		this.putMessage(c, SpyAction.INIT, "Joueur initialisé.");
+		this.putMessage(c, SpyAction.INIT, "Joueur initialisé. Date = "+GediminasSpyUtils.getFormatedDate(c), "Joueur initialisé.");
 	}
 	
-	public void putMessage(Calendar date, SpyAction action, String actionMsg) {
+	public void putMessage(Calendar date, SpyAction action, String actionMsg, String baseMessage) {
 		if(this.data.size() == 0) {
-			this.data.put(0, new GediminasSpyHistoryData(action, actionMsg, date));
+			this.data.put(0, new GediminasSpyHistoryData(action, actionMsg, baseMessage, date));
 		}else {
-			this.data.put(this.data.size(), new GediminasSpyHistoryData(action, actionMsg, date));
+			this.data.put(this.data.size(), new GediminasSpyHistoryData(action, actionMsg, baseMessage, date));
 		}
 	}
 	

@@ -41,6 +41,8 @@ import net.md_5.bungee.api.plugin.PluginManager;
 
 public class BungeeMain extends Plugin implements FireAPI{
 	
+	private static FireAPI api;
+	
 	private final FireSQL sql = new FireSQL();
 	
 	private Friends friends;
@@ -169,6 +171,8 @@ public class BungeeMain extends Plugin implements FireAPI{
 		man.registerCommand(this, new FireWhiteList("firewl", this));
 		
 		man.registerListener(this, new Events(this.c, this.friends, this));
+		
+		api = this;
 	}
 	
 	@Override
@@ -211,5 +215,24 @@ public class BungeeMain extends Plugin implements FireAPI{
 	@Override
 	public FireWL getWhiteListSystem() {
 		return this.wl;
+	}
+	
+	@Override
+	public ConnectionHandler getClient() {
+		return this.c;
+	}
+
+	@Override
+	public String name() {
+		return "main-bungeecord";
+	}
+	
+	@Override
+	public VersionType type() {
+		return VersionType.BUNGEECORD_VERSION;
+	}
+	
+	public static FireAPI getAPI() {
+		return api;
 	}
 }

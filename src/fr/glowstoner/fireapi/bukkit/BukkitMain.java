@@ -34,11 +34,14 @@ import fr.glowstoner.fireapi.wl.FireWL;
 
 public class BukkitMain extends JavaPlugin implements FireAPI{
 	
+	private static FireAPI api;
+	
 	private FireRank rank;
 	private FireSQL sql;
 	private FireChat chat;
 	private GediminasLoginGetter log;
 	private PacketInjector injector;
+	private Client c;
 	
 	private String id;
 
@@ -113,6 +116,8 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 				
 			});
 			
+			this.c = c;
+			
 			ConnectionHandler ch = c;
 			
 			ch.eval();
@@ -129,6 +134,8 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		api = this;
 	}
 	
 	@Override
@@ -169,5 +176,24 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	@Override
 	public FireWL getWhiteListSystem() {
 		return null;
+	}
+	
+	@Override
+	public ConnectionHandler getClient() {
+		return this.c;
+	}
+
+	@Override
+	public String name() {
+		return this.id;
+	}
+	
+	@Override
+	public VersionType type() {
+		return VersionType.SPIGOT_VERSION;
+	}
+	
+	public static FireAPI getAPI() {
+		return api;
 	}
 }

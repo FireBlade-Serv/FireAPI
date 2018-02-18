@@ -1,7 +1,9 @@
 package fr.glowstoner.fireapi;
 
+import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.chat.FireChat;
+import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
 import fr.glowstoner.fireapi.sql.FireSQL;
 import fr.glowstoner.fireapi.wl.FireWL;
@@ -21,4 +23,10 @@ public interface FireAPI {
 	FireAuth getAuthentification();
 	
 	FireWL getWhiteListSystem();
+	
+	ConnectionHandler getClient();
+	
+	String name();
+	
+	VersionType type();
 }

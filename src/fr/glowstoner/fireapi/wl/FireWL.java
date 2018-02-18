@@ -82,6 +82,38 @@ public class FireWL {
 		 ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, file);
 	}
 	
+	public boolean exists(String name) throws IOException {
+		File file = new File(plugin.getDataFolder(), "whitelist.yml");
+		 
+		Configuration config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+		 
+		return config.contains("players."+name);
+	}
+	
+	public boolean containsIP(String name) throws IOException {
+		if(this.exists(name)) {
+			File file = new File(plugin.getDataFolder(), "whitelist.yml");
+			 
+			Configuration config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+			
+			return config.contains("players."+name+".ip");
+		}
+		
+		return false;
+	}
+	
+	public String getIP(String name) throws IOException {
+		if(this.containsIP(name)) {
+			File file = new File(plugin.getDataFolder(), "whitelist.yml");
+			 
+			Configuration config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+			
+			return config.getString("players."+name+".ip");
+		}
+		
+		return null;
+	}
+	
 	public boolean isEnable() {
 		return this.enable;
 	}

@@ -7,14 +7,20 @@ import java.io.ObjectInputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 
 public class GediminasSpyUtils {
 	
 	public static GediminasSpyHistory mergeHistory(GediminasSpyHistory base, PacketSpyAction ps) {
-		base.putMessage(ps.getActionDate(), ps.getAction(), ps.getFormatedMsg());
+		base.putMessage(ps.getActionDate(), ps.getAction(), ps.getFormatedMsg(), ps.getRawMsg());
 		
 		return base;
 	}
@@ -44,5 +50,53 @@ public class GediminasSpyUtils {
 		
 		oi.close();
 		fi.close();
+	}
+	
+	public static Map<Integer, GediminasSpyHistoryData> getHistoryByAValue
+		(Calendar date, int value, GediminasSpyHistory history) {
+		
+		Map<Integer, GediminasSpyHistoryData> map = new HashMap<>();
+		
+		for(int i = 0 ; i < history.getMessages().size() ; i++) {
+			GediminasSpyHistoryData data = history.getMessages().get(i);
+			
+			if(data.getDate().get(value) == date.get(value)) {
+				if(map.size() == 0) {
+					map.put(0, data);
+				}else {
+					map.put(map.size(), data);
+				}
+			}
+		}
+		
+		return map;
+	}
+	
+	public static String getFormatedDate(Calendar date) {
+		int ms = date.get(Calendar.MILLISECOND);
+		int s = date.get(Calendar.SECOND);
+		int m = date.get(Calendar.MINUTE);
+		int h = date.get(Calendar.HOUR_OF_DAY);
+		int d = date.get(Calendar.DAY_OF_MONTH);
+		int mo = date.get(Calendar.MONTH);
+		int y = date.get(Calendar.YEAR);
+		
+		return h+"h"+m+"min"+s+"sec"+ms+"ms - "+d+"/"+mo+"/"+y;
+	}
+	
+	public static List<GediminasSpyHistoryData> getAllMessagesContainsMessage(String message, GediminasSpyHistory history) {
+		List<GediminasSpyHistoryData> list = new ArrayList<>();
+		
+		for(int i = 0 ; i < history.getMessages().size() ; i++) {
+			GediminasSpyHistoryData data = history.getMessages().get(i);
+			
+			if(data.getAction().equals(SpyAction.PLAYER_CHAT)) {
+				if(data.getMessage().contains(message)) {
+					list.add(data);
+				}
+			}
+		}
+		
+		return list;
 	}
 }
