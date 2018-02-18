@@ -8,7 +8,7 @@ public class Command implements Serializable{
 	
 	private String raw;
 	
-	//command arg1 arg2
+	//command arg0 arg1
 	
 	public Command(String rawcommand) {
 		this.raw = rawcommand;

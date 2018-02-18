@@ -12,14 +12,14 @@ import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
 import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
-import fr.glowstoner.fireapi.bungeecord.cmd.CoinsChecker;
-import fr.glowstoner.fireapi.bungeecord.cmd.FireRankCmd;
-import fr.glowstoner.fireapi.bungeecord.cmd.FireWhiteList;
-import fr.glowstoner.fireapi.bungeecord.cmd.FriendsCmd;
-import fr.glowstoner.fireapi.bungeecord.cmd.LoginCmd;
-import fr.glowstoner.fireapi.bungeecord.cmd.RegisterCmd;
 import fr.glowstoner.fireapi.bungeecord.cmd.misc.Discord;
 import fr.glowstoner.fireapi.bungeecord.cmd.misc.Website;
+import fr.glowstoner.fireapi.bungeecord.commands.CoinsChecker;
+import fr.glowstoner.fireapi.bungeecord.commands.FireRankCmd;
+import fr.glowstoner.fireapi.bungeecord.commands.FireWhiteList;
+import fr.glowstoner.fireapi.bungeecord.commands.FriendsCmd;
+import fr.glowstoner.fireapi.bungeecord.commands.LoginCmd;
+import fr.glowstoner.fireapi.bungeecord.commands.RegisterCmd;
 import fr.glowstoner.fireapi.bungeecord.events.Events;
 import fr.glowstoner.fireapi.bungeecord.friends.Friends;
 import fr.glowstoner.fireapi.chat.FireChat;
@@ -88,6 +88,9 @@ public class BungeeMain extends Plugin implements FireAPI{
 				@Override
 				public void onPacketReceive(Packet packet) {
 					if(packet instanceof PacketExecute) {
+						BungeeMain.super.getLogger().info("(Gediminas) Execution de la commande : "+ ((PacketExecute) packet).
+									getServerCommand()+".");
+						
 						BungeeMain.super.getProxy().getPluginManager().dispatchCommand
 							(BungeeMain.super.getProxy().getConsole(), ((PacketExecute) packet).
 									getServerCommand());
@@ -112,11 +115,11 @@ public class BungeeMain extends Plugin implements FireAPI{
 							}
 							
 							if(pp == null) {
-								
+								//future
 							}
 							
 							for(int i = 0 ; i < map.size() ; i++) {
-								
+								//future
 							}
 						}
 					}

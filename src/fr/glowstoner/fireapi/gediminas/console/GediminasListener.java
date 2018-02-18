@@ -209,6 +209,8 @@ public class GediminasListener implements ServerListener{
 		ch.sendMessage("by Glowstoner");
 		ch.sendMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		ch.sendMessage("\nProtocol version : 1.0");
+		
+		this.refreshLists();
 	}
 
 	@Override

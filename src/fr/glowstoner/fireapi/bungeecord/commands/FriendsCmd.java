@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.bungeecord.cmd;
+package fr.glowstoner.fireapi.bungeecord.commands;
 
 import java.io.IOException;
 import java.util.ArrayList;

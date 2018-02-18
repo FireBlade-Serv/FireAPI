@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.bungeecord.cmd;
+package fr.glowstoner.fireapi.bungeecord.commands;
 
 import fr.glowstoner.fireapi.rank.FireRank;
 import fr.glowstoner.fireapi.rank.Rank;

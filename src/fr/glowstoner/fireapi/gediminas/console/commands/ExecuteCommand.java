@@ -31,9 +31,16 @@ public class ExecuteCommand implements CommandExecutor {
 		}else {
 			StringBuilder builder = new StringBuilder();
 			
+			//exec bungeecord firerank set Glowstoner FIRE
+			//[cmd]  [arg1]   [arg2] [arg3] [args4]  [arg5]
+			
 			for(String arg : args) {
-				if(!arg.equalsIgnoreCase(args[0])) {
-					builder.append(arg+" ");
+				if(!arg.equals(args[0])) {
+					if(arg.equals(args[(args.length - 1)])) {
+						builder.append(arg);
+					}else {
+						builder.append(arg+" ");
+					}
 				}
 			}
 			
