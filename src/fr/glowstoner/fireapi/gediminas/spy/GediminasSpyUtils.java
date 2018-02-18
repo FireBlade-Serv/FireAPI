@@ -45,7 +45,7 @@ public class GediminasSpyUtils {
 		for(int i = 0 ; i < h.getMessages().size() ; i++) {
 			GediminasSpyHistoryData dat = h.getMessages().get(i);
 			
-			c.sendMessageWithPrefix(dat.getMessage());
+			c.sendMessageWithPrefix(dat.getFormatedMessage());
 		}
 		
 		oi.close();
