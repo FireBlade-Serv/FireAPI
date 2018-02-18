@@ -17,6 +17,8 @@ public class GediminasSpyHistoryData implements Serializable{
 		this.action = action;
 		this.msg = msg;
 		this.date = date;
+		
+		this.setFormatedMessage(formatedMessage);
 	}
 	
 	public SpyAction getAction() {
