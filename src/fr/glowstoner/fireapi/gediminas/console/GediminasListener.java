@@ -185,8 +185,7 @@ public class GediminasListener implements ServerListener{
 					
 					gh.putMessage(spy.getActionDate(), spy.getAction(), spy.getFormatedMsg(), spy.getRawMsg());
 					
-					this.gs.createNewDataFile(spy.getPlayerName(),
-							new GediminasSpyHistory(spy.getPlayerName(), spy.getIP()));
+					this.gs.createNewDataFile(spy.getPlayerName(), gh);
 				}
 			}else if(packet instanceof PacketSpyHistoryGetter) {
 				PacketSpyHistoryGetter get = (PacketSpyHistoryGetter) packet;

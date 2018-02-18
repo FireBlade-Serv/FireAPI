@@ -200,8 +200,11 @@ public class Events implements Listener {
 			}
 		}else {
 			try {
-				this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
-						e.getMessage(), SpyAction.PLAYER_CHAT));
+				PacketSpyAction ps = new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
+						e.getMessage(), SpyAction.PLAYER_CHAT);
+				ps.setDateToNow();
+				
+				this.c.sendPacket(ps);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
