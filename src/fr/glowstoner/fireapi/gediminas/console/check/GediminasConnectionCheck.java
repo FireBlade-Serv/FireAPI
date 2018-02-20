@@ -53,7 +53,7 @@ public class GediminasConnectionCheck extends TimerTask{
 			this.api.setClient(this.client);
 		}catch (Exception ex) {
 			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (connection protocol) "
-					+ "ErreurClass = "+ex.getClass().getSimpleName());
+					+ "ErreurClass = "+ex.getClass().getSimpleName()+", "+ex.getMessage());
 		}
 	}
 
@@ -81,9 +81,9 @@ public class GediminasConnectionCheck extends TimerTask{
 				try {
 					this.check();
 					
-					System.out.println("[FireAPI] (Gediminas) Test de connection réussi !");
+					System.out.println("[FireAPI] (Gediminas) Le processus de vérification de connection a réussi !");
 				} catch (GediminasNotConnectedException e) {
-					System.out.println("[FireAPI] (Gediminas) Une erreur est survenue ! Changement pour ERROR_CHECK ...");
+					System.err.println("[FireAPI] (Gediminas) Une erreur est survenue ! Changement pour ERROR_CHECK ...");
 					
 					GediminasConnectionCheck check = new GediminasConnectionCheck
 							(this.api, GediminasConnectionCheckType.ERROR_CHECK, this.infos);
@@ -95,13 +95,13 @@ public class GediminasConnectionCheck extends TimerTask{
 				
 				break;
 			case ERROR_CHECK:
-				System.out.println("[FireAPI] (Gediminas) Impossible de se connecter ! Tentative de reconnection ...");
+				System.err.println("[FireAPI] (Gediminas) Impossible de se connecter ! Tentative de reconnection ...");
 				
 				try {
 					this.connectionCheck();
 					this.check();
 					
-					System.out.println("[FireAPI] (Gediminas) Reconnection réussie ! Changement pour GLOBAL_CKECK ...");
+					System.out.println("[FireAPI] (Gediminas) Reconnection réussie ! Changement pour GLOBAL_CHECK ...");
 					
 					GediminasConnectionCheck check = new GediminasConnectionCheck
 							(this.api, GediminasConnectionCheckType.GLOBAL_CHECK, this.infos);
@@ -110,7 +110,8 @@ public class GediminasConnectionCheck extends TimerTask{
 					
 					this.timer.cancel();
 				} catch (GediminasNotConnectedException e) {
-					System.out.println("[FireAPI] (Gediminas) Impossible de se connecter ! Tentative de reconnection ...");
+					System.err.println("[FireAPI] (Gediminas) La tentative de reconnection à échouée ! "+e.getClass().getSimpleName()+
+							", "+e.getMessage());
 				}
 				
 				break;
