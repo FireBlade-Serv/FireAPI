@@ -3,6 +3,7 @@ package fr.glowstoner.fireapi.gediminas.console.check;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
 import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
@@ -46,11 +47,13 @@ public class GediminasConnectionCheck extends TimerTask{
 			
 			this.client.start();
 			
-			this.client.sendPacket(new PacketLogin(this.infos.getKey(), this.infos.getPassword()));
-			this.client.sendPacket(new PacketVersion(this.infos.getVersionType()));
-			this.client.sendPacket(new PacketCommand("name "+this.infos.getId()));
+			ConnectionHandler ch = (ConnectionHandler) this.client;
 			
-			this.api.setClient(this.client);
+			ch.sendPacket(new PacketLogin(this.infos.getKey(), this.infos.getPassword()));
+			ch.sendPacket(new PacketVersion(this.infos.getVersionType()));
+			ch.sendPacket(new PacketCommand("name "+this.infos.getId()));
+			
+			this.api.setClient((Client) ch);
 		}catch (Exception ex) {
 			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (connection protocol) "
 					+ "ErreurClass = "+ex.getClass().getSimpleName()+", "+ex.getMessage());
