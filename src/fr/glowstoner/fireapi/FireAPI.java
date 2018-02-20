@@ -1,6 +1,6 @@
 package fr.glowstoner.fireapi;
 
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
+import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
@@ -22,7 +22,8 @@ public interface FireAPI {
 	String id();
 	
 	//share
-	ConnectionHandler getClient();
+	Client getClient();
+	void setClient(Client c);
 	FireSQL getSQL();
 	FireRank getRankSystem();
 	FireChat getChatUtils();

@@ -1,6 +1,6 @@
 name: FireAPI
 main: fr.glowstoner.fireapi.bukkit.BukkitMain
-version: 2.8.0.0
+version: 2.8.1.0
 authors: [Glowstoner, _goldocelot_]
 commands:
  ping:

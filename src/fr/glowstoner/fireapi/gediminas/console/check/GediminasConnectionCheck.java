@@ -7,6 +7,7 @@ import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
 import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.connectionsapi.network.packets.ping.PacketPing;
+import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
 import fr.glowstoner.fireapi.gediminas.console.check.exceptions.GediminasNotConnectedException;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasConnectionInfos;
@@ -15,20 +16,22 @@ import lombok.Getter;
 
 public class GediminasConnectionCheck extends TimerTask{
 	
-	@Getter private Timer t;
+	@Getter private Timer timer;
 	@Getter private GediminasConnectionCheckType type;
-
-	private Client c;
+	@Getter private Client client;
+	
+	private FireAPI api;
 	private GediminasConnectionInfos infos;
 	
-	public GediminasConnectionCheck(Client c, GediminasConnectionCheckType type, GediminasConnectionInfos infos) {
-		this.c = c;
+	public GediminasConnectionCheck(FireAPI api, GediminasConnectionCheckType type, GediminasConnectionInfos infos) {
+		this.api = api;
+		this.client = (Client) this.api.getClient();
 		this.type = type;
 	}
 	
 	public void check() throws GediminasNotConnectedException {
 		try {
-			c.sendPacket(new PacketPing());
+			client.sendPacket(new PacketPing());
 		}catch (Exception e) {
 			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (ping).");
 		}
@@ -36,24 +39,30 @@ public class GediminasConnectionCheck extends TimerTask{
 	
 	public void connectionCheck() throws GediminasNotConnectedException {
 		try {
-			c.sendPacket(new PacketLogin(this.infos.getKey(), this.infos.getPassword()));
-			c.sendPacket(new PacketVersion(this.infos.getVersionType()));
-			c.sendPacket(new PacketCommand("name "+this.infos.getId()));
+			this.client = new Client(this.client.getIP(), this.client.getPort());
+			
+			this.client.start();
+			
+			client.sendPacket(new PacketLogin(this.infos.getKey(), this.infos.getPassword()));
+			client.sendPacket(new PacketVersion(this.infos.getVersionType()));
+			client.sendPacket(new PacketCommand("name "+this.infos.getId()));
+			
+			this.api.setClient(this.client);
 		}catch (Exception ex) {
 			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (connection protocol)");
 		}
 	}
 
 	public void startChecks() {
-		this.t = new Timer();
+		this.timer = new Timer();
 		
 		switch (this.type) {
 			case GLOBAL_CHECK:
-				this.t.scheduleAtFixedRate(this, 0L, 600000L);
+				this.timer.scheduleAtFixedRate(this, 0L, 10000L);
 				
 				break;
 			case ERROR_CHECK:
-				this.t.scheduleAtFixedRate(this, 0L, 5000L);
+				this.timer.scheduleAtFixedRate(this, 0L, 5000L);
 				
 				break;
 		}
@@ -74,11 +83,11 @@ public class GediminasConnectionCheck extends TimerTask{
 					e.printStackTrace();
 					
 					GediminasConnectionCheck check = new GediminasConnectionCheck
-							(this.c, GediminasConnectionCheckType.ERROR_CHECK, this.infos);
+							(this.api, GediminasConnectionCheckType.ERROR_CHECK, this.infos);
 					
 					check.startChecks();
 					
-					this.t.cancel();
+					this.timer.cancel();
 				}
 				
 				break;
@@ -92,11 +101,11 @@ public class GediminasConnectionCheck extends TimerTask{
 					System.out.println("[FireAPI] (Gediminas) Reconnection réussie ! Changement pour GLOBAL_CKECK ...");
 					
 					GediminasConnectionCheck check = new GediminasConnectionCheck
-							(this.c, GediminasConnectionCheckType.GLOBAL_CHECK, this.infos);
+							(this.api, GediminasConnectionCheckType.GLOBAL_CHECK, this.infos);
 					
 					check.startChecks();
 					
-					this.t.cancel();
+					this.timer.cancel();
 				} catch (GediminasNotConnectedException e) {
 					System.out.println("[FireAPI] (Gediminas) Impossible de se connecter ! Tentative de reconnection ...");
 					e.printStackTrace();

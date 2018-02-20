@@ -109,7 +109,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			ch.sendPacket(new PacketCommand("name "+this.id));
 
 			GediminasConnectionCheck check = new GediminasConnectionCheck
-					(this.c, GediminasConnectionCheckType.GLOBAL_CHECK, GediminasConnectionInfos.builder()
+					(this, GediminasConnectionCheckType.GLOBAL_CHECK, GediminasConnectionInfos.builder()
 							.id(this.id)
 							.key(this.log.getKey())
 							.password(this.log.getPassword())
@@ -120,7 +120,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			check.startChecks();
 		}catch (Exception ex) {
 			GediminasConnectionCheck check = new GediminasConnectionCheck
-					(this.c, GediminasConnectionCheckType.ERROR_CHECK, GediminasConnectionInfos.builder()
+					(this, GediminasConnectionCheckType.ERROR_CHECK, GediminasConnectionInfos.builder()
 							.id(this.id)
 							.key(this.log.getKey())
 							.password(this.log.getPassword())
@@ -129,6 +129,8 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 							.build());
 			
 			check.startChecks();
+			
+			this.c = check.getClient();
 		}
 		
 		ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
@@ -209,8 +211,13 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	}
 	
 	@Override
-	public ConnectionHandler getClient() {
+	public Client getClient() {
 		return this.c;
+	}
+	
+	@Override
+	public void setClient(Client c) {
+		this.c = c;
 	}
 
 	@Override

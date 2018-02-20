@@ -23,6 +23,9 @@ import fr.glowstoner.fireapi.bungeecord.commands.RegisterCmd;
 import fr.glowstoner.fireapi.bungeecord.events.Events;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
+import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheck;
+import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
+import fr.glowstoner.fireapi.gediminas.console.login.GediminasConnectionInfos;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketExecute;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
@@ -83,50 +86,6 @@ public class BungeeMain extends Plugin implements FireAPI{
 			
 			this.c = c;
 			
-			ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
-				
-				@Override
-				public void onPacketReceive(Packet packet) {
-					if(packet instanceof PacketExecute) {
-						BungeeMain.super.getLogger().info("(Gediminas) Execution de la commande : "+ ((PacketExecute) packet).
-									getServerCommand()+".");
-						
-						BungeeMain.super.getProxy().getPluginManager().dispatchCommand
-							(BungeeMain.super.getProxy().getConsole(), ((PacketExecute) packet).
-									getServerCommand());
-					}else if(packet instanceof PacketPlayerPing) {
-						PacketPlayerPing pp = (PacketPlayerPing) packet;
-						
-						BungeeMain.super.getProxy().getPlayer(pp.getName()).sendMessage(new TextComponent
-								("§6[§ePing§6]§r Ton ping §eproxy§r est de §e"
-						+BungeeMain.super.getProxy().getPlayer(pp.getName()).getPing()+" ms§r !"));
-					}else if(packet instanceof PacketSpyHistoryGetter) {
-						PacketSpyHistoryGetter hg = (PacketSpyHistoryGetter) packet;
-						
-						if(hg.getState().equals(GediminasSpyHistoryGetterState.SEND)) {
-							Map<Integer, GediminasSpyHistoryData> map = hg.getHistory().getMessages();
-							
-							ProxiedPlayer pp = null;
-							
-							try {
-								pp = BungeeMain.super.getProxy().getPlayer(hg.getPlayerName());
-							}catch (Exception ex) {
-								pp = null;
-							}
-							
-							if(pp == null) {
-								//future
-							}
-							
-							for(int i = 0 ; i < map.size() ; i++) {
-								//future
-							}
-						}
-					}
-				}
-				
-			});
-			
 			ConnectionHandler ch = c;
 			
 			ch.eval();
@@ -134,9 +93,73 @@ public class BungeeMain extends Plugin implements FireAPI{
 			ch.sendPacket(new PacketLogin(this.log.getKey(), log.getPassword()));
 			ch.sendPacket(new PacketVersion(VersionType.BUNGEECORD_VERSION));
 			ch.sendPacket(new PacketCommand("name main-bungeecord"));
-		}catch(Exception ex) {
 			
+			GediminasConnectionCheck check = new GediminasConnectionCheck
+					(this, GediminasConnectionCheckType.GLOBAL_CHECK, GediminasConnectionInfos.builder()
+							.id("main-bungeecord")
+							.key(this.log.getKey())
+							.password(this.log.getPassword())
+							.versionType(VersionType.BUNGEECORD_VERSION)
+							
+							.build());
+			
+			check.startChecks();
+		}catch(Exception ex) {
+			GediminasConnectionCheck check = new GediminasConnectionCheck
+					(this, GediminasConnectionCheckType.ERROR_CHECK, GediminasConnectionInfos.builder()
+							.id("main-bungeecord")
+							.key(this.log.getKey())
+							.password(this.log.getPassword())
+							.versionType(VersionType.BUNGEECORD_VERSION)
+							
+							.build());
+			
+			check.startChecks();
 		}
+		
+		ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
+			
+			@Override
+			public void onPacketReceive(Packet packet) {
+				if(packet instanceof PacketExecute) {
+					BungeeMain.super.getLogger().info("(Gediminas) Execution de la commande : "+ ((PacketExecute) packet).
+								getServerCommand()+".");
+					
+					BungeeMain.super.getProxy().getPluginManager().dispatchCommand
+						(BungeeMain.super.getProxy().getConsole(), ((PacketExecute) packet).
+								getServerCommand());
+				}else if(packet instanceof PacketPlayerPing) {
+					PacketPlayerPing pp = (PacketPlayerPing) packet;
+					
+					BungeeMain.super.getProxy().getPlayer(pp.getName()).sendMessage(new TextComponent
+							("§6[§ePing§6]§r Ton ping §eproxy§r est de §e"
+					+BungeeMain.super.getProxy().getPlayer(pp.getName()).getPing()+" ms§r !"));
+				}else if(packet instanceof PacketSpyHistoryGetter) {
+					PacketSpyHistoryGetter hg = (PacketSpyHistoryGetter) packet;
+					
+					if(hg.getState().equals(GediminasSpyHistoryGetterState.SEND)) {
+						Map<Integer, GediminasSpyHistoryData> map = hg.getHistory().getMessages();
+						
+						ProxiedPlayer pp = null;
+						
+						try {
+							pp = BungeeMain.super.getProxy().getPlayer(hg.getPlayerName());
+						}catch (Exception ex) {
+							pp = null;
+						}
+						
+						if(pp == null) {
+							//future
+						}
+						
+						for(int i = 0 ; i < map.size() ; i++) {
+							//future
+						}
+					}
+				}
+			}
+			
+		});
 		
 		this.friends = new FireFriends(this);
 		this.friends.initFolder();
@@ -221,8 +244,13 @@ public class BungeeMain extends Plugin implements FireAPI{
 	}
 	
 	@Override
-	public ConnectionHandler getClient() {
+	public Client getClient() {
 		return this.c;
+	}
+	
+	@Override
+	public void setClient(Client c) {
+		this.c = c;	
 	}
 
 	@Override
