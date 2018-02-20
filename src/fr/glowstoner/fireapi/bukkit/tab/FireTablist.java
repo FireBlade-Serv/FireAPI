@@ -16,6 +16,8 @@ public class FireTablist {
 	
 	public FireTablist(FireAPI api) {
 		this.api = api;
+		
+		this.scoreboard = this.api.getBukkitPlugin().getServer().getScoreboardManager().getNewScoreboard();
 	}
 	
 	public void registerRanks() {
