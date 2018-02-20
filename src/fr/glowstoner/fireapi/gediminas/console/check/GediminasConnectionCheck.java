@@ -103,6 +103,7 @@ public class GediminasConnectionCheck extends TimerTask{
 					check.startChecks();
 					
 					this.timer.cancel();
+					this.timer.purge();
 				}
 				
 				break;
@@ -121,6 +122,7 @@ public class GediminasConnectionCheck extends TimerTask{
 					check.startChecks();
 					
 					this.timer.cancel();
+					this.timer.purge();
 				} catch (GediminasNotConnectedException e) {
 					System.err.println("[FireAPI] (Gediminas) La tentative de reconnection à échouée ! "+e.getClass().getSimpleName()+
 							", "+e.getMessage());
