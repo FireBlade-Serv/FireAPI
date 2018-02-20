@@ -25,31 +25,35 @@ public class GediminasConnectionCheck extends TimerTask{
 	
 	public GediminasConnectionCheck(FireAPI api, GediminasConnectionCheckType type, GediminasConnectionInfos infos) {
 		this.api = api;
-		this.client = (Client) this.api.getClient();
+		this.client = this.api.getClient();
 		this.type = type;
+		this.infos = infos;
 	}
 	
 	public void check() throws GediminasNotConnectedException {
 		try {
 			client.sendPacket(new PacketPing());
-		}catch (Exception e) {
+		}catch (Exception ex) {
+			ex.printStackTrace();
 			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (ping).");
 		}
 	}
 	
 	public void connectionCheck() throws GediminasNotConnectedException {
 		try {
+			System.out.println("[FireAPI] Reconnection avec IP="+this.client.getIP()+" et PORT="+this.client.getPort());
 			this.client = new Client(this.client.getIP(), this.client.getPort());
 			
 			this.client.start();
 			
-			client.sendPacket(new PacketLogin(this.infos.getKey(), this.infos.getPassword()));
-			client.sendPacket(new PacketVersion(this.infos.getVersionType()));
-			client.sendPacket(new PacketCommand("name "+this.infos.getId()));
+			this.client.sendPacket(new PacketLogin(this.infos.getKey(), this.infos.getPassword()));
+			this.client.sendPacket(new PacketVersion(this.infos.getVersionType()));
+			this.client.sendPacket(new PacketCommand("name "+this.infos.getId()));
 			
 			this.api.setClient(this.client);
 		}catch (Exception ex) {
-			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (connection protocol)");
+			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (connection protocol) "
+					+ "ErreurClass = "+ex.getClass().getSimpleName());
 		}
 	}
 
@@ -80,7 +84,6 @@ public class GediminasConnectionCheck extends TimerTask{
 					System.out.println("[FireAPI] (Gediminas) Test de connection réussi !");
 				} catch (GediminasNotConnectedException e) {
 					System.out.println("[FireAPI] (Gediminas) Une erreur est survenue ! Changement pour ERROR_CHECK ...");
-					e.printStackTrace();
 					
 					GediminasConnectionCheck check = new GediminasConnectionCheck
 							(this.api, GediminasConnectionCheckType.ERROR_CHECK, this.infos);
@@ -108,7 +111,6 @@ public class GediminasConnectionCheck extends TimerTask{
 					this.timer.cancel();
 				} catch (GediminasNotConnectedException e) {
 					System.out.println("[FireAPI] (Gediminas) Impossible de se connecter ! Tentative de reconnection ...");
-					e.printStackTrace();
 				}
 				
 				break;

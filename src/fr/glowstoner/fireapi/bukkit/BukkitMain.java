@@ -129,8 +129,6 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 							.build());
 			
 			check.startChecks();
-			
-			this.c = check.getClient();
 		}
 		
 		ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
