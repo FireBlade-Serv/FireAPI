@@ -2,6 +2,7 @@ package fr.glowstoner.fireapi;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
+import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
@@ -10,23 +11,20 @@ import fr.glowstoner.fireapi.wl.FireWL;
 
 public interface FireAPI {
 	
-	org.bukkit.plugin.Plugin getBukkitPlugin();
-	
+	//bungeecord
 	net.md_5.bungee.api.plugin.Plugin getBungeePlugin();
-	
-	FireSQL getSQL();
-	
-	FireRank getRankSystem();
-	
-	FireChat getChatUtils();
-	
 	FireAuth getAuthentification();
-	
 	FireWL getWhiteListSystem();
+	FireFriends getFriends();
 	
+	//bukkit/spigot
+	org.bukkit.plugin.Plugin getBukkitPlugin();
+	String id();
+	
+	//share
 	ConnectionHandler getClient();
-	
-	String name();
-	
+	FireSQL getSQL();
+	FireRank getRankSystem();
+	FireChat getChatUtils();
 	VersionType type();
 }

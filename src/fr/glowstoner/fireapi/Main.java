@@ -1,6 +1,6 @@
 package fr.glowstoner.fireapi;
 
-import fr.glowstoner.fireapi.gediminas.console.Gediminas;
+import fr.glowstoner.fireapi.gediminas.Gediminas;
 import fr.glowstoner.fireapi.gediminas.console.GediminasClient;
 
 public class Main {

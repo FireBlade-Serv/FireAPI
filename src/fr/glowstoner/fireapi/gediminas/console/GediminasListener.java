@@ -25,6 +25,7 @@ import fr.glowstoner.connectionsapi.network.packets.login.enums.LoginResult;
 import fr.glowstoner.connectionsapi.network.packets.ping.PacketPing;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
+import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.enums.PingState;

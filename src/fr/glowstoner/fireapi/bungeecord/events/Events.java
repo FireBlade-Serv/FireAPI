@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bungeecord.friends.Friends;
+import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.enums.VersionType;
@@ -33,12 +33,12 @@ public class Events implements Listener {
 	
 	private final String pre = "§6[§eAmis§6]§r ";
 	
-	private Friends friends;
+	private FireFriends friends;
 	private FireAPI instance;
 	private List<ProxiedPlayer> stillconnected;
 	private Client c;
 	
-	public Events(Client c, Friends friends, FireAPI api) {
+	public Events(Client c, FireFriends friends, FireAPI api) {
 		this.friends = friends;
 		this.instance = api;
 		this.stillconnected = new ArrayList<>();

@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.gediminas.console;
+package fr.glowstoner.fireapi.gediminas.console.login;
 
 import java.io.ObjectInputStream;
 
@@ -16,7 +16,7 @@ public class GediminasLoginGetter {
 		System.out.println("[Gediminas] (FireAPI) Chargement du fichier secret ...");
 
 		ObjectInputStream in = new ObjectInputStream(super.getClass().
-				getResourceAsStream("/fr/glowstoner/fireapi/gediminas/console/gediminas.dat"));
+				getResourceAsStream("/fr/glowstoner/fireapi/gediminas/console/login/gediminas.dat"));
 		
 		GediminasLogin o = (GediminasLogin) in.readObject();
 		

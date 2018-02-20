@@ -21,9 +21,9 @@ import fr.glowstoner.fireapi.bungeecord.commands.FriendsCmd;
 import fr.glowstoner.fireapi.bungeecord.commands.LoginCmd;
 import fr.glowstoner.fireapi.bungeecord.commands.RegisterCmd;
 import fr.glowstoner.fireapi.bungeecord.events.Events;
-import fr.glowstoner.fireapi.bungeecord.friends.Friends;
+import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
-import fr.glowstoner.fireapi.gediminas.console.GediminasLoginGetter;
+import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketExecute;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
@@ -45,7 +45,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 	
 	private final FireSQL sql = new FireSQL();
 	
-	private Friends friends;
+	private FireFriends friends;
 	private FireRank rank;
 	private FireAuth auth;
 	private FireChat chat;
@@ -134,11 +134,11 @@ public class BungeeMain extends Plugin implements FireAPI{
 			ch.sendPacket(new PacketLogin(this.log.getKey(), log.getPassword()));
 			ch.sendPacket(new PacketVersion(VersionType.BUNGEECORD_VERSION));
 			ch.sendPacket(new PacketCommand("name main-bungeecord"));
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch(Exception ex) {
+			
 		}
 		
-		this.friends = new Friends(this);
+		this.friends = new FireFriends(this);
 		this.friends.initFolder();
 		
 		try {
@@ -226,7 +226,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 	}
 
 	@Override
-	public String name() {
+	public String id() {
 		return "main-bungeecord";
 	}
 	
@@ -237,5 +237,10 @@ public class BungeeMain extends Plugin implements FireAPI{
 	
 	public static FireAPI getAPI() {
 		return api;
+	}
+
+	@Override
+	public FireFriends getFriends() {
+		return this.friends;
 	}
 }

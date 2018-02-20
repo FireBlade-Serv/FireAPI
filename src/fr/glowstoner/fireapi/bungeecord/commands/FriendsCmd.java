@@ -6,7 +6,7 @@ import java.util.List;
 
 import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bungeecord.friends.Friends;
+import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
 import fr.glowstoner.fireapi.player.FirePlayer;
@@ -22,11 +22,11 @@ public class FriendsCmd extends Command {
 	private final String pre = "§6[§eAmis§6]§r ";
 	
 	private Plugin instance;
-	private Friends friends;
+	private FireFriends friends;
 	private FireAPI api;
 	private Client c;
 
-	public FriendsCmd(FireAPI api, Client c, String name, Friends friends) {
+	public FriendsCmd(FireAPI api, Client c, String name, FireFriends friends) {
 		super(name);
 		
 		this.api = api;

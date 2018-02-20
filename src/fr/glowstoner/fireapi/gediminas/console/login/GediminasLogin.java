@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.gediminas.console;
+package fr.glowstoner.fireapi.gediminas.console.login;
 
 import java.io.Serializable;
 

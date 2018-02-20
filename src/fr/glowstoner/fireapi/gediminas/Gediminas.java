@@ -1,10 +1,11 @@
-package fr.glowstoner.fireapi.gediminas.console;
+package fr.glowstoner.fireapi.gediminas;
 
 import java.io.IOException;
 
 import fr.glowstoner.connectionsapi.ConnectionsAPI;
 import fr.glowstoner.connectionsapi.network.events.Listeners;
 import fr.glowstoner.connectionsapi.network.server.Server;
+import fr.glowstoner.fireapi.gediminas.console.GediminasListener;
 import fr.glowstoner.fireapi.gediminas.console.commands.ChatCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.ExecuteCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.HelpCommand;
@@ -65,6 +66,7 @@ public class Gediminas {
 		getListeners().addAlias("help", "aide");
 		getListeners().addAlias("help", "?");
 		getListeners().addAlias("execute", "exec");
+		getListeners().addAlias("execute", "ex");
 	}
 	
 	public Listeners getListeners() {

@@ -22,10 +22,14 @@ import fr.glowstoner.fireapi.bukkit.id.FireBukkitID;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.PacketInjector;
 import fr.glowstoner.fireapi.bukkit.tab.FireTablist;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
+import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
 import fr.glowstoner.fireapi.chat.FireChat;
-import fr.glowstoner.fireapi.gediminas.console.GediminasLoginGetter;
+import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheck;
+import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
+import fr.glowstoner.fireapi.gediminas.console.login.GediminasConnectionInfos;
+import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketExecute;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.player.enums.VersionType;
@@ -94,34 +98,6 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			
 			c.start();
 			
-			ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
-				
-				@Override
-				public void onPacketReceive(Packet packet) {
-					if(packet instanceof PacketExecute) {
-						BukkitMain.super.getServer().dispatchCommand
-							(BukkitMain.super.getServer().getConsoleSender(),
-									((PacketExecute) packet).getServerCommand());
-					}else if(packet instanceof PacketFriends) {
-						PacketFriends pf = (PacketFriends) packet;
-						
-						if(pf.getAction() instanceof FriendsActionTransmetterGUI) {
-							FriendsActionTransmetterGUI fa = (FriendsActionTransmetterGUI) pf.getAction();
-							
-							if(fa.to().equals(VersionType.SPIGOT_VERSION)) {
-								FriendsActionInventoryGUI faig = new FriendsActionInventoryGUI
-										(fa.getName(), fa.getFriends(), fa.getConnected());
-								
-								faig.initPlayer(BukkitMain.this);
-								faig.generateInventory();
-								faig.openInventory();
-							}
-						}
-					}
-				}
-				
-			});
-			
 			this.c = c;
 			
 			ConnectionHandler ch = c;
@@ -131,15 +107,63 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			ch.sendPacket(new PacketLogin(this.log.getKey(), this.log.getPassword()));
 			ch.sendPacket(new PacketVersion(VersionType.SPIGOT_VERSION));
 			ch.sendPacket(new PacketCommand("name "+this.id));
+
+			GediminasConnectionCheck check = new GediminasConnectionCheck
+					(this.c, GediminasConnectionCheckType.GLOBAL_CHECK, GediminasConnectionInfos.builder()
+							.id(this.id)
+							.key(this.log.getKey())
+							.password(this.log.getPassword())
+							.versionType(VersionType.SPIGOT_VERSION)
+							
+							.build());
 			
-			super.getServer().getPluginManager().registerEvents(new Events(this, ch, this.id, this.injector, this.tab), this);
-			super.getServer().getPluginManager().registerEvents(new EventsAT(this), this);
+			check.startChecks();
+		}catch (Exception ex) {
+			GediminasConnectionCheck check = new GediminasConnectionCheck
+					(this.c, GediminasConnectionCheckType.ERROR_CHECK, GediminasConnectionInfos.builder()
+							.id(this.id)
+							.key(this.log.getKey())
+							.password(this.log.getPassword())
+							.versionType(VersionType.SPIGOT_VERSION)
+							
+							.build());
 			
-			super.getCommand("ping").setExecutor(new Ping(ch));
-			super.getCommand("at").setExecutor(new AdminToolsCmd(this));
-		} catch (Exception e) {
-			e.printStackTrace();
+			check.startChecks();
 		}
+		
+		ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
+			
+			@Override
+			public void onPacketReceive(Packet packet) {
+				if(packet instanceof PacketExecute) {
+					BukkitMain.super.getServer().dispatchCommand
+						(BukkitMain.super.getServer().getConsoleSender(),
+								((PacketExecute) packet).getServerCommand());
+				}else if(packet instanceof PacketFriends) {
+					PacketFriends pf = (PacketFriends) packet;
+					
+					if(pf.getAction() instanceof FriendsActionTransmetterGUI) {
+						FriendsActionTransmetterGUI fa = (FriendsActionTransmetterGUI) pf.getAction();
+						
+						if(fa.to().equals(VersionType.SPIGOT_VERSION)) {
+							FriendsActionInventoryGUI faig = new FriendsActionInventoryGUI
+									(fa.getName(), fa.getFriends(), fa.getConnected());
+							
+							faig.initPlayer(BukkitMain.this);
+							faig.generateInventory();
+							faig.openInventory();
+						}
+					}
+				}
+			}
+			
+		});
+		
+		super.getServer().getPluginManager().registerEvents(new Events(this, this.c, this.id, this.injector, this.tab), this);
+		super.getServer().getPluginManager().registerEvents(new EventsAT(this), this);
+		
+		super.getCommand("ping").setExecutor(new Ping(this.c));
+		super.getCommand("at").setExecutor(new AdminToolsCmd(this));
 		
 		api = this;
 	}
@@ -190,7 +214,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	}
 
 	@Override
-	public String name() {
+	public String id() {
 		return this.id;
 	}
 	
@@ -201,5 +225,10 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	
 	public static FireAPI getAPI() {
 		return api;
+	}
+
+	@Override
+	public FireFriends getFriends() {
+		return null;
 	}
 }

@@ -22,7 +22,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
-public class Friends {
+public class FireFriends {
 	
 	private final String pre = "§6[§eAmis§6]§r ";
 	
@@ -36,7 +36,7 @@ public class Friends {
 	private File file;
 	private boolean enable;
 	
-	public Friends(BungeeMain plugin) {
+	public FireFriends(BungeeMain plugin) {
 		this.instance = plugin;
 	}
 	
