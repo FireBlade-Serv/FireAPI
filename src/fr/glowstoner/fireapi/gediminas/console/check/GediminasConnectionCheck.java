@@ -62,7 +62,7 @@ public class GediminasConnectionCheck extends TimerTask{
 		
 		switch (this.type) {
 			case GLOBAL_CHECK:
-				this.timer.scheduleAtFixedRate(this, 0L, 10000L);
+				this.timer.scheduleAtFixedRate(this, 0L, 600000L);
 				
 				break;
 			case ERROR_CHECK:
