@@ -40,6 +40,10 @@ public class FirePlayer {
 				contains(this.api.getRankSystem().getPlayerRank(this.pname));
 	}
 	
+	public Rank getRank() {
+		return this.api.getRankSystem().getPlayerRank(this.pname);
+	}
+	
 	public VersionType getPlayerVersionType() {
 		return this.type;
 	}

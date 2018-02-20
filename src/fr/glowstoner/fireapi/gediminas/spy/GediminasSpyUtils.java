@@ -52,6 +52,29 @@ public class GediminasSpyUtils {
 		fi.close();
 	}
 	
+	public static void sendInfosChatToClient(ConnectionHandler c, String name) throws IOException,
+		URISyntaxException, ClassNotFoundException{
+		
+		Path path = Paths.get(ClassLoader.getSystemResource("").toURI());
+		
+		File f = new File(path.toString()+"/spy/"+name+".firespy");
+		FileInputStream fi = new FileInputStream(f);
+		ObjectInputStream oi = new ObjectInputStream(fi);
+		
+		GediminasSpyHistory h = (GediminasSpyHistory) oi.readObject();
+		
+		for(int i = 0 ; i < h.getMessages().size() ; i++) {
+			GediminasSpyHistoryData data = h.getMessages().get(i);
+			
+			if(data.getAction().equals(SpyAction.PLAYER_CHAT)) {
+				c.sendMessageWithPrefix(data.getFormatedMessage());
+			}
+		}
+		
+		oi.close();
+		fi.close();
+	}
+	
 	public static Map<Integer, GediminasSpyHistoryData> getHistoryByAValue
 		(Calendar date, int value, GediminasSpyHistory history) {
 		

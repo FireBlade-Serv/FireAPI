@@ -8,11 +8,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.nametagedit.plugin.NametagEdit;
-
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.PacketInjector;
+import fr.glowstoner.fireapi.bukkit.tab.FireTablist;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.FirePlayer;
@@ -24,19 +23,23 @@ public class Events implements Listener {
 	private PacketInjector injector;
 	private ConnectionHandler c;
 	private String id;
+	private FireTablist tab;
 
-	public Events(FireAPI api, ConnectionHandler ch, String id, PacketInjector injector) {
+	public Events(FireAPI api, ConnectionHandler ch, String id, PacketInjector injector, FireTablist tab) {
 		this.api = api;
 		this.injector = injector;
 		this.c = ch;
 		this.id = id;
+		this.tab = tab;
 	}
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		this.injector.addPlayer(e.getPlayer());
 		
-		NametagEdit.getApi().setPrefix(e.getPlayer(), this.api.getChatUtils().getPrefix(e.getPlayer()));
+		e.setJoinMessage(null);
+		
+		this.tab.add(e.getPlayer());
 		
 		try {
 			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()
@@ -49,6 +52,10 @@ public class Events implements Listener {
 	@EventHandler
 	public void onLeave(PlayerQuitEvent e) {
 		this.injector.removePlayer(e.getPlayer());
+		
+		e.setQuitMessage(null);
+		
+		this.tab.remove(e.getPlayer());
 		
 		try {
 			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()

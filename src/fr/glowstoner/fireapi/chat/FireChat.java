@@ -90,6 +90,39 @@ public class FireChat {
 				return "§7[Membre] ";
 		}
 	}
+	
+	public String getPrefixByRank(Rank rank) {
+		switch (rank) {
+			case ADMINISTRATEUR:
+				return "§4[Admin] ";
+			case DÉVELOPPEUR:
+				return "§9[Dev] ";
+			case ASSISTANT:
+				return "§6[Assistant] ";
+			case BUILDER:
+				return "§6[Builder] ";
+			case RESPONSABLE_COM:
+				return "§6[Resp.Com] ";
+			case MANAGER_IG:
+				return "§c[Man.IG] ";
+			case STAFF_MANAGER:
+				return "§c[Staff.Man] ";
+			case YOUTUBER:
+				return "§2[Youtuber] ";
+			case GUIDE:
+				return "§2[Guide] ";
+			case MODÉRATEUR:
+				return "§3[Mod] ";
+			case ULTIMATE:
+				return "§5[Ultimate] ";
+			case ULTRA:
+				return "§2[Ultra] ";
+			case FIRE:
+				return "§e[Fire] ";
+			default:
+				return "§7[Membre] ";
+	}
+	}
 
 	public void sendMessageToGroup(String msg, VersionType type, Rank rank) {
 		switch (type) {

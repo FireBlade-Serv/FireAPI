@@ -20,6 +20,7 @@ import fr.glowstoner.fireapi.bukkit.cmd.Ping;
 import fr.glowstoner.fireapi.bukkit.friends.FriendsActionInventoryGUI;
 import fr.glowstoner.fireapi.bukkit.id.FireBukkitID;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.PacketInjector;
+import fr.glowstoner.fireapi.bukkit.tab.FireTablist;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
@@ -42,6 +43,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	private GediminasLoginGetter log;
 	private PacketInjector injector;
 	private Client c;
+	private FireTablist tab;
 	
 	private String id;
 
@@ -58,6 +60,10 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		rank = new FireRank(this.sql);
 		
 		this.chat = new FireChat(this);
+		
+		this.tab = new FireTablist(this);
+		
+		this.tab.registerRanks();
 		
 		FireBukkitID id = new FireBukkitID(this);
 		
@@ -126,7 +132,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			ch.sendPacket(new PacketVersion(VersionType.SPIGOT_VERSION));
 			ch.sendPacket(new PacketCommand("name "+this.id));
 			
-			super.getServer().getPluginManager().registerEvents(new Events(this, ch, this.id, this.injector), this);
+			super.getServer().getPluginManager().registerEvents(new Events(this, ch, this.id, this.injector, this.tab), this);
 			super.getServer().getPluginManager().registerEvents(new EventsAT(this), this);
 			
 			super.getCommand("ping").setExecutor(new Ping(ch));
