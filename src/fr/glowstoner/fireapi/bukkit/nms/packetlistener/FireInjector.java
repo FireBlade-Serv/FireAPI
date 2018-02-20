@@ -5,10 +5,11 @@ import java.lang.reflect.Field;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import fr.glowstoner.fireapi.bukkit.nms.FireReflection;
 import io.netty.channel.Channel;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 
-public class PacketInjector {
+public class FireInjector {
 	
 	private Field eppc;
 	private Class<?> pc;
@@ -18,7 +19,7 @@ public class PacketInjector {
 	private Field channel;
 	private Field listener;
 	
-	public PacketInjector() {
+	public FireInjector() {
 		this.eppc = FireReflection.getField(FireReflection.getClass("EntityPlayer"), "playerConnection");
 		this.pc = FireReflection.getClass("PlayerConnection");
 		this.pcnm = FireReflection.getField(this.pc, "networkManager");
@@ -33,7 +34,7 @@ public class PacketInjector {
 	        	
 	            Channel ch = getChannel(getNetworkManager(ep));
 	            if(ch.pipeline().get("PacketInjector") == null) {
-	                PacketHandler h = new PacketHandler(p);
+	                FireHandler h = new FireHandler(p);
 	                ch.pipeline().addBefore("packet_handler", "PacketInjector", h);
 	            }
 	        } catch (Throwable t) {

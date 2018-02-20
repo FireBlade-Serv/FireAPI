@@ -11,6 +11,8 @@ import fr.glowstoner.connectionsapi.network.packets.Packet;
 import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
 import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.FireAPI;
+import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
+import fr.glowstoner.fireapi.bukkit.tag.FireTag;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.cmd.misc.Discord;
 import fr.glowstoner.fireapi.bungeecord.cmd.misc.Website;
@@ -53,6 +55,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 	private FireAuth auth;
 	private FireChat chat;
 	private FireWL wl;
+	private GediminasConnectionCheck check;
 	
 	private GediminasLoginGetter log;
 	private Client c;
@@ -190,13 +193,17 @@ public class BungeeMain extends Plugin implements FireAPI{
 		man.registerCommand(this, new CoinsChecker(this, "coins"));
 		man.registerCommand(this, new Website("site"));
 		man.registerCommand(this, new Discord("discord"));
-		man.registerCommand(this, new FriendsCmd(this, c, "amis", this.friends));
-		man.registerCommand(this, new FireRankCmd("firerank", this.rank, this.sql));
-		man.registerCommand(this, new RegisterCmd("register", this, this.auth, this.sql));
-		man.registerCommand(this, new LoginCmd("login", this.auth, this));
+		man.registerCommand(this, new FriendsCmd(this, "amis"));
+		man.registerCommand(this, new FireRankCmd(this, "firerank"));
+		man.registerCommand(this, new RegisterCmd(this, "register"));
+		man.registerCommand(this, new LoginCmd(this, "login"));
 		man.registerCommand(this, new FireWhiteList("firewl", this));
 		
-		man.registerListener(this, new Events(this.c, this.friends, this));
+		Events events = new Events(this);
+		
+		man.registerListener(this, events);
+		
+		this.check.registerListener(events);
 		
 		api = this;
 	}
@@ -239,7 +246,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 	}
 
 	@Override
-	public FireWL getWhiteListSystem() {
+	public FireWL getWhitelistSystem() {
 		return this.wl;
 	}
 	
@@ -270,5 +277,25 @@ public class BungeeMain extends Plugin implements FireAPI{
 	@Override
 	public FireFriends getFriends() {
 		return this.friends;
+	}
+
+	@Override
+	public GediminasConnectionCheck getChecker() {
+		return this.check;
+	}
+
+	@Override
+	public void setChecker(GediminasConnectionCheck checker) {
+		this.check = checker;
+	}
+
+	@Override
+	public FireInjector getPacketInjector() {
+		return null;
+	}
+
+	@Override
+	public FireTag getTagSystem() {
+		return null;
 	}
 }

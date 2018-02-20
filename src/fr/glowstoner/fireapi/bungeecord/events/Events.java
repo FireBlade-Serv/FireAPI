@@ -7,9 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
+import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheckListener;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.enums.VersionType;
@@ -29,7 +31,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-public class Events implements Listener {
+public class Events implements Listener, GediminasConnectionCheckListener {
 	
 	private final String pre = "§6[§eAmis§6]§r ";
 	
@@ -38,11 +40,11 @@ public class Events implements Listener {
 	private List<ProxiedPlayer> stillconnected;
 	private Client c;
 	
-	public Events(Client c, FireFriends friends, FireAPI api) {
-		this.friends = friends;
+	public Events(FireAPI api) {
 		this.instance = api;
+		this.friends = this.instance.getFriends();
 		this.stillconnected = new ArrayList<>();
-		this.c = c;
+		this.c = this.instance.getClient();
 	}
 
 	@EventHandler
@@ -121,11 +123,11 @@ public class Events implements Listener {
 		String ip = e.getConnection().getAddress().getAddress().getHostAddress();
 		
 		try {			
-			this.instance.getWhiteListSystem().setDefault(name, ip);
+			this.instance.getWhitelistSystem().setDefault(name, ip);
 			
-			this.instance.getWhiteListSystem().loadConfiguration();
+			this.instance.getWhitelistSystem().loadConfiguration();
 		} catch (IOException e2) {
-			this.instance.getChatUtils().sendMessageToGroup(this.instance.getWhiteListSystem().getPrefix()+
+			this.instance.getChatUtils().sendMessageToGroup(this.instance.getWhitelistSystem().getPrefix()+
 					"§c Une erreur critique est survenue ! {name = "+name+", "+e2.getMessage()+"}",
 					VersionType.BUNGEECORD_VERSION, Rank.MODÉRATEUR);
 			
@@ -136,7 +138,7 @@ public class Events implements Listener {
 			return;
 		}
 		
-		if(this.instance.getWhiteListSystem().isEnable() == false) {
+		if(this.instance.getWhitelistSystem().isEnable() == false) {
 			return;
 		}
 		
@@ -156,7 +158,7 @@ public class Events implements Listener {
 			e.setCancelled(true);
 
 		} catch (IOException e1) {
-			this.instance.getChatUtils().sendMessageToGroup(this.instance.getWhiteListSystem().getPrefix()+
+			this.instance.getChatUtils().sendMessageToGroup(this.instance.getWhitelistSystem().getPrefix()+
 					"§c Une erreur critique est survenue ! {name = "+name+", "+e1.getMessage()+"}",
 					VersionType.BUNGEECORD_VERSION, Rank.MODÉRATEUR);
 		}
@@ -236,6 +238,11 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onPingReceive(ProxyPingEvent e) {
-		
+		this.instance.getBungeePlugin().getLogger().info("Ping reçu de "+e.getConnection().getName());
+	}
+
+	@Override
+	public void onSocketChange(ConnectionHandler c) {
+		this.c = (Client) c;
 	}
 }

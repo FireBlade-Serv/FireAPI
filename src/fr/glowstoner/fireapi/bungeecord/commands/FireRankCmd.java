@@ -1,5 +1,6 @@
 package fr.glowstoner.fireapi.bungeecord.commands;
 
+import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.rank.FireRank;
 import fr.glowstoner.fireapi.rank.Rank;
 import fr.glowstoner.fireapi.sql.FireSQL;
@@ -14,11 +15,11 @@ public class FireRankCmd extends Command {
 	private FireRank rank;
 	private FireSQL sql;
 
-	public FireRankCmd(String name, FireRank rank, FireSQL sql) {
+	public FireRankCmd(FireAPI api, String name) {
 		super(name);
 		
-		this.rank = rank;
-		this.sql = sql;
+		this.rank = api.getRankSystem();
+		this.sql = api.getSQL();
 	}
 
 	@Override

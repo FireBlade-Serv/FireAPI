@@ -48,7 +48,7 @@ public class FireWhiteList extends Command {
 					
 					sender.sendMessage(new TextComponent(this.pre+"§aLe plugin est activé !"));
 					
-					this.api.getWhiteListSystem().setEnable(true);
+					this.api.getWhitelistSystem().setEnable(true);
 				} catch (IOException e) {
 					sender.sendMessage(new TextComponent(this.pre+"§cUne erreur interne au plugin est survenue !"));
 				}
@@ -64,7 +64,7 @@ public class FireWhiteList extends Command {
 					
 					sender.sendMessage(new TextComponent(this.pre+"§aLe plugin est désactivé !"));
 					
-					this.api.getWhiteListSystem().setEnable(false);
+					this.api.getWhitelistSystem().setEnable(false);
 				} catch (IOException e) {
 					sender.sendMessage(new TextComponent(this.pre+"§cUne erreur interne au plugin est survenue !"));
 				}
@@ -74,7 +74,7 @@ public class FireWhiteList extends Command {
 				return;
 			}
 		}else if(args.length == 2) {
-			if(this.api.getWhiteListSystem().isEnable() == false) {
+			if(this.api.getWhitelistSystem().isEnable() == false) {
 				sender.sendMessage(new TextComponent(this.pre+"§cLe plugin est désactivé !"));
 				
 				return;

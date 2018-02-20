@@ -10,27 +10,30 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bukkit.nms.packetlistener.PacketInjector;
-import fr.glowstoner.fireapi.bukkit.tab.FireTablist;
+import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
+import fr.glowstoner.fireapi.bukkit.tag.FireTag;
+import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheckListener;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.FirePlayer;
 import fr.glowstoner.fireapi.rank.Rank;
+import lombok.Setter;
 
-public class Events implements Listener {
+public class Events implements Listener, GediminasConnectionCheckListener{
+	
+	private @Setter ConnectionHandler client;
 	
 	private FireAPI api;
-	private PacketInjector injector;
-	private ConnectionHandler c;
+	private FireInjector injector;
 	private String id;
-	private FireTablist tab;
+	private FireTag tag;
 
-	public Events(FireAPI api, ConnectionHandler ch, String id, PacketInjector injector, FireTablist tab) {
+	public Events(FireAPI api) {
 		this.api = api;
-		this.injector = injector;
-		this.c = ch;
-		this.id = id;
-		this.tab = tab;
+		this.injector = this.api.getPacketInjector();
+		this.client = this.api.getClient();
+		this.id = this.api.id();
+		this.tag = this.api.getTagSystem();
 	}
 
 	@EventHandler
@@ -39,10 +42,10 @@ public class Events implements Listener {
 		
 		e.setJoinMessage(null);
 		
-		this.tab.add(e.getPlayer());
+		this.tag.add(e.getPlayer());
 		
 		try {
-			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()
+			this.client.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()
 					.getAddress().getAddress().getHostAddress(), this.id, SpyAction.PLAYER_SERVER_CONNECTION));
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -55,10 +58,10 @@ public class Events implements Listener {
 		
 		e.setQuitMessage(null);
 		
-		this.tab.remove(e.getPlayer());
+		this.tag.remove(e.getPlayer());
 		
 		try {
-			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()
+			this.client.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()
 					.getAddress().getAddress().getHostAddress(), this.id, SpyAction.PLAYER_SERVER_DISCONNECT));
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -76,4 +79,10 @@ public class Events implements Listener {
 		e.setFormat("§8["+this.api.getChatUtils().getStringRank(fp.getName())+"§8] §7"+
 		this.api.getChatUtils().getRankColor(fp.getName())+fp.getName()+" §8>> §r"+msg);
 	}
+
+	@Override
+	public void onSocketChange(ConnectionHandler c) {
+		this.setClient(c);
+	}
+	
 }

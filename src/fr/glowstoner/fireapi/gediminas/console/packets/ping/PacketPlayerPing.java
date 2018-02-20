@@ -4,13 +4,15 @@ import java.io.Serializable;
 
 import fr.glowstoner.connectionsapi.network.packets.Packet;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.enums.PingState;
+import lombok.Getter;
+import lombok.Setter;
 
 public class PacketPlayerPing extends Packet implements Serializable{
 	
 	private static final long serialVersionUID = 5070770223906428929L;
 
-	private PingState state;
-	private String name;
+	@Getter @Setter private PingState state;
+	@Getter @Setter private String name;
 	
 	public PacketPlayerPing(String name, PingState type) {
 		this.setState(type);
@@ -19,22 +21,6 @@ public class PacketPlayerPing extends Packet implements Serializable{
 	
 	public PacketPlayerPing() {
 		
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public PingState getState() {
-		return state;
-	}
-
-	public void setState(PingState state) {
-		this.state = state;
 	}
 
 	@Override

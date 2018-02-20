@@ -19,8 +19,8 @@ import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bukkit.cmd.Ping;
 import fr.glowstoner.fireapi.bukkit.friends.FriendsActionInventoryGUI;
 import fr.glowstoner.fireapi.bukkit.id.FireBukkitID;
-import fr.glowstoner.fireapi.bukkit.nms.packetlistener.PacketInjector;
-import fr.glowstoner.fireapi.bukkit.tab.FireTablist;
+import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
+import fr.glowstoner.fireapi.bukkit.tag.FireTag;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
@@ -45,9 +45,10 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	private FireSQL sql;
 	private FireChat chat;
 	private GediminasLoginGetter log;
-	private PacketInjector injector;
+	private FireInjector injector;
 	private Client c;
-	private FireTablist tab;
+	private FireTag tag;
+	private GediminasConnectionCheck check;
 	
 	private String id;
 
@@ -64,10 +65,10 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		rank = new FireRank(this.sql);
 		
 		this.chat = new FireChat(this);
+	
+		this.tag = new FireTag(this);
 		
-		this.tab = new FireTablist(this);
-		
-		this.tab.registerRanks();
+		this.tag.registerRanks();
 		
 		FireBukkitID id = new FireBukkitID(this);
 		
@@ -89,7 +90,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		
 		super.getLogger().info("ID serveur utilisé : "+this.id);
 		
-		this.injector = new PacketInjector();
+		this.injector = new FireInjector();
 		
 		try {
 			ConnectionsAPI.init();
@@ -159,10 +160,14 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			
 		});
 		
-		super.getServer().getPluginManager().registerEvents(new Events(this, this.c, this.id, this.injector, this.tab), this);
+		Events events = new Events(this);
+		
+		super.getServer().getPluginManager().registerEvents(events, this);
 		super.getServer().getPluginManager().registerEvents(new EventsAT(this), this);
 		
-		super.getCommand("ping").setExecutor(new Ping(this.c));
+		this.check.registerListener(events);
+		
+		super.getCommand("ping").setExecutor(new Ping(this));
 		super.getCommand("at").setExecutor(new AdminToolsCmd(this));
 		
 		api = this;
@@ -204,7 +209,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	}
 
 	@Override
-	public FireWL getWhiteListSystem() {
+	public FireWL getWhitelistSystem() {
 		return null;
 	}
 	
@@ -235,5 +240,25 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	@Override
 	public FireFriends getFriends() {
 		return null;
+	}
+
+	@Override
+	public GediminasConnectionCheck getChecker() {
+		return this.check;
+	}
+
+	@Override
+	public void setChecker(GediminasConnectionCheck checker) {
+		this.check = checker;
+	}
+
+	@Override
+	public FireInjector getPacketInjector() {
+		return this.injector;
+	}
+
+	@Override
+	public FireTag getTagSystem() {
+		return this.tag;
 	}
 }

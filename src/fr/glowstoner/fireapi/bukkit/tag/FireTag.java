@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.bukkit.tab;
+package fr.glowstoner.fireapi.bukkit.tag;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -8,13 +8,13 @@ import fr.glowstoner.fireapi.player.FirePlayer;
 import fr.glowstoner.fireapi.rank.Rank;
 import lombok.Getter;
 
-public class FireTablist {
+public class FireTag {
 	
 	private @Getter Scoreboard scoreboard;
 	
 	private FireAPI api;
 	
-	public FireTablist(FireAPI api) {
+	public FireTag(FireAPI api) {
 		this.api = api;
 		
 		this.scoreboard = this.api.getBukkitPlugin().getServer().getScoreboardManager().getNewScoreboard();

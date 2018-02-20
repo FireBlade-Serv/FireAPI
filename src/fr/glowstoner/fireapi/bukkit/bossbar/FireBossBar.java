@@ -16,8 +16,8 @@ public class FireBossBar {
 		this.p = p;
 	}
 	
-	public void gen(org.bukkit.World w, String title) {
-		EntityEnderDragon ew = new EntityEnderDragon(((CraftWorld) w).getHandle());
+	public void gen(String title) {
+		EntityEnderDragon ew = new EntityEnderDragon(((CraftWorld) this.p.getWorld()).getHandle());
 		Location loc = this.p.getLocation();
 		
 		ew.setInvisible(true);

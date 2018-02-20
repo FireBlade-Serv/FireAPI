@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.bukkit.nms.packetlistener;
+package fr.glowstoner.fireapi.bukkit.nms;
 
 import java.lang.reflect.Field;
 

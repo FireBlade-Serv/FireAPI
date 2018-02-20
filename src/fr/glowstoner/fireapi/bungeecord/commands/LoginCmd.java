@@ -8,6 +8,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bungeecord.BungeeMain;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.events.LoginSuccessEvent;
@@ -24,12 +25,11 @@ public class LoginCmd extends Command {
 	private FireAuth auth;
 	private BungeeMain main;
 
-	public LoginCmd(String name, FireAuth auth, BungeeMain main) {
+	public LoginCmd(FireAPI api, String name) {
 		super(name);
 		
-		this.auth = auth;
-		this.main = main;
-
+		this.auth = api.getAuthentification();
+		this.main = (BungeeMain) api.getBungeePlugin();
 	}
 
 	@Override

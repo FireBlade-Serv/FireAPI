@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.enums.PingState;
 
@@ -16,8 +17,8 @@ public class Ping implements CommandExecutor {
 	
 	private ConnectionHandler c;
 	
-	public Ping(ConnectionHandler c) {
-		this.c = c;
+	public Ping(FireAPI api) {
+		this.c = api.getClient(); 
 	}
 
 	@Override

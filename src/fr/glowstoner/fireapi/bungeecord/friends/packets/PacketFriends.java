@@ -3,12 +3,14 @@ package fr.glowstoner.fireapi.bungeecord.friends.packets;
 import java.io.Serializable;
 
 import fr.glowstoner.connectionsapi.network.packets.Packet;
+import lombok.Getter;
+import lombok.Setter;
 
 public class PacketFriends extends Packet implements Serializable{
 
 	private static final long serialVersionUID = 7080980497669673061L;
 	
-	private FriendsAction action;
+	@Getter @Setter private FriendsAction action;
 	
 	public PacketFriends(FriendsAction action) {
 		this.setAction(action);
@@ -16,14 +18,6 @@ public class PacketFriends extends Packet implements Serializable{
 	
 	public PacketFriends() {
 		
-	}
-
-	public FriendsAction getAction() {
-		return this.action;
-	}
-
-	public void setAction(FriendsAction action) {
-		this.action = action;
 	}
 
 	@Override

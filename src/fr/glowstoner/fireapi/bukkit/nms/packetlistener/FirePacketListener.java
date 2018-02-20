@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
-public class PacketListener {
+public class FirePacketListener {
 	
 	private static List<PacketReceiveListener> l = new ArrayList<>();
 

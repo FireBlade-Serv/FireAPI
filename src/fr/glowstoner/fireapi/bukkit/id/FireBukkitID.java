@@ -8,12 +8,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.glowstoner.fireapi.FireAPI;
+import lombok.Getter;
 
 public class FireBukkitID {
 	
+	@Getter private FileConfiguration config;
+	@Getter private String ID;
+	
 	private FireAPI api;
-	private FileConfiguration config;
-	private String id;
 	
 	public FireBukkitID(FireAPI api) {
 		this.api = api;
@@ -35,7 +37,7 @@ public class FireBukkitID {
 			
 			this.config.set("fireID-gediminas", "default-spigot");
 			
-			this.id = this.config.getString("fireID-gediminas");
+			this.ID = this.config.getString("fireID-gediminas");
 			
 			this.config.save(file);
 		}else {
@@ -43,15 +45,7 @@ public class FireBukkitID {
 			
 			this.config.load(file);
 			
-			this.id = this.config.getString("fireID-gediminas");
+			this.ID = this.config.getString("fireID-gediminas");
 		}
-	}
-	
-	public FileConfiguration getConfig() {
-		return this.config;
-	}
-	
-	public String getID() {
-		return this.id;
 	}
 }

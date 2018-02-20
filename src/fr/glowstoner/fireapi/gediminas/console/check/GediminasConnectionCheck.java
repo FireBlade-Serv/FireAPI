@@ -1,5 +1,7 @@
 package fr.glowstoner.fireapi.gediminas.console.check;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,6 +19,10 @@ import lombok.Getter;
 
 public class GediminasConnectionCheck extends TimerTask{
 	
+	//listener
+	@Getter private List<GediminasConnectionCheckListener> listeners = new ArrayList<>();
+	
+	//vars base
 	@Getter private Timer timer;
 	@Getter private GediminasConnectionCheckType type;
 	@Getter private Client client;
@@ -54,6 +60,7 @@ public class GediminasConnectionCheck extends TimerTask{
 			ch.sendPacket(new PacketCommand("name "+this.infos.getId()));
 			
 			this.api.setClient((Client) ch);
+			this.callListener(ch);
 		}catch (Exception ex) {
 			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (connection protocol) "
 					+ "ErreurClass = "+ex.getClass().getSimpleName()+", "+ex.getMessage());
@@ -65,7 +72,7 @@ public class GediminasConnectionCheck extends TimerTask{
 		
 		switch (this.type) {
 			case GLOBAL_CHECK:
-				this.timer.scheduleAtFixedRate(this, 0L, 600000L);
+				this.timer.scheduleAtFixedRate(this, 0L, 36000000L);
 				
 				break;
 			case ERROR_CHECK:
@@ -73,6 +80,8 @@ public class GediminasConnectionCheck extends TimerTask{
 				
 				break;
 		}
+		
+		this.api.setChecker(this);
 	}
 
 	@Override
@@ -118,6 +127,16 @@ public class GediminasConnectionCheck extends TimerTask{
 				}
 				
 				break;
+		}
+	}
+	
+	public void registerListener(GediminasConnectionCheckListener listener) {
+		this.listeners.add(listener);
+	}
+	
+	public void callListener(ConnectionHandler ch) {
+		for(GediminasConnectionCheckListener ls : this.listeners) {
+			ls.onSocketChange(ch);
 		}
 	}
 }

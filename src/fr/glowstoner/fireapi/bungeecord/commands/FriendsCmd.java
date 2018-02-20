@@ -26,13 +26,13 @@ public class FriendsCmd extends Command {
 	private FireAPI api;
 	private Client c;
 
-	public FriendsCmd(FireAPI api, Client c, String name, FireFriends friends) {
+	public FriendsCmd(FireAPI api, String name) {
 		super(name);
 		
 		this.api = api;
 		this.instance = this.api.getBungeePlugin();
-		this.friends = friends;
-		this.c = c;
+		this.friends = this.api.getFriends();
+		this.c = this.api.getClient();
 	}
 
 	@Override

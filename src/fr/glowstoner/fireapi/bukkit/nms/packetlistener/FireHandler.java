@@ -6,11 +6,11 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 
-public class PacketHandler extends ChannelDuplexHandler{
+public class FireHandler extends ChannelDuplexHandler{
 
 	private Player p;
 	
-	public PacketHandler(Player p) {
+	public FireHandler(Player p) {
 		this.p = p;
 	}
 	
@@ -21,7 +21,7 @@ public class PacketHandler extends ChannelDuplexHandler{
 	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object packet) throws Exception {
-		PacketListener.callListener(p, packet);
+		FirePacketListener.callListener(p, packet);
 		
 		super.channelRead(ctx, packet);
 	}

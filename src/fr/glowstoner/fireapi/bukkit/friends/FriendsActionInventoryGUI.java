@@ -16,15 +16,18 @@ import com.google.common.collect.Lists;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.player.FirePlayer;
 import fr.glowstoner.fireapi.rank.Rank;
+import lombok.Getter;
+import lombok.Setter;
 
 public class FriendsActionInventoryGUI {
 	
-	private List<String> friends = new ArrayList<>();
-	private List<String> connected = new ArrayList<>();
+	@Getter @Setter private List<String> friends = new ArrayList<>();
+	@Getter @Setter private List<String> connected = new ArrayList<>();
+	
+	@Getter @Setter private String name;
+	@Getter private FirePlayer fp;
 	
 	private Inventory inv;
-	private FirePlayer fp;
-	private String name;
 	
 	public FriendsActionInventoryGUI(String name, List<String> friends, List<String> connected) {
 		this.setConnected(connected);
@@ -207,33 +210,9 @@ public class FriendsActionInventoryGUI {
 	public void openInventory() {
 		this.fp.getBukkitPlayer().openInventory(this.inv);
 	}
-
-	public List<String> getFriends() {
-		return friends;
-	}
-
-	public void setFriends(List<String> friends) {
-		this.friends = friends;
-	}
-
-	public List<String> getConnected() {
-		return connected;
-	}
-
-	public void setConnected(List<String> connected) {
-		this.connected = connected;
-	}
 	
 	public FirePlayer getFirePlayer() {
 		return this.fp;
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	//amis.size ne peut dépasser 48;

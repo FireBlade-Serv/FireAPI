@@ -8,6 +8,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bungeecord.BungeeMain;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.events.LoginSuccessEvent;
@@ -28,12 +29,12 @@ public class RegisterCmd extends Command {
 	private FireAuth auth;
 	private FireSQL sql;
 
-	public RegisterCmd(String name, BungeeMain main, FireAuth auth, FireSQL sql) {
+	public RegisterCmd(FireAPI api, String name) {
 		super(name);
 		
-		this.instance = main;
-		this.auth = auth;
-		this.sql = sql;
+		this.instance = (BungeeMain) api.getBungeePlugin();
+		this.auth = api.getAuthentification();
+		this.sql = api.getSQL();
 	}
 
 	@Override
