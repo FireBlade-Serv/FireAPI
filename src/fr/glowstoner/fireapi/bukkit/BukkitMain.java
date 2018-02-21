@@ -119,6 +119,8 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 							.build());
 			
 			check.startChecks();
+			
+			this.setChecker(check);
 		}catch (Exception ex) {
 			GediminasConnectionCheck check = new GediminasConnectionCheck
 					(this, GediminasConnectionCheckType.ERROR_CHECK, GediminasConnectionInfos.builder()

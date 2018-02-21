@@ -23,7 +23,6 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
-import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -234,11 +233,6 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 			this.instance.getBungeePlugin().getProxy().getPluginManager().callEvent(
 					new FireChannelReceiveEvent(e.getData(), e.getSender(), e.getReceiver()));
 		}
-	}
-	
-	@EventHandler
-	public void onPingReceive(ProxyPingEvent e) {
-		this.instance.getBungeePlugin().getLogger().info("Ping reçu de "+e.getConnection().getName());
 	}
 
 	@Override

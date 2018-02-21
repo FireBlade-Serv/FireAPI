@@ -60,6 +60,8 @@ public class GediminasConnectionCheck extends TimerTask{
 			ch.sendPacket(new PacketCommand("name "+this.infos.getId()));
 			
 			this.api.setClient((Client) ch);
+			this.api.setChecker(this);
+			
 			this.callListener(ch);
 		}catch (Exception ex) {
 			throw new GediminasNotConnectedException("Erreur sur l'envoi d'un packet (connection protocol) "
@@ -72,7 +74,7 @@ public class GediminasConnectionCheck extends TimerTask{
 		
 		switch (this.type) {
 			case GLOBAL_CHECK:
-				this.timer.scheduleAtFixedRate(this, 0L, 36000000L);
+				this.timer.scheduleAtFixedRate(this, 0L, 600000L);
 				
 				break;
 			case ERROR_CHECK:
