@@ -20,7 +20,7 @@ import lombok.Getter;
 public class GediminasConnectionCheck extends TimerTask{
 	
 	//listener
-	@Getter private List<GediminasConnectionCheckListener> listeners = new ArrayList<>();
+	private static List<GediminasConnectionCheckListener> listeners = new ArrayList<>();
 	
 	//vars base
 	@Getter private Timer timer;
@@ -74,7 +74,7 @@ public class GediminasConnectionCheck extends TimerTask{
 		
 		switch (this.type) {
 			case GLOBAL_CHECK:
-				this.timer.scheduleAtFixedRate(this, 0L, 600000L);
+				this.timer.scheduleAtFixedRate(this, 0L, 300000L);
 				
 				break;
 			case ERROR_CHECK:
@@ -135,11 +135,11 @@ public class GediminasConnectionCheck extends TimerTask{
 	}
 	
 	public void registerListener(GediminasConnectionCheckListener listener) {
-		this.listeners.add(listener);
+		listeners.add(listener);
 	}
 	
 	public void callListener(ConnectionHandler ch) {
-		for(GediminasConnectionCheckListener ls : this.listeners) {
+		for(GediminasConnectionCheckListener ls : listeners) {
 			ls.onSocketChange(ch);
 		}
 	}
