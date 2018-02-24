@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.bukkit.title;
+package fr.glowstoner.fireapi.bukkit.nms.title;
 
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;

@@ -1,5 +1,6 @@
 package fr.glowstoner.fireapi.gediminas.console.commands;
 
+import java.io.File;
 import java.util.List;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
@@ -23,6 +24,7 @@ public class SpyCommand implements CommandExecutor {
 			c.sendMessageWithPrefix("Usage : /spy full <joueur>");
 			c.sendMessageWithPrefix("Usage : /spy search <joueur> <format>");
 			c.sendMessageWithPrefix("Usage : /spy chat <joueur>");
+			c.sendMessageWithPrefix("Usage : /spy list");
 		}else if(args.length == 1) {
 			if(args[0].equalsIgnoreCase("full")) {
 				c.sendMessageWithPrefix("Usage : /spy full <joueur>");
@@ -30,6 +32,12 @@ public class SpyCommand implements CommandExecutor {
 				c.sendMessageWithPrefix("Usage : /spy search <joueur> <format>");
 			}else if(args[0].equalsIgnoreCase("chat")) {
 				c.sendMessageWithPrefix("Usage : /spy chat <joueur>");
+			}else if(args[0].equalsIgnoreCase("list")) {
+				c.sendMessageWithPrefix("Voici tout les fichiers de joueur répertoriés :");
+				
+				for(File f : GediminasSpyUtils.getAllSpyFiles()) {
+					c.sendMessageWithPrefix("- "+f.getName());
+				}
 			}else {
 				c.sendMessageWithPrefix("Usage : /spy full <joueur>");
 				c.sendMessageWithPrefix("Usage : /spy search <joueur> <format>");

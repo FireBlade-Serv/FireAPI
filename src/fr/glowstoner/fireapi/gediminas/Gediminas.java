@@ -12,7 +12,6 @@ import fr.glowstoner.fireapi.gediminas.console.commands.HelpCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.ListCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.NameCommand;
 import fr.glowstoner.fireapi.gediminas.console.commands.SpyCommand;
-import fr.glowstoner.fireapi.gediminas.console.commands.StatusCommand;
 import fr.glowstoner.fireapi.gediminas.spy.GediminasSpy;
 
 public class Gediminas {
@@ -58,7 +57,6 @@ public class Gediminas {
 		getListeners().registerCommand("chat", new ChatCommand());
 		getListeners().registerCommand("name", new NameCommand());
 		getListeners().registerCommand("help", new HelpCommand(this.getListeners()));
-		getListeners().registerCommand("status", new StatusCommand());
 		getListeners().registerCommand("list", new ListCommand(gl));
 		getListeners().registerCommand("execute", new ExecuteCommand(gl));
 		getListeners().registerCommand("spy", new SpyCommand(gs));

@@ -212,7 +212,13 @@ public class BungeeMain extends Plugin implements FireAPI{
 	
 	@Override
 	public void onDisable() {
-		sql.disconnect();
+		this.sql.disconnect();
+		
+		try {
+			this.c.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		super.getLogger().info("FireAPI inactif !");
 	}

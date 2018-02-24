@@ -5,9 +5,9 @@ import java.io.Serializable;
 import java.net.Socket;
 
 import fr.glowstoner.connectionsapi.network.packets.Packet;
+import fr.glowstoner.connectionsapi.network.packets.PacketPing;
 import fr.glowstoner.connectionsapi.network.packets.PacketText;
 import fr.glowstoner.connectionsapi.network.packets.login.enums.LoginResult;
-import fr.glowstoner.connectionsapi.network.packets.ping.PacketPing;
 
 public abstract class ConnectionHandler implements Serializable{
 

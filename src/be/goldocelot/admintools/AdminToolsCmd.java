@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionType;
 
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bukkit.title.FireTitle;
+import fr.glowstoner.fireapi.bukkit.nms.title.FireTitle;
 import fr.glowstoner.fireapi.player.FirePlayer;
 import fr.glowstoner.fireapi.rank.Rank;
 import net.md_5.bungee.api.ChatColor;

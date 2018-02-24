@@ -16,6 +16,7 @@ import java.util.Map;
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
+import lombok.NonNull;
 
 public class GediminasSpyUtils {
 	
@@ -93,6 +94,18 @@ public class GediminasSpyUtils {
 		}
 		
 		return map;
+	}
+	
+	public static File[] getAllSpyFiles() {
+		@NonNull Path path = null;
+		
+		try {
+			path = Paths.get(ClassLoader.getSystemResource("").toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return new File(path.toString()+"/spy/").listFiles();
 	}
 	
 	public static String getFormatedDate(Calendar date) {

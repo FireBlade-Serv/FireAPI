@@ -11,7 +11,7 @@ import fr.glowstoner.connectionsapi.ConnectionsAPI;
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.connectionsapi.network.ConnectionType;
 import fr.glowstoner.connectionsapi.network.packets.Packet;
-import fr.glowstoner.connectionsapi.network.packets.ping.PacketPing;
+import fr.glowstoner.connectionsapi.network.packets.PacketPing;
 
 public class Client extends ConnectionHandler implements Serializable{
 	

@@ -177,6 +177,14 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	
 	@Override
 	public void onDisable() {
+		this.sql.disconnect();
+		
+		try {
+			this.c.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		super.getLogger().info("FireAPI inactif !");
 	}
 

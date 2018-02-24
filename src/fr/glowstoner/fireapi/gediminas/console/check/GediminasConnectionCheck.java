@@ -7,9 +7,9 @@ import java.util.TimerTask;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.connectionsapi.network.client.Client;
+import fr.glowstoner.connectionsapi.network.packets.PacketPing;
 import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
 import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
-import fr.glowstoner.connectionsapi.network.packets.ping.PacketPing;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
 import fr.glowstoner.fireapi.gediminas.console.check.exceptions.GediminasNotConnectedException;

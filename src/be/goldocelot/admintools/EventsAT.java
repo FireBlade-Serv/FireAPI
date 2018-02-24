@@ -27,7 +27,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bukkit.title.FireTitle;
+import fr.glowstoner.fireapi.bukkit.nms.title.FireTitle;
 import fr.glowstoner.fireapi.player.FirePlayer;
 import fr.glowstoner.fireapi.rank.Rank;
 
