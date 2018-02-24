@@ -37,9 +37,16 @@ public class PacketLogin extends Packet implements Serializable{
 	}
 
 	public String decryptPass(String key) throws InvalidKeyException, NoSuchAlgorithmException,
-		NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+		NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		
-		return this.crypt.decrypt(this.cryptpass);
+		FireCrypt fc = new FireCrypt();
+		fc.setKey(key);
+		
+		return fc.decrypt(this.cryptpass);
+	}
+	
+	public String getCryptPassword() {
+		return this.cryptpass;
 	}
 	
 	@Override

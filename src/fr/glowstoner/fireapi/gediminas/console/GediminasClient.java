@@ -68,13 +68,15 @@ public class GediminasClient {
 						
 						for(String arg : args) {
 							if(arg.startsWith("*")) {
-								key = arg;
+								key = arg.substring(1);
 							}else {
 								pass = arg;
 							}
 						}
 						
 						ch.sendPacket(new PacketLogin(key, pass));
+						
+						System.out.println("Envoi d'un login avec KEY="+key+", PASS="+pass);
 					}else {
 						ch.sendPacket(new PacketCommand(line));
 					}

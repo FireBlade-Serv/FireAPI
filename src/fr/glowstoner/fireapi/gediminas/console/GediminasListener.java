@@ -53,7 +53,12 @@ public class GediminasListener implements ServerListener{
 		this.log = new GediminasLoginGetter();
 		
 		try {
+			System.out.println("[Gediminas] Chargement logins getter ...");
+			
 			this.log.load();
+			
+			System.out.println("[Gediminas] La clé de sécurité utilisée est "+this.log.getKey());
+			System.out.println("[Gediminas] Le mot de passe utilisé est "+this.log.getPassword());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -80,7 +85,12 @@ public class GediminasListener implements ServerListener{
 					PacketLogin pl = (PacketLogin) packet;
 					
 					try {
-						if(pl.decryptPass(this.log.getKey()).equals(this.log.getPassword())) {
+						String cpass = pl.decryptPass(this.log.getKey());
+						
+						System.out.println("[Gediminas] PacketLogin reçu, valeur du PASS (crypt) : "+pl.getCryptPassword());
+						System.out.println("[Gediminas] PacketLogin reçu, valeur du PASS (D_key) : "+cpass);
+						
+						if(cpass.equals(this.log.getPassword())) {
 							server.sendPacket(new PacketText("[Gediminas] Connection réussie !"));
 							server.setLoginResult(LoginResult.LOGGED);
 							
