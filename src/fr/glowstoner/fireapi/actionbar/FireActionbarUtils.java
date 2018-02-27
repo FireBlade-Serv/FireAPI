@@ -37,9 +37,9 @@ public class FireActionbarUtils {
 		if(moment == 0 || moment == (message.length() * 2)) {
 			return "";
 		}else if(moment < message.length()) {
-			return message.substring(0, moment);
+			return colorBase+message.substring(0, moment);
 		}else if(moment == message.length()) {
-			return message;
+			return colorBase+message;
 		}else if(moment >= message.length() && moment <= (message.length() + 25)) { 
 			if(((((moment - message.length()) / 5) % 2) == 0) ) {
 				//0, 2, 4
@@ -61,7 +61,7 @@ public class FireActionbarUtils {
 				builder.append(" ");
 			}
 			
-			return builder.toString()+message.substring((moment - (message.length() + 25)));
+			return builder.toString()+colorBase+message.substring((moment - (message.length() + 25)));
 		}else {
 			return "§c§lErreur !";
 		}
