@@ -34,10 +34,24 @@ public class FireActionbarUtils {
 		//int fullMD = message.length();
 		//int voidMF = message.length() * 2;
 		
-		if(moment == 0 || moment == (message.length() * 2)) {
+		/*
+		 * StringBuilder builder = new StringBuilder();
+		 * 
+		 * for(int i = 0 ; i < message.length() ; i++) {
+		 * 		builder.append(" ");
+		 * }
+		 */
+		
+		if(moment == 0) {
 			return "";
 		}else if(moment < message.length()) {
-			return colorBase+message.substring(0, moment);
+			StringBuilder builder = new StringBuilder();
+			
+			for(int i = 0 ; i < (message.length() - moment) ; i++) {
+				builder.append(" ");
+			}
+			
+			return colorBase+message.substring(0, moment)+builder.toString();
 		}else if(moment == message.length()) {
 			return colorBase+message;
 		}else if(moment >= message.length() && moment <= (message.length() + 25)) { 

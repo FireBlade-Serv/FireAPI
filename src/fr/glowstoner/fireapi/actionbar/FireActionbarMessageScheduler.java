@@ -14,11 +14,11 @@ import lombok.Getter;
 public class FireActionbarMessageScheduler extends BukkitRunnable{
 	
 	@Getter private Map<Integer, FireActionBarTransition> map = new HashMap<>();
-	@Getter private int moment, now;
+	@Getter private int moment, now, pause;
 	
 	private FireAPI api;
 	private Player p;
-	private boolean all;
+	private boolean all, isPaused;
 	private FireActionBarTransition text;
 	
 	public FireActionbarMessageScheduler(FireAPI api, Map<Integer, FireActionBarTransition> map, boolean all, Player p) {
@@ -34,30 +34,41 @@ public class FireActionbarMessageScheduler extends BukkitRunnable{
 
 	@Override
 	public void run() {
-		this.text = this.map.get(this.now);
-		
-		if(this.text.getType().equals(TransitionType.SLIDE)) {
-			if(this.all) {
-				for(Player pall : this.api.getBukkitPlugin().getServer().getOnlinePlayers()) {
-					new FireBukkitActionBar(pall).send(FireActionbarUtils.slideText
+		if(!this.isPaused) {
+			this.text = this.map.get(this.now);
+			
+			if(this.text.getType().equals(TransitionType.SLIDE)) {
+				if(this.all) {
+					for(Player pall : this.api.getBukkitPlugin().getServer().getOnlinePlayers()) {
+						new FireBukkitActionBar(pall).send(FireActionbarUtils.slideText
+								(this.text.getText(), this.moment, this.text.getColorBase(), this.text.getColorExtra()));
+					}
+				}else {
+					new FireBukkitActionBar(this.p).send(FireActionbarUtils.slideText
 							(this.text.getText(), this.moment, this.text.getColorBase(), this.text.getColorExtra()));
 				}
-			}else {
-				new FireBukkitActionBar(this.p).send(FireActionbarUtils.slideText
-						(this.text.getText(), this.moment, this.text.getColorBase(), this.text.getColorExtra()));
+				
+				if(((this.text.getText().length() * 2) + 25) == this.moment) {
+					this.moment = 0;
+					
+					this.isPaused = true;
+					this.pause = 50;
+					
+					if(this.now == (this.map.size() - 1)) {
+						this.now = 0;
+					}else {
+						this.now++;
+					}
+				}else {
+					this.moment++;
+				}
+			}
+		}else {
+			if(this.pause == 0) {
+				this.isPaused = false;
 			}
 			
-			if(((this.text.getText().length() * 2) + 25) == this.moment) {
-				this.moment = 0;
-				
-				if(this.now == (this.map.size() - 1)) {
-					this.now = 0;
-				}else {
-					this.now++;
-				}
-			}else {
-				this.moment++;
-			}
+			this.pause--;
 		}
 	}
 }
