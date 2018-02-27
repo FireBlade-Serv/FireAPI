@@ -121,6 +121,8 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 		String name = e.getConnection().getName();
 		String ip = e.getConnection().getAddress().getAddress().getHostAddress();
 		
+		this.instance.getBungeePlugin().getLogger().info("Tentative de connection de "+name+" avec l'adresse IP : "+ip+".");
+		
 		try {			
 			this.instance.getWhitelistSystem().setDefault(name, ip);
 			

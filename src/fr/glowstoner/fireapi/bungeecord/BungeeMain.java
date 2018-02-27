@@ -1,7 +1,6 @@
 package fr.glowstoner.fireapi.bungeecord;
 
 import java.io.IOException;
-import java.util.Map;
 
 import fr.glowstoner.connectionsapi.ConnectionsAPI;
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
@@ -32,15 +31,11 @@ import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketExecute;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
-import fr.glowstoner.fireapi.gediminas.spy.GediminasSpyHistoryData;
-import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyHistoryGetter;
-import fr.glowstoner.fireapi.gediminas.spy.packets.enums.GediminasSpyHistoryGetterState;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
 import fr.glowstoner.fireapi.sql.FireSQL;
 import fr.glowstoner.fireapi.wl.FireWL;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
@@ -64,9 +59,9 @@ public class BungeeMain extends Plugin implements FireAPI{
 	public void onEnable() {
 		super.getLogger().info("FireAPI actif !");
 		
-		sql.connection();
-		sql.startSqlRefreshScheduler(1800L);
-		sql.putConsole();
+		this.sql.connection();
+		this.sql.startSqlRefreshScheduler(1800L);
+		this.sql.putConsole();
 		
 		this.rank = new FireRank(this.sql);
 		
@@ -139,28 +134,6 @@ public class BungeeMain extends Plugin implements FireAPI{
 					BungeeMain.super.getProxy().getPlayer(pp.getName()).sendMessage(new TextComponent
 							("§6[§ePing§6]§r Ton ping §eproxy§r est de §e"
 					+BungeeMain.super.getProxy().getPlayer(pp.getName()).getPing()+" ms§r !"));
-				}else if(packet instanceof PacketSpyHistoryGetter) {
-					PacketSpyHistoryGetter hg = (PacketSpyHistoryGetter) packet;
-					
-					if(hg.getState().equals(GediminasSpyHistoryGetterState.SEND)) {
-						Map<Integer, GediminasSpyHistoryData> map = hg.getHistory().getMessages();
-						
-						ProxiedPlayer pp = null;
-						
-						try {
-							pp = BungeeMain.super.getProxy().getPlayer(hg.getPlayerName());
-						}catch (Exception ex) {
-							pp = null;
-						}
-						
-						if(pp == null) {
-							//future
-						}
-						
-						for(int i = 0 ; i < map.size() ; i++) {
-							//future
-						}
-					}
 				}
 			}
 			
