@@ -17,7 +17,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
 
-public class FriendsCmd extends Command {
+public class FriendsCommand extends Command {
 	
 	private final String pre = "§6[§eAmis§6]§r ";
 	
@@ -26,7 +26,7 @@ public class FriendsCmd extends Command {
 	private FireAPI api;
 	private Client c;
 
-	public FriendsCmd(FireAPI api, String name) {
+	public FriendsCommand(FireAPI api, String name) {
 		super(name);
 		
 		this.api = api;
@@ -207,7 +207,7 @@ public class FriendsCmd extends Command {
 					sender.sendMessage(new TextComponent(this.pre+
 							"§cErreur, la console ne peut avoir d'amis :'("
 							+ " (sauf Glowstoner mdr, sauf que c'est moi qui écrit ses lignes sur Eclipse,"
-							+ " serais-je skyzophrène ?) C'est probable dit quelqu'un à l'horizon ... §oC'est le début d'une"
+							+ " serais-je skyzophrène ?) C'est probable dit quelqu'un à l'horizon ... C'est le début d'une"
 							+ " longue histoire"));
 				}else{
 					try {

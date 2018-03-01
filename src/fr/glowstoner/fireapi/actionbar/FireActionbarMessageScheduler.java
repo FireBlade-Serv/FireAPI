@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.actionbar.bukkit.FireBukkitActionBar;
 import fr.glowstoner.fireapi.actionbar.enums.TransitionType;
+import fr.glowstoner.fireapi.actionbar.utils.FireActionbarUtils;
 import lombok.Getter;
 
 public class FireActionbarMessageScheduler extends BukkitRunnable{

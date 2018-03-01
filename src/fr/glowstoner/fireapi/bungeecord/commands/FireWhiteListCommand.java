@@ -12,12 +12,12 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
-public class FireWhiteList extends Command {
+public class FireWhiteListCommand extends Command {
 
 	private final String pre = "§6[§eWhiteList§6]§r ";
 	private FireAPI api;
 
-	public FireWhiteList(String name, FireAPI api) {
+	public FireWhiteListCommand(String name, FireAPI api) {
 		super(name);
 		
 		this.api = api;

@@ -122,7 +122,7 @@ public class FireSQL extends TimerTask{
 				q.setString(2, p.getAddress().getAddress().getHostAddress());
 				q.setInt(3, 0);
 				q.setString(4, Rank.MEMBRE.name());
-				q.setString(5, "default-not-set");
+				q.setString(5, "§default-not-set");
 				q.execute();
 				q.close();
 			} catch (SQLException e) {

@@ -21,7 +21,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-public class RegisterCmd extends Command {
+public class RegisterCommand extends Command {
 	
 	private final String pre = "§6[§eAuth§6]§r ";
 	
@@ -29,7 +29,7 @@ public class RegisterCmd extends Command {
 	private FireAuth auth;
 	private FireSQL sql;
 
-	public RegisterCmd(FireAPI api, String name) {
+	public RegisterCommand(FireAPI api, String name) {
 		super(name);
 		
 		this.instance = (BungeeMain) api.getBungeePlugin();
@@ -44,7 +44,7 @@ public class RegisterCmd extends Command {
 			FirePlayer fp = new FirePlayer(pp, this.instance);
 			
 			if(pp.getServer().getInfo().equals(this.instance.getProxy().getServerInfo("login"))) {
-				if(this.sql.getCryptPassword(pp.getName()).equals("default-not-set")) {
+				if(this.sql.getCryptPassword(pp.getName()).equals("§default-not-set")) {
 					//not registered
 						
 					if(args.length == 0) {
@@ -96,7 +96,7 @@ public class RegisterCmd extends Command {
 									return;
 								}
 								
-								this.instance.getSQL().setCryptPassword(args[1], "default-not-set");
+								this.instance.getSQL().setCryptPassword(args[1], "§default-not-set");
 								
 								pp.sendMessage(new TextComponent(this.pre+"§aLe joueur \""+args[1]+"\" est maintenant plus inscrit !"));
 							}else {

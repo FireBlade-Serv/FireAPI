@@ -78,6 +78,10 @@ public class FireRank {
 		return list;
 	}
 	
+	public boolean hasRankAndSup(String name, Rank rank) {
+		return this.getListRankAndSup(this.getPlayerRank(name)).contains(rank);
+	}
+	
 	public boolean hasRankAndSupOrConsole(CommandSender sender, Rank rank) {
 		if(sender instanceof ConsoleCommandSender) {
 			return true;

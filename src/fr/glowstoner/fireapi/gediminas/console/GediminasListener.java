@@ -3,7 +3,6 @@ package fr.glowstoner.fireapi.gediminas.console;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,9 @@ import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.connectionsapi.network.packets.login.enums.LoginResult;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
+import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC.EnumPacketGediminasACTODO;
+import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC.EnumPacketGediminasACType;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
@@ -130,7 +132,7 @@ public class GediminasListener implements ServerListener{
 				
 				if(!this.connectionstype.containsKey(VersionType.SPIGOT_VERSION)) {
 					if(ver.getType().equals(VersionType.SPIGOT_VERSION)) {
-						List<ConnectionHandler> list = new ArrayList<>();
+						List<ConnectionHandler> list = new CopyOnWriteArrayList<>();
 						list.add(server);
 						
 						this.connectionstype.put(VersionType.SPIGOT_VERSION, list);
@@ -146,7 +148,7 @@ public class GediminasListener implements ServerListener{
 				
 				if(!this.connectionstype.containsKey(VersionType.BUNGEECORD_VERSION)) {
 					if(ver.getType().equals(VersionType.BUNGEECORD_VERSION)) {
-						List<ConnectionHandler> list = new ArrayList<>();
+						List<ConnectionHandler> list = new CopyOnWriteArrayList<>();
 						list.add(server);
 						
 						this.connectionstype.put(VersionType.BUNGEECORD_VERSION, list);
@@ -207,6 +209,14 @@ public class GediminasListener implements ServerListener{
 					get.setHistory(this.gs.getHistory(get.getPlayerName()));
 					
 					server.sendPacket(get);
+				}
+			}else if(packet instanceof PacketGediminasAC) {
+				PacketGediminasAC gacp = (PacketGediminasAC) packet;
+				
+				if(gacp.getType().equals(EnumPacketGediminasACType.CHEAT_DETECTION)) {
+					if(gacp.getTODO().equals(EnumPacketGediminasACTODO.INFORM_STAFF)) {
+						this.getConnectionByNameOrIP("main-bungeecord").sendPacket(packet);
+					}
 				}
 			}
 		}catch (Exception e) {

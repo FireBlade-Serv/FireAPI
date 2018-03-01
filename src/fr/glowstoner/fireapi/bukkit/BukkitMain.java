@@ -26,6 +26,7 @@ import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
 import fr.glowstoner.fireapi.chat.FireChat;
+import fr.glowstoner.fireapi.gediminas.ac.GediminasAC;
 import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheck;
 import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasConnectionInfos;
@@ -49,6 +50,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	private Client c;
 	private FireTag tag;
 	private GediminasConnectionCheck check;
+	private GediminasAC ac;
 	
 	private String id;
 
@@ -91,6 +93,10 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		super.getLogger().info("ID serveur utilisé : "+this.id);
 		
 		this.injector = new FireInjector();
+		
+		this.ac = new GediminasAC(this);
+		
+		this.ac.init();
 		
 		try {
 			ConnectionsAPI.init();

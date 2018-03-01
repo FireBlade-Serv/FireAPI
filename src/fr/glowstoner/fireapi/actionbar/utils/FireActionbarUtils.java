@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.actionbar;
+package fr.glowstoner.fireapi.actionbar.utils;
 
 import org.bukkit.ChatColor;
 
@@ -22,8 +22,8 @@ public class FireActionbarUtils {
 		 * 
 		 * ... 25m
 		 * 
-		 *  lay.fireblade-serv.eu
-		 *   ay.fireblade-serv.eu
+		 * lay.fireblade-serv.eu
+		 * ay.fireblade-serv.eu
 		 *   
 		 * ... [D] -->
 		 * 
@@ -45,13 +45,7 @@ public class FireActionbarUtils {
 		if(moment == 0) {
 			return "";
 		}else if(moment < message.length()) {
-			StringBuilder builder = new StringBuilder();
-			
-			for(int i = 0 ; i < (message.length() - moment) ; i++) {
-				builder.append(" ");
-			}
-			
-			return colorBase+message.substring(0, moment)+builder.toString();
+			return colorBase+message.substring(0, moment);
 		}else if(moment == message.length()) {
 			return colorBase+message;
 		}else if(moment >= message.length() && moment <= (message.length() + 25)) { 
@@ -69,13 +63,7 @@ public class FireActionbarUtils {
 				return "§c§lErreur !";
 			}
 		}else if(moment > (message.length() + 25)) {
-			StringBuilder builder = new StringBuilder();
-			
-			for(int i = 0 ; i < (moment - (message.length() + 25)) ; i++) {
-				builder.append(" ");
-			}
-			
-			return builder.toString()+colorBase+message.substring((moment - (message.length() + 25)));
+			return colorBase+message.substring((moment - (message.length() + 25)));
 		}else {
 			return "§c§lErreur !";
 		}

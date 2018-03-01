@@ -7,14 +7,14 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 
-public class CoinsChecker extends Command {
+public class CoinsCheckerCommand extends Command {
 	
 	private final String pre = "§6[§eFireAPI§6]§r ";
 	
 	private FireAPI api;
 	private FireSQL sql;
 
-	public CoinsChecker(FireAPI api, String name) {
+	public CoinsCheckerCommand(FireAPI api, String name) {
 		super(name);
 		
 		this.api = api;

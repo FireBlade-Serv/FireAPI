@@ -18,14 +18,14 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-public class LoginCmd extends Command {
+public class LoginCommand extends Command {
 
 	private final String pre = "§6[§eAuth§6]§r ";
 	
 	private FireAuth auth;
 	private BungeeMain main;
 
-	public LoginCmd(FireAPI api, String name) {
+	public LoginCommand(FireAPI api, String name) {
 		super(name);
 		
 		this.auth = api.getAuthentification();
@@ -38,7 +38,7 @@ public class LoginCmd extends Command {
 			ProxiedPlayer pp = (ProxiedPlayer) sender;
 			
 			if(pp.getServer().getInfo().equals(this.main.getProxy().getServerInfo("login"))) {
-				if(this.main.getSQL().getCryptPassword(pp.getName()).equals("default-not-set")) {
+				if(this.main.getSQL().getCryptPassword(pp.getName()).equals("§default-not-set")) {
 					pp.sendMessage(new TextComponent
 							(this.pre+"§cVous n'avez pas de compte veuillez en créer un ! §c(/register)"));
 				}else {

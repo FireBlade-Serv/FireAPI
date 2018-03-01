@@ -25,14 +25,8 @@ public class HelpCommand implements CommandExecutor {
 				String next = cmdit.next();
 				
 				if(this.l.getAliases().containsKey(next)) {
-					StringBuilder builder = new StringBuilder();
-					
-					for(String alias : this.l.getAliases().get(next)) {
-						builder.append(alias+" ");
-					}
-					
 					connection.sendMessageWithPrefix("/"+next+" : "+this.l.getCommands().
-							get(next).description()+" Alias : "+builder.toString());
+							get(next).description()+" Alias : "+this.l.getAliases().get(next).toString());
 				}else {
 					connection.sendMessageWithPrefix("/"+next+" : "+this.l.getCommands().
 							get(next).description());

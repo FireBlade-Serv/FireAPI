@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public class FirePacketListener {
 	
 	private static List<PacketReceiveListener> l = new ArrayList<>();
-
+	
 	public static void registerListener(PacketReceiveListener listener) {
 		l.add(listener);
 	}

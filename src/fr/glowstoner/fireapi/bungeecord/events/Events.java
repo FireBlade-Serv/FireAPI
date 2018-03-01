@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
+import fr.glowstoner.fireapi.bungeecord.commands.StaffChatCommand;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheckListener;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
@@ -38,12 +39,14 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 	private FireAPI instance;
 	private List<ProxiedPlayer> stillconnected;
 	private Client c;
+	private StaffChatCommand scc;
 	
-	public Events(FireAPI api) {
+	public Events(FireAPI api, StaffChatCommand scc) {
 		this.instance = api;
 		this.friends = this.instance.getFriends();
 		this.stillconnected = new ArrayList<>();
 		this.c = this.instance.getClient();
+		this.scc = scc;
 	}
 
 	@EventHandler
@@ -84,7 +87,7 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 				
 			}, 15L, TimeUnit.SECONDS);
 		
-		if(this.instance.getSQL().getCryptPassword(pp.getName()).equals("default-not-set")) {
+		if(this.instance.getSQL().getCryptPassword(pp.getName()).equals("§default-not-set")) {
 			//not registered
 			
 			pp.sendMessage(new TextComponent(this.instance.getAuthentification().getRegisterMessage()));
@@ -177,7 +180,7 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 			}
 			
 			if(e.isCommand()) {
-				if(this.instance.getSQL().getCryptPassword(pp.getName()).equals("default-not-set")) {
+				if(this.instance.getSQL().getCryptPassword(pp.getName()).equals("§default-not-set")) {
 					//not registered
 					
 					pp.sendMessage(new TextComponent(this.instance.getAuthentification().getRegisterMessage()));
@@ -189,7 +192,7 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 					this.instance.getAuthentification().getLoginTitle().send(pp);
 				}
 			}else {
-				if(this.instance.getSQL().getCryptPassword(pp.getName()).equals("default-not-set")) {
+				if(this.instance.getSQL().getCryptPassword(pp.getName()).equals("§default-not-set")) {
 					//not registered
 					
 					pp.sendMessage(new TextComponent(this.instance.getAuthentification().getRegisterMessage()));
@@ -210,6 +213,20 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 				this.c.sendPacket(ps);
 			} catch (IOException e1) {
 				e1.printStackTrace();
+			}
+			
+			//staff chat
+			
+			if(e.getMessage().startsWith(":")) {
+				if(this.instance.getRankSystem().hasRankAndSup(pp.getName(), Rank.GUIDE)) {
+					if(this.scc.getPlayers().containsKey(pp)) {
+						if(this.scc.getPlayers().get(pp)) {
+							this.scc.send(pp, e.getMessage().substring(1));
+							
+							e.setCancelled(true);
+						}
+					}
+				}
 			}
 		}
 	}

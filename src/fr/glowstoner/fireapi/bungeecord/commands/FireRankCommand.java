@@ -8,14 +8,14 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 
-public class FireRankCmd extends Command {
+public class FireRankCommand extends Command {
 
 	private final String pre = "§6[§eRank§6]§r ";
 	
 	private FireRank rank;
 	private FireSQL sql;
 
-	public FireRankCmd(FireAPI api, String name) {
+	public FireRankCommand(FireAPI api, String name) {
 		super(name);
 		
 		this.rank = api.getRankSystem();

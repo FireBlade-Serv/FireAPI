@@ -13,17 +13,21 @@ import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
 import fr.glowstoner.fireapi.bukkit.tag.FireTag;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
-import fr.glowstoner.fireapi.bungeecord.commands.CoinsChecker;
-import fr.glowstoner.fireapi.bungeecord.commands.FireRankCmd;
-import fr.glowstoner.fireapi.bungeecord.commands.FireWhiteList;
-import fr.glowstoner.fireapi.bungeecord.commands.FriendsCmd;
-import fr.glowstoner.fireapi.bungeecord.commands.LoginCmd;
-import fr.glowstoner.fireapi.bungeecord.commands.RegisterCmd;
+import fr.glowstoner.fireapi.bungeecord.commands.CoinsCheckerCommand;
+import fr.glowstoner.fireapi.bungeecord.commands.FireRankCommand;
+import fr.glowstoner.fireapi.bungeecord.commands.FireWhiteListCommand;
+import fr.glowstoner.fireapi.bungeecord.commands.FriendsCommand;
+import fr.glowstoner.fireapi.bungeecord.commands.LoginCommand;
+import fr.glowstoner.fireapi.bungeecord.commands.RegisterCommand;
+import fr.glowstoner.fireapi.bungeecord.commands.StaffChatCommand;
 import fr.glowstoner.fireapi.bungeecord.commands.misc.Discord;
 import fr.glowstoner.fireapi.bungeecord.commands.misc.Website;
 import fr.glowstoner.fireapi.bungeecord.events.Events;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
+import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC.EnumPacketGediminasACTODO;
+import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC.EnumPacketGediminasACType;
 import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheck;
 import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasConnectionInfos;
@@ -33,9 +37,11 @@ import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
+import fr.glowstoner.fireapi.rank.Rank;
 import fr.glowstoner.fireapi.sql.FireSQL;
 import fr.glowstoner.fireapi.wl.FireWL;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
@@ -134,6 +140,19 @@ public class BungeeMain extends Plugin implements FireAPI{
 					BungeeMain.super.getProxy().getPlayer(pp.getName()).sendMessage(new TextComponent
 							("§6[§ePing§6]§r Ton ping §eproxy§r est de §e"
 					+BungeeMain.super.getProxy().getPlayer(pp.getName()).getPing()+" ms§r !"));
+				}else if(packet instanceof PacketGediminasAC) {
+					PacketGediminasAC gacp = (PacketGediminasAC) packet;
+					
+					if(gacp.getType().equals(EnumPacketGediminasACType.CHEAT_DETECTION)) {
+						if(gacp.getTODO().equals(EnumPacketGediminasACTODO.INFORM_STAFF)) {
+							for(ProxiedPlayer ps : getProxy().getPlayers()) {
+								if(api.getRankSystem().hasRankAndSup(ps.getName(), Rank.ASSISTANT)) {
+									ps.sendMessage(
+									new TextComponent("§c[Gediminas] [Cheat] §4"+gacp.getPlayerName()+" §r~ "+gacp.getMessage()));
+								}
+							}
+						}
+					}
 				}
 			}
 			
@@ -165,16 +184,20 @@ public class BungeeMain extends Plugin implements FireAPI{
 		
 		PluginManager man = super.getProxy().getPluginManager();
 		
-		man.registerCommand(this, new CoinsChecker(this, "coins"));
+		man.registerCommand(this, new CoinsCheckerCommand(this, "coins"));
 		man.registerCommand(this, new Website("site"));
 		man.registerCommand(this, new Discord("discord"));
-		man.registerCommand(this, new FriendsCmd(this, "amis"));
-		man.registerCommand(this, new FireRankCmd(this, "firerank"));
-		man.registerCommand(this, new RegisterCmd(this, "register"));
-		man.registerCommand(this, new LoginCmd(this, "login"));
-		man.registerCommand(this, new FireWhiteList("firewl", this));
+		man.registerCommand(this, new FriendsCommand(this, "amis"));
+		man.registerCommand(this, new FireRankCommand(this, "firerank"));
+		man.registerCommand(this, new RegisterCommand(this, "register"));
+		man.registerCommand(this, new LoginCommand(this, "login"));
+		man.registerCommand(this, new FireWhiteListCommand("firewl", this));
 		
-		Events events = new Events(this);
+		StaffChatCommand scc = new StaffChatCommand(this, "firestaffchat");
+		
+		man.registerCommand(this, scc);
+		
+		Events events = new Events(this, scc);
 		
 		man.registerListener(this, events);
 		
