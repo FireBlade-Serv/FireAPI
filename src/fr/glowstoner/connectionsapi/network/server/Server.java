@@ -4,6 +4,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -103,6 +104,10 @@ public class Server implements Runnable {
 						o = this.in.readObject();
 					}catch (EOFException ex) {
 						break;
+					}catch (OptionalDataException ex) {
+						System.out.println("[Gediminas] OptionnalDataException détécté !");
+						System.out.println("[Gediminas] eof = "+ex.eof+", length = "+ex.length);
+						ex.printStackTrace();
 					}
 					
 					if(o != null && o instanceof Packet) {

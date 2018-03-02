@@ -25,8 +25,8 @@ import fr.glowstoner.connectionsapi.network.packets.login.enums.LoginResult;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
 import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC.EnumPacketGediminasACTODO;
-import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC.EnumPacketGediminasACType;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasACType;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasTODOAC;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
@@ -213,8 +213,8 @@ public class GediminasListener implements ServerListener{
 			}else if(packet instanceof PacketGediminasAC) {
 				PacketGediminasAC gacp = (PacketGediminasAC) packet;
 				
-				if(gacp.getType().equals(EnumPacketGediminasACType.CHEAT_DETECTION)) {
-					if(gacp.getTODO().equals(EnumPacketGediminasACTODO.INFORM_STAFF)) {
+				if(gacp.getType().equals(PacketGediminasACType.CHEAT_DETECTION)) {
+					if(gacp.getTODO().equals(PacketGediminasTODOAC.INFORM_STAFF)) {
 						this.getConnectionByNameOrIP("main-bungeecord").sendPacket(packet);
 					}
 				}

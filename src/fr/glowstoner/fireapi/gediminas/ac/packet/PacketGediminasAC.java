@@ -3,6 +3,9 @@ package fr.glowstoner.fireapi.gediminas.ac.packet;
 import java.io.Serializable;
 
 import fr.glowstoner.connectionsapi.network.packets.Packet;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasACType;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasCheatAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasTODOAC;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,14 +15,16 @@ public class PacketGediminasAC extends Packet implements Serializable{
 
 	@Getter @Setter private String playerName;
 	@Getter @Setter private String message;
-	@Getter @Setter private EnumPacketGediminasACType type;
-	@Getter @Setter private EnumPacketGediminasACTODO TODO;
+	@Getter @Setter private PacketGediminasACType type;
+	@Getter @Setter private PacketGediminasTODOAC TODO;
+	@Getter @Setter private PacketGediminasCheatAC cheat;
 	
-	public PacketGediminasAC(String name, String message, EnumPacketGediminasACType type, EnumPacketGediminasACTODO todo) {
+	public PacketGediminasAC(String name, String message, PacketGediminasACType type, PacketGediminasTODOAC todo, PacketGediminasCheatAC cheat) {
 		this.setMessage(message);
 		this.setType(type);
 		this.setPlayerName(name);
 		this.setTODO(todo);
+		this.setCheat(cheat);
 	}
 	
 	public PacketGediminasAC() {
@@ -29,17 +34,5 @@ public class PacketGediminasAC extends Packet implements Serializable{
 	@Override
 	public boolean isCrypted() {
 		return false;
-	}
-
-	public enum EnumPacketGediminasACType{
-		
-		CHEAT_DETECTION;
-		
-	}
-	
-	public enum EnumPacketGediminasACTODO{
-		
-		INFORM_STAFF, BAN;
-		
 	}
 }

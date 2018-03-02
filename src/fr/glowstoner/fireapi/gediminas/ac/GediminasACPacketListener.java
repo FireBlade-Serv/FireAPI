@@ -29,13 +29,27 @@ public class GediminasACPacketListener implements PacketReceiveListener, Runnabl
 	
 	private Map<Player, List<Object>> spackets = new ConcurrentHashMap<>();
 	private FireAPI api;
+	private GediminasAC ac;
 	
-	public GediminasACPacketListener(FireAPI api) {
+	public GediminasACPacketListener(FireAPI api, GediminasAC ac) {
 		this.api = api;
+		this.ac = ac;
 	}
 
 	@Override
 	public void onPacketReceive(Player p, Object packet) {
+		if(packet instanceof PacketPlayInFlying) {
+			PacketPlayInFlying fly = (PacketPlayInFlying) packet;
+			
+			System.out.println(fly.getClass().getSimpleName()+" / "+fly.f());
+		}else {
+			System.out.println(packet.getClass().getSimpleName());
+		}
+		
+		if(packet instanceof PacketPlayInArmAnimation) {
+			this.ac.putCPS(p);
+		}
+		
 		if(this.spackets.containsKey(p)) {
 			List<Object> list = this.spackets.get(p);
 			
@@ -117,6 +131,8 @@ public class GediminasACPacketListener implements PacketReceiveListener, Runnabl
 			Player next = it.next();
 			
 			this.sendSortedPackets(next, this.spackets.get(next));
+			
+			this.spackets.clear();
 		}
 	}
 	
