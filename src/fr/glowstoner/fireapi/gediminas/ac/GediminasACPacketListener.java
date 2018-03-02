@@ -122,8 +122,16 @@ public class GediminasACPacketListener implements PacketReceiveListener, Runnabl
 				dig.size()+" ; Place : "+pl.size()+" ; ArmAnimation : "+aanim.size()+" ; EntityAction : "+ea.size()+
 				" ; HeldItemSlot : "+his.size()+" ; Flying : "+fly.size()+" ; Settings : "+set.size()+" ; Other Packets : "+other.size());
 		
-		if(fly.size() >= 100) {
-			this.ac.flyAlert(p, fly.size());
+		List<PacketPlayInFlying> pflyhak = new ArrayList<>();
+		
+		for(PacketPlayInFlying flyp : fly) {
+			if(!flyp.f()) {
+				pflyhak.add(flyp);
+			}
+		}
+		
+		if(pflyhak.size() >= 100) {
+			this.ac.flyAlert(p, pflyhak.size());
 		}
 	}
 
