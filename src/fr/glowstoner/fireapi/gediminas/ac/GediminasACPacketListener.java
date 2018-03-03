@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import fr.glowstoner.fireapi.FireAPI;
@@ -17,13 +18,13 @@ import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 import net.minecraft.server.v1_8_R3.PacketPlayInChat;
 import net.minecraft.server.v1_8_R3.PacketPlayInEntityAction;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
-import net.minecraft.server.v1_8_R3.PacketPlayInKeepAlive;
-import net.minecraft.server.v1_8_R3.PacketPlayInSettings;
-import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying.PacketPlayInLook;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying.PacketPlayInPosition;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying.PacketPlayInPositionLook;
 import net.minecraft.server.v1_8_R3.PacketPlayInHeldItemSlot;
+import net.minecraft.server.v1_8_R3.PacketPlayInKeepAlive;
+import net.minecraft.server.v1_8_R3.PacketPlayInSettings;
+import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
 
 public class GediminasACPacketListener implements PacketReceiveListener, Runnable{
 	
@@ -41,7 +42,9 @@ public class GediminasACPacketListener implements PacketReceiveListener, Runnabl
 		if(packet instanceof PacketPlayInFlying) {
 			PacketPlayInFlying fly = (PacketPlayInFlying) packet;
 			
-			System.out.println(fly.getClass().getSimpleName()+" / "+fly.f());
+			String status = (fly.f()) ? "ON GROUND" : "FLYING";
+			
+			System.out.println(fly.getClass().getSimpleName()+" / "+status);
 		}else {
 			System.out.println(packet.getClass().getSimpleName());
 		}
@@ -124,13 +127,20 @@ public class GediminasACPacketListener implements PacketReceiveListener, Runnabl
 		
 		List<PacketPlayInFlying> pflyhak = new ArrayList<>();
 		
-		for(PacketPlayInFlying flyp : fly) {
-			if(!flyp.f()) {
-				pflyhak.add(flyp);
+		for(Object pfp : list) {
+			
+			if(pfp instanceof PacketPlayInFlying) {
+				PacketPlayInFlying ppif = (PacketPlayInFlying) pfp;
+				
+				if(ppif.f()) {
+					if(p.getLocation().subtract(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
+						pflyhak.add(ppif);
+					}
+				}
 			}
 		}
 		
-		if(pflyhak.size() >= 100) {
+		if(pflyhak.size() >= 200) {
 			this.ac.flyAlert(p, pflyhak.size());
 		}
 	}
