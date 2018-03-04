@@ -6,8 +6,8 @@ public enum Rank {
 	
 	MEMBRE(ChatColor.GRAY, 1), FIRE(ChatColor.YELLOW, 2), ULTRA(ChatColor.GREEN, 3), ULTIMATE(ChatColor.DARK_PURPLE, 4),
 	YOUTUBER(ChatColor.DARK_GREEN, 5), GUIDE(ChatColor.DARK_GREEN, 6), ASSISTANT(ChatColor.GOLD, 7),
-	RESPONSABLE_COM(ChatColor.GOLD, 8), MODÉRATEUR(ChatColor.DARK_AQUA, 9), MANAGER_IG(ChatColor.RED, 10),
-	STAFF_MANAGER(ChatColor.RED, 11), BUILDER(ChatColor.GOLD, 12), DÉVELOPPEUR(ChatColor.BLUE, 13),
+	RESPONSABLE_COM(ChatColor.GOLD, 8), MODÉRATEUR(ChatColor.DARK_AQUA, 9), BUILDER(ChatColor.GOLD, 10),
+	DÉVELOPPEUR(ChatColor.BLUE, 11), MANAGER_IG(ChatColor.RED, 12), STAFF_MANAGER(ChatColor.RED, 13),
 	ADMINISTRATEUR(ChatColor.DARK_RED, 14), CONSOLE(ChatColor.BLACK, 15);
 
 	private ChatColor color;

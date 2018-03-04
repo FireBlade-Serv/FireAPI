@@ -1,7 +1,7 @@
 package fr.glowstoner.fireapi.gediminas.ac.packet.enums;
 
-public enum PacketGediminasCheatAC {
+public enum GediminasActionAC{
 	
-	AUTOCLICK, FLYHACK;
-
+	INFORM_STAFF, BAN;
+	
 }

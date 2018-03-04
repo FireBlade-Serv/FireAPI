@@ -13,11 +13,11 @@ import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.enums.PingState;
 
-public class Ping implements CommandExecutor {
+public class PingCommand implements CommandExecutor {
 	
 	private ConnectionHandler c;
 	
-	public Ping(FireAPI api) {
+	public PingCommand(FireAPI api) {
 		this.c = api.getClient(); 
 	}
 
@@ -35,6 +35,8 @@ public class Ping implements CommandExecutor {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}else {
+			sender.sendMessage("§6[§ePing§6]§r §cErreur, vous devez être en jeu pour pouvoir executer cette commande !");
 		}
 		
 		return false;

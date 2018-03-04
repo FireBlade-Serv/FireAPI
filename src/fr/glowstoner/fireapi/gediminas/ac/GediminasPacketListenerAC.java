@@ -26,13 +26,13 @@ import net.minecraft.server.v1_8_R3.PacketPlayInKeepAlive;
 import net.minecraft.server.v1_8_R3.PacketPlayInSettings;
 import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
 
-public class GediminasACPacketListener implements PacketReceiveListener, Runnable{
+public class GediminasPacketListenerAC implements PacketReceiveListener, Runnable{
 	
 	private Map<Player, List<Object>> spackets = new ConcurrentHashMap<>();
 	private FireAPI api;
 	private GediminasAC ac;
 	
-	public GediminasACPacketListener(FireAPI api, GediminasAC ac) {
+	public GediminasPacketListenerAC(FireAPI api, GediminasAC ac) {
 		this.api = api;
 		this.ac = ac;
 	}

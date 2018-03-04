@@ -16,7 +16,7 @@ import fr.glowstoner.connectionsapi.network.packets.Packet;
 import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
 import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bukkit.cmd.Ping;
+import fr.glowstoner.fireapi.bukkit.cmd.PingCommand;
 import fr.glowstoner.fireapi.bukkit.friends.FriendsActionInventoryGUI;
 import fr.glowstoner.fireapi.bukkit.id.FireBukkitID;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
@@ -175,7 +175,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		
 		this.check.registerListener(events);
 		
-		super.getCommand("ping").setExecutor(new Ping(this));
+		super.getCommand("ping").setExecutor(new PingCommand(this));
 		super.getCommand("at").setExecutor(new AdminToolsCmd(this));
 		
 		api = this;

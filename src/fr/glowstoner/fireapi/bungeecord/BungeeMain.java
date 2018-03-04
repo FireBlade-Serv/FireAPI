@@ -26,8 +26,8 @@ import fr.glowstoner.fireapi.bungeecord.events.Events;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
 import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasACType;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasTODOAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasActionAC;
 import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheck;
 import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasConnectionInfos;
@@ -143,12 +143,13 @@ public class BungeeMain extends Plugin implements FireAPI{
 				}else if(packet instanceof PacketGediminasAC) {
 					PacketGediminasAC gacp = (PacketGediminasAC) packet;
 					
-					if(gacp.getType().equals(PacketGediminasACType.CHEAT_DETECTION)) {
-						if(gacp.getTODO().equals(PacketGediminasTODOAC.INFORM_STAFF)) {
+					if(gacp.getType().equals(GediminasTypeAC.CHEAT_DETECTION)) {
+						if(gacp.getTODO().equals(GediminasActionAC.INFORM_STAFF)) {
 							for(ProxiedPlayer ps : getProxy().getPlayers()) {
 								if(api.getRankSystem().hasRankAndSup(ps.getName(), Rank.ASSISTANT)) {
 									ps.sendMessage(
-									new TextComponent("§c[Gediminas] [Cheat] §4"+gacp.getPlayerName()+" §r~ "+gacp.getMessage()));
+									new TextComponent("§c[Gediminas] [Cheat] §4"+gacp.getPlayerName()+" §r~ "+gacp.getMessage()
+									+" §c"+gacp.getPing()+"ms"));
 								}
 							}
 						}

@@ -20,6 +20,7 @@ import fr.glowstoner.fireapi.rank.Rank;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.PermissionCheckEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -251,6 +252,13 @@ public class Events implements Listener, GediminasConnectionCheckListener {
 		if(e.getTag().equals("fireapi")) {
 			this.instance.getBungeePlugin().getProxy().getPluginManager().callEvent(
 					new FireChannelReceiveEvent(e.getData(), e.getSender(), e.getReceiver()));
+		}
+	}
+	
+	@EventHandler
+	public void onPermissionCheck(PermissionCheckEvent e) {
+		if(this.instance.getRankSystem().hasRankAndSupOrConsole(e.getSender(), Rank.ADMINISTRATEUR)) {
+			e.setHasPermission(true);
 		}
 	}
 

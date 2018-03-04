@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FirePacketListener;
 import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasACType;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasCheatAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasTODOAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasActionAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasCheatAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
 
 public class GediminasAC {
 	
@@ -23,7 +24,7 @@ public class GediminasAC {
 	}
 
 	public void init() {
-		GediminasACPacketListener gacpl = new GediminasACPacketListener(this.api, this);
+		GediminasPacketListenerAC gacpl = new GediminasPacketListenerAC(this.api, this);
 		
 		FirePacketListener.registerListener(gacpl);
 		
@@ -46,14 +47,12 @@ public class GediminasAC {
 					
 					if(cps.get(p) >= 18) {
 						try {
-							api.getClient().sendPacket(new PacketGediminasAC
-									(p.getName(), "Autoclick / "+cps.get(p)+" CPS", PacketGediminasACType.CHEAT_DETECTION,
-									PacketGediminasTODOAC.INFORM_STAFF, PacketGediminasCheatAC.AUTOCLICK));
+							api.getClient().sendPacket(new PacketGediminasAC(p.getName(), "Autoclick "+cps.get(p)+" CPS",
+									GediminasTypeAC.CHEAT_DETECTION, GediminasActionAC.INFORM_STAFF,
+									GediminasCheatAC.AUTOCLICK, ((CraftPlayer) p).getHandle().ping));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-					}else {
-						System.out.println("click "+cps.get(p)+" CPS");
 					}
 					
 					cps.remove(p);
@@ -65,8 +64,9 @@ public class GediminasAC {
 	
 	public void flyAlert(Player p, int packets) {
 		try {
-			this.api.getClient().sendPacket(new PacketGediminasAC(p.getName(), "FlyHack / "+packets+" packets",
-					PacketGediminasACType.CHEAT_DETECTION, PacketGediminasTODOAC.INFORM_STAFF, PacketGediminasCheatAC.FLYHACK));
+			this.api.getClient().sendPacket(new PacketGediminasAC(p.getName(), "Flyhack ("+packets+" paquets)",
+					GediminasTypeAC.CHEAT_DETECTION, GediminasActionAC.INFORM_STAFF,
+					GediminasCheatAC.FLYHACK, ((CraftPlayer) p).getHandle().ping));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

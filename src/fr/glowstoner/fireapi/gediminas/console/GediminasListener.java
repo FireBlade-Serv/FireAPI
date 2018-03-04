@@ -25,8 +25,8 @@ import fr.glowstoner.connectionsapi.network.packets.login.enums.LoginResult;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
 import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasACType;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.PacketGediminasTODOAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasActionAC;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
@@ -182,7 +182,7 @@ public class GediminasListener implements ServerListener{
 					pp.setState(PingState.BUNGEE_REQUEST);
 					
 					try {
-						this.getConnectionByNameOrIP("main-bungeecord").sendPacket(pp);
+						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION, "main-bungeecord").sendPacket(pp);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -213,9 +213,9 @@ public class GediminasListener implements ServerListener{
 			}else if(packet instanceof PacketGediminasAC) {
 				PacketGediminasAC gacp = (PacketGediminasAC) packet;
 				
-				if(gacp.getType().equals(PacketGediminasACType.CHEAT_DETECTION)) {
-					if(gacp.getTODO().equals(PacketGediminasTODOAC.INFORM_STAFF)) {
-						this.getConnectionByNameOrIP("main-bungeecord").sendPacket(packet);
+				if(gacp.getType().equals(GediminasTypeAC.CHEAT_DETECTION)) {
+					if(gacp.getTODO().equals(GediminasActionAC.INFORM_STAFF)) {
+						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION, "main-bungeecord").sendPacket(gacp);
 					}
 				}
 			}
@@ -229,7 +229,7 @@ public class GediminasListener implements ServerListener{
 		ch.sendMessage("~~~~~~~~~~Gediminas~~~~~~~~~~");
 		ch.sendMessage("by Glowstoner");
 		ch.sendMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		ch.sendMessage("\nProtocol version : 1.0");
+		ch.sendMessage("\nProtocol version : 2.11");
 		
 		this.refreshLists();
 	}
@@ -296,6 +296,16 @@ public class GediminasListener implements ServerListener{
 			String n = (chs.getName().equals("default-name")) ? chs.getIP() : chs.getName();
 			
 			if(n.equals(name)) {
+				return chs;
+			}
+		}
+		
+		return null;
+	}
+	
+	public ConnectionHandler getServerConnectionByNameUnsafe(VersionType type, String connectionName) {
+		for(ConnectionHandler chs : this.connectionstype.get(type)) {
+			if(chs.getName().equals(connectionName)) {
 				return chs;
 			}
 		}

@@ -4,6 +4,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -105,8 +106,21 @@ public class Server implements Runnable {
 						o = this.in.readObject();
 					}catch (IOException ex) {
 						ex.printStackTrace();
-						break;
+						
+						if(ex instanceof OptionalDataException) {
+							OptionalDataException ode = (OptionalDataException) ex;
+							
+							System.out.println("eof = "+ode.eof);
+							System.out.println("available = "+this.in.available());
+							
+							this.in.skipBytes(ode.length);
+							break;
+						}else {
+							break;
+						}
 					}
+					
+					System.out.println(o.toString());
 					
 					if(o != null && o instanceof Packet) {
 						Packet p = (Packet) o;
