@@ -20,4 +20,7 @@ public enum SpyAction {
 	PLAYER_KICK,
 	PLAYER_BAN,
 	PLAYER_FULLBAN,
+	
+	//gediminas anti-cheat
+	PLAYER_GAC_DETECTION
 }

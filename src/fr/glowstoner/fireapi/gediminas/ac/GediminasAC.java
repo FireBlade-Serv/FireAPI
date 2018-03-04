@@ -13,6 +13,8 @@ import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
 import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasActionAC;
 import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasCheatAC;
 import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
+import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 
 public class GediminasAC {
 	
@@ -50,6 +52,8 @@ public class GediminasAC {
 							api.getClient().sendPacket(new PacketGediminasAC(p.getName(), "Autoclick "+cps.get(p)+" CPS",
 									GediminasTypeAC.CHEAT_DETECTION, GediminasActionAC.INFORM_STAFF,
 									GediminasCheatAC.AUTOCLICK, ((CraftPlayer) p).getHandle().ping));
+							api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
+									"Autoclick "+cps.get(p)+" CPS", SpyAction.PLAYER_GAC_DETECTION));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -67,6 +71,8 @@ public class GediminasAC {
 			this.api.getClient().sendPacket(new PacketGediminasAC(p.getName(), "Flyhack ("+packets+" paquets)",
 					GediminasTypeAC.CHEAT_DETECTION, GediminasActionAC.INFORM_STAFF,
 					GediminasCheatAC.FLYHACK, ((CraftPlayer) p).getHandle().ping));
+			this.api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
+					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_GAC_DETECTION));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
