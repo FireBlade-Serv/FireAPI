@@ -120,7 +120,7 @@ public class Server implements Runnable {
 						}
 					}
 					
-					System.out.println(o.toString());
+					//System.out.println(o.toString());
 					
 					if(o != null && o instanceof Packet) {
 						Packet p = (Packet) o;

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import fr.glowstoner.fireapi.FireAPI;
@@ -133,14 +132,12 @@ public class GediminasPacketListenerAC implements PacketReceiveListener, Runnabl
 				PacketPlayInFlying ppif = (PacketPlayInFlying) pfp;
 				
 				if(ppif.f()) {
-					if(p.getLocation().subtract(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
-						pflyhak.add(ppif);
-					}
+					pflyhak.add(ppif);
 				}
 			}
 		}
 		
-		if(pflyhak.size() >= 200) {
+		if(pflyhak.size() >= 270) {
 			this.ac.flyAlert(p, pflyhak.size());
 		}
 	}
@@ -157,5 +154,4 @@ public class GediminasPacketListenerAC implements PacketReceiveListener, Runnabl
 			this.spackets.clear();
 		}
 	}
-	
 }
