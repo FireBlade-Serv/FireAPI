@@ -2,6 +2,7 @@ package fr.glowstoner.fireapi.bukkit;
 
 import java.io.IOException;
 
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -49,6 +50,10 @@ public class Events implements Listener, GediminasConnectionCheckListener{
 					.getAddress().getAddress().getHostAddress(), this.id, SpyAction.PLAYER_SERVER_CONNECTION));
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		}
+		
+		if(this.api.id().equals("login-spigot")) {
+			e.getPlayer().teleport(new Location(e.getPlayer().getWorld(), 0, 12, 0));
 		}
 	}
 	

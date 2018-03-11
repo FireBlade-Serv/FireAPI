@@ -1,4 +1,4 @@
-package fr.glowstoner.fireapi.bukkit.cmd;
+package fr.glowstoner.fireapi.bukkit.commands;
 
 import java.io.IOException;
 

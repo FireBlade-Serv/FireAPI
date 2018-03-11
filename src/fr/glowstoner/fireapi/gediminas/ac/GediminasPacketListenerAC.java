@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.entity.Player;
 
 import fr.glowstoner.fireapi.FireAPI;
+import fr.glowstoner.fireapi.bukkit.nms.FireReflection;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.PacketReceiveListener;
 import net.minecraft.server.v1_8_R3.PacketPlayInArmAnimation;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockDig;
@@ -39,17 +40,26 @@ public class GediminasPacketListenerAC implements PacketReceiveListener, Runnabl
 	@Override
 	public void onPacketReceive(Player p, Object packet) {
 		if(packet instanceof PacketPlayInFlying) {
-			PacketPlayInFlying fly = (PacketPlayInFlying) packet;
+			//PacketPlayInFlying fly = (PacketPlayInFlying) packet;
 			
-			String status = (fly.f()) ? "ON GROUND" : "FLYING";
+			//String status = (fly.f()) ? "ON GROUND" : "FLYING";
 			
-			System.out.println(fly.getClass().getSimpleName()+" / "+status);
+			//System.out.println(fly.getClass().getSimpleName()+" / "+status);
 		}else {
-			System.out.println(packet.getClass().getSimpleName());
+			//System.out.println(packet.getClass().getSimpleName());
 		}
 		
-		if(packet instanceof PacketPlayInArmAnimation) {
-			this.ac.putCPS(p);
+		if(packet instanceof PacketPlayInUseEntity) {
+			PacketPlayInUseEntity puse = (PacketPlayInUseEntity) packet;
+			int id = (int) FireReflection.getFieldValueByName(puse, "a");
+			
+			if(GediminasKillAuraAC.getFakePlayers().containsKey(p)) {
+				if(GediminasKillAuraAC.getFakePlayers().get(p) == id) {
+					if(GediminasKillAuraAC.getClicked().get(p) == false) {
+						GediminasKillAuraAC.getClicked().replace(p, true);
+					}
+				}
+			}
 		}
 		
 		if(this.spackets.containsKey(p)) {
@@ -137,7 +147,7 @@ public class GediminasPacketListenerAC implements PacketReceiveListener, Runnabl
 			}
 		}
 		
-		if(pflyhak.size() >= 270) {
+		if(pflyhak.size() >= 250) {
 			this.ac.flyAlert(p, pflyhak.size());
 		}
 	}

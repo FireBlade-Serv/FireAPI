@@ -3,6 +3,9 @@ package fr.glowstoner.fireapi.gediminas.console;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +28,8 @@ import fr.glowstoner.connectionsapi.network.packets.login.enums.LoginResult;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
 import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
 import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasActionAC;
+import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
 import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
 import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
@@ -190,13 +193,18 @@ public class GediminasListener implements ServerListener{
 			}else if(packet instanceof PacketSpyAction) {
 				PacketSpyAction spy = (PacketSpyAction) packet;
 				
+				Calendar cal = GregorianCalendar.getInstance();
+				cal.setTime(new Date());
+				
 				if(this.gs.ifDataFileExists(spy.getPlayerName())) {
 					this.gs.updateDataFile(spy.getPlayerName(),
 							GediminasSpyUtils.mergeHistory(this.gs.getHistory(spy.getPlayerName()), spy));
 				}else {
-					GediminasSpyHistory gh = new GediminasSpyHistory(spy.getPlayerName(), spy.getIP());
+					GediminasSpyHistory gh = new GediminasSpyHistory(spy.getPlayerName(), spy.getIP(),
+							GediminasSpyUtils.toFireCalendar(cal));
 					
-					gh.putMessage(spy.getActionDate(), spy.getAction(), spy.getFormatedMsg(), spy.getRawMsg());
+					gh.putMessage(GediminasSpyUtils.toFireCalendar(spy.getActionDate()), spy.getAction(),
+							spy.getFormatedMsg(), spy.getRawMsg());
 					
 					this.gs.createNewDataFile(spy.getPlayerName(), gh);
 				}

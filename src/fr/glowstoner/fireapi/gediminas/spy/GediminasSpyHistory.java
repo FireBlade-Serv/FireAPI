@@ -1,13 +1,11 @@
 package fr.glowstoner.fireapi.gediminas.spy;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
 
 public class GediminasSpyHistory implements Serializable{
 	
@@ -16,19 +14,16 @@ public class GediminasSpyHistory implements Serializable{
 	private String playerName, ip;
 	private Map<Integer, GediminasSpyHistoryData> data;
 	
-	public GediminasSpyHistory(String name, String ip) {
+	public GediminasSpyHistory(String name, String ip, FireCalendar now) {
 		this.data = new HashMap<>();
 		
 		this.setIP(ip);
 		this.setPlayerName(name);
 		
-		Calendar c = GregorianCalendar.getInstance();
-		c.setTime(new Date());
-		
-		this.putMessage(c, SpyAction.INIT, "Joueur initialisé. Date = "+GediminasSpyUtils.getFormatedDate(c), "Joueur initialisé.");
+		this.putMessage(now, SpyAction.INIT, "Joueur initialisé. Date = "+GediminasSpyUtils.getFormatedDate(now), "Joueur initialisé.");
 	}
 	
-	public void putMessage(Calendar date, SpyAction action, String actionMsg, String baseMessage) {
+	public void putMessage(FireCalendar date, SpyAction action, String actionMsg, String baseMessage) {
 		if(this.data.size() == 0) {
 			this.data.put(0, new GediminasSpyHistoryData(action, actionMsg, baseMessage, date));
 		}else {

@@ -1,11 +1,18 @@
 package fr.glowstoner.fireapi.gediminas.ac;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FirePacketListener;
@@ -16,7 +23,7 @@ import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 
-public class GediminasAC {
+public class GediminasAC implements Listener{
 	
 	private Map<Player, Integer> cps = new ConcurrentHashMap<>();
 	private FireAPI api;
@@ -32,7 +39,7 @@ public class GediminasAC {
 		
 		gacpl.startPacketScheduler();
 		
-		//this.api.getBukkitPlugin().getServer().getPluginManager().registerEvents(this, this.api.getBukkitPlugin());
+		this.api.getBukkitPlugin().getServer().getPluginManager().registerEvents(this, this.api.getBukkitPlugin());
 	}
 	
 	public void putCPS(Player p) {
@@ -75,6 +82,42 @@ public class GediminasAC {
 					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_GAC_DETECTION));
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void startKillAuraPlayerCheck(Player p) {
+		GediminasKillAuraAC kc = new GediminasKillAuraAC(p);
+		
+		kc.startRegularCheck(this.api);
+	}
+	
+	public void startKilAuraChecks(long period) {
+		this.api.getBukkitPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this.api.getBukkitPlugin(), new Runnable() {
+			
+			@Override
+			public void run() {
+				List<? extends Player> list = (List<? extends Player>) api.getBukkitPlugin().getServer().getOnlinePlayers();
+				
+				startKillAuraPlayerCheck(list.get(new Random().nextInt(list.size())));
+			}
+			
+		}, 0L, period);
+	}
+	
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		if(!e.getAction().equals(Action.PHYSICAL)) {
+			this.putCPS(e.getPlayer());
+		}
+	}
+	
+	@EventHandler
+	public void onDamage(EntityDamageByEntityEvent e) {
+		if(e.getDamager() instanceof Player) {
+			Player dmg = (Player) e.getDamager();
+			
+			double d = dmg.getLocation().distance(e.getEntity().getLocation());
+			dmg.sendMessage("distance = "+d);
 		}
 	}
 }

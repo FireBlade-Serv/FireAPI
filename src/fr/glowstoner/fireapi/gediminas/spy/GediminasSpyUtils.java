@@ -16,12 +16,14 @@ import java.util.Map;
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
+import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
+import fr.glowstoner.fireapi.utils.calendar.enums.FireCalendarFormat;
 import lombok.NonNull;
 
 public class GediminasSpyUtils {
 	
 	public static GediminasSpyHistory mergeHistory(GediminasSpyHistory base, PacketSpyAction ps) {
-		base.putMessage(ps.getActionDate(), ps.getAction(), ps.getFormatedMsg(), ps.getRawMsg());
+		base.putMessage(GediminasSpyUtils.toFireCalendar(ps.getActionDate()), ps.getAction(), ps.getFormatedMsg(), ps.getRawMsg());
 		
 		return base;
 	}
@@ -77,14 +79,14 @@ public class GediminasSpyUtils {
 	}
 	
 	public static Map<Integer, GediminasSpyHistoryData> getHistoryByAValue
-		(Calendar date, int value, GediminasSpyHistory history) {
+		(FireCalendar date, FireCalendarFormat format, GediminasSpyHistory history) {
 		
 		Map<Integer, GediminasSpyHistoryData> map = new HashMap<>();
 		
 		for(int i = 0 ; i < history.getMessages().size() ; i++) {
 			GediminasSpyHistoryData data = history.getMessages().get(i);
 			
-			if(data.getDate().get(value) == date.get(value)) {
+			if(data.getDate().get(format) == date.get(format)) {
 				if(map.size() == 0) {
 					map.put(0, data);
 				}else {
@@ -120,6 +122,18 @@ public class GediminasSpyUtils {
 		return h+"h"+m+"min"+s+"sec"+ms+"ms - "+d+"/"+mo+"/"+y;
 	}
 	
+	public static String getFormatedDate(FireCalendar date) {
+		int ms = date.get(FireCalendarFormat.MILISECOND);
+		int s = date.get(FireCalendarFormat.SECOND);
+		int m = date.get(FireCalendarFormat.MINUTE);
+		int h = date.get(FireCalendarFormat.HOUR_OF_DAY);
+		int d = date.get(FireCalendarFormat.DAY_OF_MOUTH);
+		int mo = date.get(FireCalendarFormat.MOUTH);
+		int y = date.get(FireCalendarFormat.YEAR);
+		
+		return h+"h"+m+"min"+s+"sec"+ms+"ms - "+d+"/"+mo+"/"+y;
+	}
+	
 	public static List<GediminasSpyHistoryData> getAllMessagesContainsMessage(String message, GediminasSpyHistory history) {
 		List<GediminasSpyHistoryData> list = new ArrayList<>();
 		
@@ -137,5 +151,17 @@ public class GediminasSpyUtils {
 		}
 		
 		return list;
+	}
+	
+	public static FireCalendar toFireCalendar(Calendar date) {
+		return FireCalendar.builder()
+				.dayOfMonth(date.get(Calendar.DAY_OF_MONTH))
+				.hourOfDay(date.get(Calendar.HOUR_OF_DAY))
+				.milisecond(date.get(Calendar.MILLISECOND))
+				.minute(date.get(Calendar.MINUTE))
+				.second(date.get(Calendar.SECOND))
+				.month((date.get(Calendar.MONTH) + 1))
+				.year(date.get(Calendar.YEAR))
+				.build();
 	}
 }

@@ -1,9 +1,9 @@
 package fr.glowstoner.fireapi.gediminas.spy;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
 
 public class GediminasSpyHistoryData implements Serializable{
 	
@@ -11,9 +11,9 @@ public class GediminasSpyHistoryData implements Serializable{
 
 	private SpyAction action;
 	private String msg, formatedMessage;
-	private Calendar date;
+	private FireCalendar date;
 	
-	public GediminasSpyHistoryData(SpyAction action, String formatedMessage, String msg, Calendar date) {
+	public GediminasSpyHistoryData(SpyAction action, String formatedMessage, String msg, FireCalendar date) {
 		this.action = action;
 		this.msg = msg;
 		this.date = date;
@@ -29,7 +29,7 @@ public class GediminasSpyHistoryData implements Serializable{
 		return this.msg;
 	}
 	
-	public Calendar getDate() {
+	public FireCalendar getDate() {
 		return this.date;
 	}
 
