@@ -11,16 +11,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.FireAPI;
+import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheckListener;
+import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
 import fr.glowstoner.fireapi.bukkit.tag.FireTag;
-import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheckListener;
-import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
-import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.FirePlayer;
 import fr.glowstoner.fireapi.rank.Rank;
 import lombok.Setter;
 
-public class Events implements Listener, GediminasConnectionCheckListener{
+public class Events implements Listener, BigBrotherConnectionCheckListener{
 	
 	private @Setter ConnectionHandler client;
 	

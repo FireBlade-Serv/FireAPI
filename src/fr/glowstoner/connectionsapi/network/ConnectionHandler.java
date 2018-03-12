@@ -87,7 +87,7 @@ public abstract class ConnectionHandler implements Serializable{
 	}
 	
 	public void sendMessageWithPrefix(String text) {
-		sendMessage("[Gediminas] "+text);
+		sendMessage("[BigBrother] "+text);
 	}
 	
 	public String getName() {

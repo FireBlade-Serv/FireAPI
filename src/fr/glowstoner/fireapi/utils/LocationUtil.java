@@ -75,4 +75,11 @@ public class LocationUtil {
 			return null;
 		}
 	}
+	
+	public static double getDistance(Location loc1, Location loc2) {
+		//distance = sqrt[ (x1-x2)^2 + (y1-y2)^2 + (z1-z2)^2 ]
+		
+		return Math.sqrt(Math.pow((loc1.getX() - loc2.getX()), 2) +
+				Math.pow((loc1.getY() - loc2.getY()), 2) + Math.pow((loc1.getZ() - loc2.getZ()), 2));
+	}
 }

@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
-import fr.glowstoner.fireapi.gediminas.console.packets.ping.enums.PingState;
+import fr.glowstoner.fireapi.bigbrother.console.packets.ping.PacketPlayerPing;
+import fr.glowstoner.fireapi.bigbrother.console.packets.ping.enums.PingState;
 
 public class PingCommand implements CommandExecutor {
 	

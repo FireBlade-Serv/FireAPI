@@ -35,9 +35,9 @@ public class FireBukkitID {
 			
 			this.config.load(file);
 			
-			this.config.set("fireID-gediminas", "default-spigot");
+			this.config.set("fireID-bigbrother", "default-spigot");
 			
-			this.ID = this.config.getString("fireID-gediminas");
+			this.ID = this.config.getString("fireID-bigbrother");
 			
 			this.config.save(file);
 		}else {
@@ -45,7 +45,7 @@ public class FireBukkitID {
 			
 			this.config.load(file);
 			
-			this.ID = this.config.getString("fireID-gediminas");
+			this.ID = this.config.getString("fireID-bigbrother");
 		}
 	}
 }

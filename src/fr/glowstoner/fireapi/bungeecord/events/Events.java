@@ -10,11 +10,11 @@ import java.util.concurrent.TimeUnit;
 import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
+import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheckListener;
+import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.bungeecord.commands.StaffChatCommand;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
-import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheckListener;
-import fr.glowstoner.fireapi.gediminas.spy.enums.SpyAction;
-import fr.glowstoner.fireapi.gediminas.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.Rank;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,7 +32,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-public class Events implements Listener, GediminasConnectionCheckListener {
+public class Events implements Listener, BigBrotherConnectionCheckListener {
 	
 	private final String pre = "§6[§eAmis§6]§r ";
 	

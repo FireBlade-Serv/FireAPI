@@ -10,6 +10,16 @@ import fr.glowstoner.connectionsapi.network.packets.Packet;
 import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
 import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.FireAPI;
+import fr.glowstoner.fireapi.bigbrother.ac.packet.PacketBigBrotherAC;
+import fr.glowstoner.fireapi.bigbrother.ac.packet.enums.BigBrotherActionAC;
+import fr.glowstoner.fireapi.bigbrother.ac.packet.enums.BigBrotherTypeAC;
+import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheck;
+import fr.glowstoner.fireapi.bigbrother.console.check.enums.BigBrotherConnectionCheckType;
+import fr.glowstoner.fireapi.bigbrother.console.login.BigBrotherConnectionInfos;
+import fr.glowstoner.fireapi.bigbrother.console.login.BigBrotherLoginGetter;
+import fr.glowstoner.fireapi.bigbrother.console.packets.PacketExecute;
+import fr.glowstoner.fireapi.bigbrother.console.packets.PacketVersion;
+import fr.glowstoner.fireapi.bigbrother.console.packets.ping.PacketPlayerPing;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
 import fr.glowstoner.fireapi.bukkit.tag.FireTag;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
@@ -25,16 +35,6 @@ import fr.glowstoner.fireapi.bungeecord.commands.misc.Website;
 import fr.glowstoner.fireapi.bungeecord.events.Events;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
-import fr.glowstoner.fireapi.gediminas.ac.packet.PacketGediminasAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasTypeAC;
-import fr.glowstoner.fireapi.gediminas.ac.packet.enums.GediminasActionAC;
-import fr.glowstoner.fireapi.gediminas.console.check.GediminasConnectionCheck;
-import fr.glowstoner.fireapi.gediminas.console.check.enums.GediminasConnectionCheckType;
-import fr.glowstoner.fireapi.gediminas.console.login.GediminasConnectionInfos;
-import fr.glowstoner.fireapi.gediminas.console.login.GediminasLoginGetter;
-import fr.glowstoner.fireapi.gediminas.console.packets.PacketExecute;
-import fr.glowstoner.fireapi.gediminas.console.packets.PacketVersion;
-import fr.glowstoner.fireapi.gediminas.console.packets.ping.PacketPlayerPing;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
 import fr.glowstoner.fireapi.rank.Rank;
@@ -56,9 +56,9 @@ public class BungeeMain extends Plugin implements FireAPI{
 	private FireAuth auth;
 	private FireChat chat;
 	private FireWL wl;
-	private GediminasConnectionCheck check;
+	private BigBrotherConnectionCheck check;
 	
-	private GediminasLoginGetter log;
+	private BigBrotherLoginGetter log;
 	private Client c;
 
 	@Override
@@ -73,7 +73,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 		
 		super.getProxy().registerChannel("fireapi");
 		
-		this.log = new GediminasLoginGetter();
+		this.log = new BigBrotherLoginGetter();
 		
 		try {
 			this.log.load();
@@ -98,8 +98,8 @@ public class BungeeMain extends Plugin implements FireAPI{
 			ch.sendPacket(new PacketVersion(VersionType.BUNGEECORD_VERSION));
 			ch.sendPacket(new PacketCommand("name main-bungeecord"));
 			
-			GediminasConnectionCheck check = new GediminasConnectionCheck
-					(this, GediminasConnectionCheckType.GLOBAL_CHECK, GediminasConnectionInfos.builder()
+			BigBrotherConnectionCheck check = new BigBrotherConnectionCheck
+					(this, BigBrotherConnectionCheckType.GLOBAL_CHECK, BigBrotherConnectionInfos.builder()
 							.id("main-bungeecord")
 							.key(this.log.getKey())
 							.password(this.log.getPassword())
@@ -111,8 +111,8 @@ public class BungeeMain extends Plugin implements FireAPI{
 			
 			this.setChecker(check);
 		}catch(Exception ex) {
-			GediminasConnectionCheck check = new GediminasConnectionCheck
-					(this, GediminasConnectionCheckType.ERROR_CHECK, GediminasConnectionInfos.builder()
+			BigBrotherConnectionCheck check = new BigBrotherConnectionCheck
+					(this, BigBrotherConnectionCheckType.ERROR_CHECK, BigBrotherConnectionInfos.builder()
 							.id("main-bungeecord")
 							.key(this.log.getKey())
 							.password(this.log.getPassword())
@@ -128,7 +128,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 			@Override
 			public void onPacketReceive(Packet packet) {
 				if(packet instanceof PacketExecute) {
-					BungeeMain.super.getLogger().info("(Gediminas) Execution de la commande : "+ ((PacketExecute) packet).
+					BungeeMain.super.getLogger().info("(BigBrother) Execution de la commande : "+ ((PacketExecute) packet).
 								getServerCommand()+".");
 					
 					BungeeMain.super.getProxy().getPluginManager().dispatchCommand
@@ -140,15 +140,15 @@ public class BungeeMain extends Plugin implements FireAPI{
 					BungeeMain.super.getProxy().getPlayer(pp.getName()).sendMessage(new TextComponent
 							("§6[§ePing§6]§r Ton ping §eproxy§r est de §e"
 					+BungeeMain.super.getProxy().getPlayer(pp.getName()).getPing()+" ms§r !"));
-				}else if(packet instanceof PacketGediminasAC) {
-					PacketGediminasAC gacp = (PacketGediminasAC) packet;
+				}else if(packet instanceof PacketBigBrotherAC) {
+					PacketBigBrotherAC gacp = (PacketBigBrotherAC) packet;
 					
-					if(gacp.getType().equals(GediminasTypeAC.CHEAT_DETECTION)) {
-						if(gacp.getTODO().equals(GediminasActionAC.INFORM_STAFF)) {
+					if(gacp.getType().equals(BigBrotherTypeAC.CHEAT_DETECTION)) {
+						if(gacp.getTODO().equals(BigBrotherActionAC.INFORM_STAFF)) {
 							for(ProxiedPlayer ps : getProxy().getPlayers()) {
 								if(api.getRankSystem().hasRankAndSup(ps.getName(), Rank.ASSISTANT)) {
 									ps.sendMessage(
-									new TextComponent("§c[Gediminas] [Cheat] §4"+gacp.getPlayerName()+" §r~ "+gacp.getMessage()
+									new TextComponent("§c[BigBrother] [Cheat] §4"+gacp.getPlayerName()+" §r~ "+gacp.getMessage()
 									+" §c"+gacp.getPing()+"ms"));
 								}
 							}
@@ -285,12 +285,12 @@ public class BungeeMain extends Plugin implements FireAPI{
 	}
 
 	@Override
-	public GediminasConnectionCheck getChecker() {
+	public BigBrotherConnectionCheck getChecker() {
 		return this.check;
 	}
 
 	@Override
-	public void setChecker(GediminasConnectionCheck checker) {
+	public void setChecker(BigBrotherConnectionCheck checker) {
 		this.check = checker;
 	}
 
