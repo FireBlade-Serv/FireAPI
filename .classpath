@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="libs/spigot-api-1.8.8-R0.1-SNAPSHOT-latest-shaded.jar"/>
 	<classpathentry kind="lib" path="libs/spigot-NMS-1.8.8.jar"/>
 	<classpathentry kind="lib" path="libs/lombok.jar" sourcepath="C:/Users/EDITAL~1/AppData/Local/Temp/.org.sf.feeling.decompiler1519238530336/source/lombok-1.16.20-sources-1519241032984.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_161"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

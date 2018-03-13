@@ -23,7 +23,7 @@ public class FireCalendar implements Serializable{
 			case MILISECOND:
 				return this.milisecond;
 			case MINUTE:
-				return this.milisecond;
+				return this.minute;
 			case MOUTH:
 				return this.month;
 			case SECOND:

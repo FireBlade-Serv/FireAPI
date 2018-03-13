@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import com.mojang.authlib.GameProfile;
@@ -22,8 +24,10 @@ import fr.glowstoner.fireapi.utils.LocationUtil;
 import fr.glowstoner.fireapi.utils.MathUtil;
 import lombok.Getter;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.ItemStack;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
@@ -107,9 +111,19 @@ public class BigBrotherKillAuraAC {
 							e.printStackTrace();
 						}
 					}
-				}else {					
+				}else {	
 					clicked.remove(getPlayer());
 					fakePlayers.remove(getPlayer());
+					
+					if(check == (byte) 4) {
+						try {
+							api.getClient().sendPacket(new PacketBigBrotherAC(getPlayer().getName(), "KillAura 4/5",
+									BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF, BigBrotherCheatAC.KILLAURA,
+									((CraftPlayer) getPlayer()).getHandle().ping));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 			
@@ -123,6 +137,8 @@ public class BigBrotherKillAuraAC {
 			//add
 			this.ep = this.getEntityPlayer(this.player.getWorld());
 			this.ID = this.ep.getBukkitEntity().getEntityId();
+			
+			this.getConnection().sendPacket(this.getEquipmentPacket(this.ep));
 	
 			Location sloc = this.getFakePlayerSpawningLocation(this.player, check);
 			
@@ -161,6 +177,15 @@ public class BigBrotherKillAuraAC {
 	private EntityPlayer getEntityPlayer(World w) {
 		return new EntityPlayer(MinecraftServer.getServer(), ((CraftWorld) w).getHandle(),
 				this.getGameProfile(), new PlayerInteractManager(((CraftWorld) w).getHandle()));
+	}
+	
+	private PacketPlayOutEntityEquipment getEquipmentPacket(EntityPlayer ep) {
+		return new PacketPlayOutEntityEquipment(ep.getBukkitEntity().getEntityId(),
+				2, this.getBootsItem());
+	}
+	
+	private ItemStack getBootsItem() {
+		return CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.LEATHER_BOOTS));
 	}
 	
 	private PacketPlayOutPlayerInfo getInfoPacket(EntityPlayer ep, EnumPlayerInfoAction info) {

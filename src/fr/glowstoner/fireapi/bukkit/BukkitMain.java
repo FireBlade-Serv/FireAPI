@@ -97,7 +97,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		this.ac = new BigBrotherAC(this);
 		
 		this.ac.init();
-		this.ac.startKilAuraChecks((long) (30 * 20));
+		this.ac.startKillAuraChecks((long) (30 * 20));
 		
 		try {
 			ConnectionsAPI.init();

@@ -10,6 +10,7 @@ public enum SpyAction {
 	PLAYER_JOIN,
 	PLAYER_LEAVE,
 	PLAYER_LOGGED,
+	PLAYER_PING,
 	
 	//server
 	PLAYER_SERVER_CONNECTION,
@@ -22,5 +23,5 @@ public enum SpyAction {
 	PLAYER_FULLBAN,
 	
 	//BigBrother anti-cheat
-	PLAYER_GAC_DETECTION
+	PLAYER_BBAC_DETECTION
 }

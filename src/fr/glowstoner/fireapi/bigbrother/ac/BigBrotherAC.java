@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bigbrother.ac.packet.PacketBigBrotherAC;
@@ -61,7 +62,7 @@ public class BigBrotherAC implements Listener{
 									BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
 									BigBrotherCheatAC.AUTOCLICK, ((CraftPlayer) p).getHandle().ping));
 							api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
-									"Autoclick "+cps.get(p)+" CPS", SpyAction.PLAYER_GAC_DETECTION));
+									"Autoclick "+cps.get(p)+" CPS", SpyAction.PLAYER_BBAC_DETECTION));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -74,13 +75,16 @@ public class BigBrotherAC implements Listener{
 		}
 	}
 	
-	public void flyAlert(Player p, int packets) {
+	public void moveAlert(Player p, int packets, boolean position) {
 		try {
-			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), "Flyhack ("+packets+" paquets)",
+			String message = (position) ? "MoveCheat ("+packets+" paquets, position mode)" :
+				"FMoveCheat ("+packets+" paquets)";
+			
+			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), message,
 					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
-					BigBrotherCheatAC.FLYHACK, ((CraftPlayer) p).getHandle().ping));
+					BigBrotherCheatAC.MOVE, ((CraftPlayer) p).getHandle().ping));
 			this.api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
-					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_GAC_DETECTION));
+					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_BBAC_DETECTION));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -92,7 +96,7 @@ public class BigBrotherAC implements Listener{
 		kc.startRegularCheck(this.api);
 	}
 	
-	public void startKilAuraChecks(long period) {
+	public void startKillAuraChecks(long period) {
 		this.api.getBukkitPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this.api.getBukkitPlugin(), new Runnable() {
 			
 			@Override
@@ -112,6 +116,16 @@ public class BigBrotherAC implements Listener{
 			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), "Reach "+distance+" pl+",
 					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF, BigBrotherCheatAC.REACH,
 					((CraftPlayer) p).getHandle().ping));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void fastSneakAlert(Player p) {
+		try {
+			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), "FastSneak",
+					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
+					BigBrotherCheatAC.FASTSNEAK, ((CraftPlayer) p).getHandle().ping));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -137,9 +151,18 @@ public class BigBrotherAC implements Listener{
 			 * }
 			 */
 			
+			//max = 4
+			
 			if(distance >= 4) {
 				this.reachAlert(p, (distance - 4));
 			}
+			
+			this.putCPS(p);
 		}
+	}
+	
+	@EventHandler
+	public void onMove(PlayerMoveEvent e) {
+		
 	}
 }

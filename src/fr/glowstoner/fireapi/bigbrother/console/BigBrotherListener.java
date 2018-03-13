@@ -237,7 +237,7 @@ public class BigBrotherListener implements ServerListener{
 		ch.sendMessage("~~~~~~~~~~BigBrother~~~~~~~~~~");
 		ch.sendMessage("by Glowstoner");
 		ch.sendMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		ch.sendMessage("\nProtocol version : 2.11");
+		ch.sendMessage("\nProtocol version : 3.00");
 		
 		this.refreshLists();
 	}

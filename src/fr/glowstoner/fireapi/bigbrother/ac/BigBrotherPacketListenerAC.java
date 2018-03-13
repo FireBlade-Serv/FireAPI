@@ -17,6 +17,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayInBlockDig;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 import net.minecraft.server.v1_8_R3.PacketPlayInChat;
 import net.minecraft.server.v1_8_R3.PacketPlayInEntityAction;
+import net.minecraft.server.v1_8_R3.PacketPlayInEntityAction.EnumPlayerAction;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying.PacketPlayInLook;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying.PacketPlayInPosition;
@@ -45,6 +46,10 @@ public class BigBrotherPacketListenerAC implements PacketReceiveListener, Runnab
 			String status = (fly.f()) ? "ON GROUND" : "FLYING";
 			
 			System.out.println(fly.getClass().getSimpleName()+" / "+status);
+		}else if(packet instanceof PacketPlayInEntityAction) {
+			PacketPlayInEntityAction ea = (PacketPlayInEntityAction) packet;
+			
+			System.out.println(ea.getClass().getSimpleName()+" / "+ea.b());
 		}else {
 			System.out.println(packet.getClass().getSimpleName());
 		}
@@ -135,6 +140,8 @@ public class BigBrotherPacketListenerAC implements PacketReceiveListener, Runnab
 				" ; HeldItemSlot : "+his.size()+" ; Flying : "+fly.size()+" ; Settings : "+set.size()+" ; Other Packets : "+other.size());
 		
 		List<PacketPlayInFlying> pflyhak = new ArrayList<>();
+		List<PacketPlayInFlying> flyhakpos = new ArrayList<>();
+		List<PacketPlayInEntityAction> actionentitypacket = new ArrayList<>();
 		
 		for(Object pfp : list) {
 			
@@ -144,11 +151,27 @@ public class BigBrotherPacketListenerAC implements PacketReceiveListener, Runnab
 				if(ppif.f()) {
 					pflyhak.add(ppif);
 				}
+				
+				flyhakpos.add(ppif);
 			}
 		}
 		
 		if(pflyhak.size() >= 250) {
-			this.ac.flyAlert(p, pflyhak.size());
+			this.ac.moveAlert(p, pflyhak.size(), false);
+		}
+		
+		if(flyhakpos.size() >= 450) {
+			this.ac.moveAlert(p, flyhakpos.size(), true);
+		}
+		
+		for(PacketPlayInEntityAction pea : ea) {
+			if(pea.b().equals(EnumPlayerAction.START_SNEAKING) || pea.b().equals(EnumPlayerAction.STOP_SNEAKING)) {
+				actionentitypacket.add(pea);
+			}
+		}
+		
+		if(actionentitypacket.size() >= 350) {
+			this.ac.fastSneakAlert(p);
 		}
 	}
 

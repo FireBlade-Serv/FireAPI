@@ -77,7 +77,7 @@ public class StaffChatCommand extends Command{
 			ProxiedPlayer next = it.next();
 			
 			if(this.players.get(next)) {
-				next.sendMessage(new TextComponent(this.pre+pname+"§o : "+message));
+				next.sendMessage(new TextComponent(this.pre+pname+"§r§o : "+message));
 			}
 		}
 	}
