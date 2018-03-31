@@ -23,5 +23,5 @@ public enum SpyAction {
 	PLAYER_FULLBAN,
 	
 	//BigBrother anti-cheat
-	PLAYER_BBAC_DETECTION
+	PLAYER_BBAC_DETECTION;
 }

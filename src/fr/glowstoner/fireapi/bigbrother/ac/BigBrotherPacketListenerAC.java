@@ -16,6 +16,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayInArmAnimation;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockDig;
 import net.minecraft.server.v1_8_R3.PacketPlayInBlockPlace;
 import net.minecraft.server.v1_8_R3.PacketPlayInChat;
+import net.minecraft.server.v1_8_R3.PacketPlayInCustomPayload;
 import net.minecraft.server.v1_8_R3.PacketPlayInEntityAction;
 import net.minecraft.server.v1_8_R3.PacketPlayInEntityAction.EnumPlayerAction;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
@@ -100,6 +101,7 @@ public class BigBrotherPacketListenerAC implements PacketReceiveListener, Runnab
 		List<PacketPlayInHeldItemSlot> his = new ArrayList<>();
 		List<PacketPlayInFlying> fly = new ArrayList<>();
 		List<PacketPlayInSettings> set = new ArrayList<>();
+		List<PacketPlayInCustomPayload> payload = new ArrayList<>();
 		List<Object> other = new ArrayList<>();
 		
 		for(Object in : list) {
@@ -129,6 +131,8 @@ public class BigBrotherPacketListenerAC implements PacketReceiveListener, Runnab
 				fly.add((PacketPlayInFlying) in);
 			}else if(in instanceof PacketPlayInSettings) {
 				set.add((PacketPlayInSettings) in);
+			}else if(in instanceof PacketPlayInCustomPayload) {
+				payload.add((PacketPlayInCustomPayload) in);
 			}else {
 				other.add(in);
 			}
@@ -137,7 +141,8 @@ public class BigBrotherPacketListenerAC implements PacketReceiveListener, Runnab
 		p.sendMessage("KeepAlive : "+ka.size()+" ; Chat : "+chat.size()+" ; UseEntity : "+ue.size()+
 				" ; Position : "+pos.size()+" ; PositionLook : "+lpos.size()+" ; Look : "+l.size()+" ; Dig : "+
 				dig.size()+" ; Place : "+pl.size()+" ; ArmAnimation : "+aanim.size()+" ; EntityAction : "+ea.size()+
-				" ; HeldItemSlot : "+his.size()+" ; Flying : "+fly.size()+" ; Settings : "+set.size()+" ; Other Packets : "+other.size());
+				" ; HeldItemSlot : "+his.size()+" ; Flying : "+fly.size()+" ; Settings : "+set.size()+" ;"
+				+ " Other Packets : "+other.size()+" ; CustomPayload : "+payload.size());
 		
 		List<PacketPlayInFlying> pflyhak = new ArrayList<>();
 		List<PacketPlayInFlying> flyhakpos = new ArrayList<>();

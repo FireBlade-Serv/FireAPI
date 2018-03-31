@@ -78,7 +78,7 @@ public class BigBrotherAC implements Listener{
 	public void moveAlert(Player p, int packets, boolean position) {
 		try {
 			String message = (position) ? "MoveCheat ("+packets+" paquets, position mode)" :
-				"FMoveCheat ("+packets+" paquets)";
+				"MoveCheat ("+packets+" paquets)";
 			
 			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), message,
 					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
