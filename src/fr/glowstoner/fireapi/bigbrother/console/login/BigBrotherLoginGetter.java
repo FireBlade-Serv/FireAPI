@@ -2,8 +2,6 @@ package fr.glowstoner.fireapi.bigbrother.console.login;
 
 import java.io.ObjectInputStream;
 
-import fr.glowstoner.fireapi.crypt.FireCrypt;
-
 public class BigBrotherLoginGetter {
 	
 	private String key, password;
@@ -22,12 +20,8 @@ public class BigBrotherLoginGetter {
 		
 		System.out.println("[BigBrother] (FireAPI) Fichier secret importé ! Décryptage des logins BigBrother ...");
 		
-		FireCrypt crypt = new FireCrypt();
-		
-		crypt.setKey("jesuispasbelgeputain");
-		
-		this.key = crypt.decrypt(o.getKey());
-		this.password = crypt.decrypt(o.getPassword());
+		this.key = o.getKey();
+		this.password = o.getPassword();
 		
 		in.close();
 		

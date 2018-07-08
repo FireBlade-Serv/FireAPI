@@ -2,8 +2,6 @@ package fr.glowstoner.fireapi.sql;
 
 import java.io.ObjectInputStream;
 
-import fr.glowstoner.fireapi.crypt.FireCrypt;
-
 public class FireConfigSQL {
 		
 	private String urlbase, host, database, user, password;
@@ -20,21 +18,17 @@ public class FireConfigSQL {
 		
 		FireSqlLogin o = (FireSqlLogin) in.readObject();
 		
-		System.out.println("[FireAPI] Fichier secret importé ! Décryptage des logins SQL ...");
-		
-		FireCrypt crypt = new FireCrypt();
-		
-		crypt.setKey("jesuispasbelgeputain");
+		System.out.println("[FireAPI] Fichier secret importé ! Récupération des logins SQL ...");
 		
 		this.urlbase = o.getUrlbase();
-		this.host = crypt.decrypt(o.getHost());
-		this.database = crypt.decrypt(o.getDatabase());
-		this.user = crypt.decrypt(o.getUser());
-		this.password = crypt.decrypt(o.getPassword());
+		this.host = o.getHost();
+		this.database = o.getDatabase();
+		this.user = o.getUser();
+		this.password = o.getPassword();
 		
 		in.close();
 		
-		System.out.println("[FireAPI] Importé !");
+		System.out.println("[FireAPI] Terminé !");
 	}
 	
 	public String getUrlbase() {

@@ -321,7 +321,7 @@ public class FireSQL extends TimerTask{
 				
 				q.setString(1, "CONSOLE");
 				q.setString(2, "~");
-				q.setInt(3, 0);
+				q.setInt(3, 666);
 				q.setString(4, Rank.CONSOLE.name());
 				q.setString(5, "~");
 				q.execute();
