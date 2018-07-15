@@ -2,26 +2,29 @@ package fr.glowstoner.fireapi.bigbrother.console.login;
 
 import java.io.Serializable;
 
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
+
 public class BigBrotherLogin implements Serializable{
 	
 	private static final long serialVersionUID = -2331272106486048631L;
 	
-	private String key, password;
+	private EncryptionKey key;
+	private String password;
 	
-	public BigBrotherLogin(String key, String pass) {
+	public BigBrotherLogin(EncryptionKey key, String password) {
 		this.setKey(key);
-		this.setPassword(pass);
+		this.setPassword(password);
 	}
 	
 	public BigBrotherLogin() {
 		
 	}
 
-	public String getKey() {
+	public EncryptionKey getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(EncryptionKey key) {
 		this.key = key;
 	}
 

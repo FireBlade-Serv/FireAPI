@@ -1,18 +1,15 @@
 package fr.glowstoner.fireapi.bigbrother.console.packets.ping;
 
-import java.io.Serializable;
-
-import fr.glowstoner.connectionsapi.network.packets.Packet;
 import fr.glowstoner.fireapi.bigbrother.console.packets.ping.enums.PingState;
-import lombok.Getter;
-import lombok.Setter;
+import fr.glowstoner.fireapi.network.packets.Encryptable;
+import fr.glowstoner.fireapi.network.packets.Packet;
 
-public class PacketPlayerPing extends Packet implements Serializable{
+public class PacketPlayerPing extends Packet implements Encryptable{
 	
 	private static final long serialVersionUID = 5070770223906428929L;
 
-	@Getter @Setter private PingState state;
-	@Getter @Setter private String name;
+	private PingState state;
+	private String name;
 	
 	public PacketPlayerPing(String name, PingState type) {
 		this.setState(type);
@@ -23,8 +20,29 @@ public class PacketPlayerPing extends Packet implements Serializable{
 		
 	}
 
+	public PingState getState() {
+		return state;
+	}
+
+	public void setState(PingState state) {
+		this.state = state;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String[] encryptedFields() {
+		return new String[] {"state", "name"};
+	}
+
 	@Override
 	public boolean isCrypted() {
-		return false;
+		return true;
 	}
 }

@@ -7,14 +7,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
-import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheckListener;
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.bungeecord.commands.StaffChatCommand;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.client.Client;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.Rank;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -66,7 +66,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 		ps.setDateToNow();
 		
 		try {
-			this.c.sendPacket(ps);
+			this.c.sendPacket(ps, this.instance.encryptionKey());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -114,7 +114,8 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 		try {
 			this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress()
 					.getHostAddress(),
-					"Le joueur vient de passer les sécurités du login.", SpyAction.PLAYER_LOGGED));
+					"Le joueur vient de passer les sécurités du login.", SpyAction.PLAYER_LOGGED),
+					this.instance.encryptionKey());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -211,7 +212,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 						e.getMessage(), SpyAction.PLAYER_CHAT);
 				ps.setDateToNow();
 				
-				this.c.sendPacket(ps);
+				this.c.sendPacket(ps, this.instance.encryptionKey());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -241,7 +242,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 			
 			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), 
 					e.getPlayer().getAddress().getAddress().getHostAddress(), "Déconnection du proxy principal.",
-					SpyAction.PLAYER_LEAVE));
+					SpyAction.PLAYER_LEAVE), this.instance.encryptionKey());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

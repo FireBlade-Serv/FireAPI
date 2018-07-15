@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.bungeecord.BungeeMain;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.player.FirePlayer;
 import fr.glowstoner.fireapi.rank.Rank;
 import net.md_5.bungee.api.CommandSender;

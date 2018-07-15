@@ -1,14 +1,14 @@
 package fr.glowstoner.fireapi.bigbrother.spy.packets;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import fr.glowstoner.connectionsapi.network.packets.Packet;
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.network.packets.Encryptable;
+import fr.glowstoner.fireapi.network.packets.Packet;
 
-public class PacketSpyAction extends Packet implements Serializable{
+public class PacketSpyAction extends Packet implements Encryptable{
 
 	private static final long serialVersionUID = 2494871161464801144L;
 
@@ -52,11 +52,6 @@ public class PacketSpyAction extends Packet implements Serializable{
 	public String getRawMsg() {
 		return this.actionMsg;
 	}
-	
-	@Override
-	public boolean isCrypted() {
-		return false;
-	}
 
 	public SpyAction getAction() {
 		return action;
@@ -92,5 +87,15 @@ public class PacketSpyAction extends Packet implements Serializable{
 
 	public void setIP(String ip) {
 		this.ip = ip;
+	}
+
+	@Override
+	public String[] encryptedFields() {
+		return new String[] {"action", "playerName", "actionMsg", "ip"};
+	}
+
+	@Override
+	public boolean isCrypted() {
+		return true;
 	}
 }

@@ -1,91 +1,86 @@
 package fr.glowstoner.fireapi.bigbrother.console;
 
-import java.io.DataInputStream;
+import java.util.Scanner;
 
-import fr.glowstoner.connectionsapi.ConnectionsAPI;
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
-import fr.glowstoner.connectionsapi.network.client.Client;
-import fr.glowstoner.connectionsapi.network.events.ClientListener;
-import fr.glowstoner.connectionsapi.network.events.Listeners;
-import fr.glowstoner.connectionsapi.network.packets.Packet;
-import fr.glowstoner.connectionsapi.network.packets.PacketText;
-import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
-import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
+import fr.glowstoner.fireapi.bigbrother.console.packets.PacketVersion;
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.FireNetwork;
+import fr.glowstoner.fireapi.network.client.Client;
+import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
+import fr.glowstoner.fireapi.network.events.ClientListener;
+import fr.glowstoner.fireapi.network.events.Listeners;
+import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.PacketText;
+import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
+import fr.glowstoner.fireapi.player.enums.VersionType;
 
-public class BigBrotherClient {
+public class BigBrotherClient implements ClientListener{
 	
-	private DataInputStream in;
-	private boolean logged;
-
+	private EncryptionKey key;
+	private String password;
+	
 	public BigBrotherClient() {
 		System.out.println("BigBrother Client");
 		 
-		this.in = new DataInputStream(System.in);
+		FireNetwork.init();
+		Listeners l = FireNetwork.getListeners();
 		
-		ConnectionsAPI.init();
-		Listeners l = ConnectionsAPI.getListeners();
-		
-		l.registerClientListener(new ClientListener() {
-			
-			@Override
-			public void onPacketReceive(Packet p) {
-				if(p instanceof PacketText) {
-					PacketText tp = (PacketText) p;
-					
-					System.out.println(tp.getMessage());
-					
-					if(tp.getMessage().equalsIgnoreCase("Bienvenue !")) {
-						logged = true;
-					}
-				}
-			}
-		});
+		l.registerClientListener(this);
 	}
 	
 	public void connect() {
 		try {
+			Scanner sc = new Scanner(System.in);
+			
+			do {
+				System.out.print("\nClé de chiffrement : ");
+				String k = sc.nextLine();
+				
+				if(k.length() > 0) {
+					this.key = new EncryptionKey(k);
+				}
+			} while(this.key == null);
+			
+			do {
+				System.out.print("\nMot de passe : ");
+				String mdp = sc.nextLine();
+				
+				if(mdp.length() > 0) {
+					this.password = mdp;
+				}
+			} while(this.password == null);
+			
 			Client c = new Client("62.4.16.89", 2566);
-			c.start();
 			
-			ConnectionHandler ch = c;
+			c.open(this.key);
 			
-			while(true) {
-				@SuppressWarnings("deprecation")
-				String line = this.in.readLine();
+			c.sendPacket(new PacketLogin(this.password), this.key);
+			c.sendPacket(new PacketVersion(VersionType.CLIENT_BIGBROTHER), this.key);
+			
+			while(((ConnectionHandler) c).isConnectedOrValid()) {
+				String line = sc.nextLine();
 				
 				if(line.equalsIgnoreCase("stop")) {
+					c.close();
 					break;
 				}
 				
-				if(!this.logged) {
-					//login *key-pass
-					if(line.startsWith("login")) {
-						String sub = line.substring(6);
-						
-						String[] args = sub.split("-");
-						
-						String pass = null, key = null;
-						
-						for(String arg : args) {
-							if(arg.startsWith("*")) {
-								key = arg.substring(1);
-							}else {
-								pass = arg;
-							}
-						}
-						
-						ch.sendPacket(new PacketLogin(key, pass));
-						
-						System.out.println("Envoi d'un login avec KEY="+key+", PASS="+pass);
-					}else {
-						ch.sendPacket(new PacketCommand(line));
-					}
-				}
+				c.sendPacket(new PacketCommand(line), this.key);
 			}
 			
-			c.close();
+			sc.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onPacketReceive(Packet p) {
+		if(p instanceof PacketText) {
+			PacketText tp = (PacketText) p;
+			
+			System.out.println(tp.getText());
 		}
 	}
 }

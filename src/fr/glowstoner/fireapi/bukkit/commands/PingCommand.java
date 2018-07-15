@@ -8,17 +8,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bigbrother.console.packets.ping.PacketPlayerPing;
 import fr.glowstoner.fireapi.bigbrother.console.packets.ping.enums.PingState;
 
 public class PingCommand implements CommandExecutor {
 	
-	private ConnectionHandler c;
+	private FireAPI api;
 	
 	public PingCommand(FireAPI api) {
-		this.c = api.getClient(); 
+		this.api = api; 
 	}
 
 	@Override
@@ -31,7 +30,8 @@ public class PingCommand implements CommandExecutor {
 			p.sendMessage("§6[§ePing§6]§r Ton ping §eserveur§r est de §e"+ping+" ms§r !");
 			
 			try {
-				c.sendPacket(new PacketPlayerPing(p.getName(), PingState.INIT_SERVER));
+				this.api.getClient().sendPacket(new PacketPlayerPing(p.getName(), PingState.INIT_SERVER),
+						this.api.encryptionKey());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

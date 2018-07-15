@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.glowstoner.connectionsapi.network.client.Client;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
-import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
+import fr.glowstoner.fireapi.bungeecord.friends.packets.enums.FriendsActionType;
+import fr.glowstoner.fireapi.network.client.Client;
 import fr.glowstoner.fireapi.player.FirePlayer;
+import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -71,16 +72,17 @@ public class FriendsCommand extends Command {
 				}else if(args[0].equalsIgnoreCase("accept")) {
 					sender.sendMessage(new TextComponent(this.pre+"§cUsage : /amis accept <pseudo>"));
 				}else if(args[0].equalsIgnoreCase("gui")) {
-					List<String> names = new ArrayList<>();
-					
-					for(ProxiedPlayer pps : this.api.getBungeePlugin().getProxy().getPlayers()) {
-						names.add(pps.getName());
-					}
+					List<String> names = this.api.getBungeePlugin().getProxy().getPlayers()
+							.parallelStream()
+							.collect(() -> new ArrayList<>(),
+									(l, e) -> l.add(e.getName()),
+									(l1, l2) -> l1.addAll(l2));
 					
 					try {
-						c.sendPacket(new PacketFriends(new FriendsActionTransmetterGUI(pp.getName(),
-								pp.getServer().getInfo().getName().concat("-spigot"),
-								this.friends.getAllFriends(pp.getName()), names)));
+						c.sendPacket(new PacketFriends(FriendsActionType.OPEN_FRIENDSLIST_GUI,
+								VersionType.SPIGOT_VERSION, this.friends.getAllFriends(pp.getName()),
+								names, pp.getServer().getInfo().getName().concat("-spigot"), pp.getName()),
+								this.api.encryptionKey());
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

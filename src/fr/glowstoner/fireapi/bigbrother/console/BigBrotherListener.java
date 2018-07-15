@@ -1,30 +1,15 @@
 package fr.glowstoner.fireapi.bigbrother.console;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
-import fr.glowstoner.connectionsapi.network.events.Listeners;
-import fr.glowstoner.connectionsapi.network.events.ServerListener;
-import fr.glowstoner.connectionsapi.network.packets.Packet;
-import fr.glowstoner.connectionsapi.network.packets.PacketPing;
-import fr.glowstoner.connectionsapi.network.packets.PacketText;
-import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
-import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
-import fr.glowstoner.connectionsapi.network.packets.login.enums.LoginResult;
+import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bigbrother.ac.packet.PacketBigBrotherAC;
 import fr.glowstoner.fireapi.bigbrother.ac.packet.enums.BigBrotherActionAC;
 import fr.glowstoner.fireapi.bigbrother.ac.packet.enums.BigBrotherTypeAC;
@@ -36,45 +21,44 @@ import fr.glowstoner.fireapi.bigbrother.spy.BigBrotherSpy;
 import fr.glowstoner.fireapi.bigbrother.spy.BigBrotherSpyHistory;
 import fr.glowstoner.fireapi.bigbrother.spy.BigBrotherSpyUtils;
 import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
-import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyHistoryGetter;
-import fr.glowstoner.fireapi.bigbrother.spy.packets.enums.BigBrotherSpyHistoryGetterState;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
-import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
+import fr.glowstoner.fireapi.network.events.Listeners;
+import fr.glowstoner.fireapi.network.events.ServerListener;
+import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.PacketPing;
+import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
+import fr.glowstoner.fireapi.network.packets.login.enums.LoginResult;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 
 public class BigBrotherListener implements ServerListener{
 	
+	private static final String YELLOW_UNDERLINED = "\033[4;33m";
+	private static final String RED_BOLD = "\033[1;31m";
+	private static final String RESET = "\033[0m";
+	
 	private Listeners listeners;
-	private Map<ConnectionHandler, Integer> limit = new HashMap<>();
 	private Map<VersionType, List<ConnectionHandler>> connectionstype = new ConcurrentHashMap<>();
 	private List<ConnectionHandler> connected = new CopyOnWriteArrayList<>();
 	private BigBrotherLoginGetter log;
+	private EncryptionKey key;
 	private BigBrotherSpy gs;
 	
-	public BigBrotherListener(BigBrotherSpy gs, Listeners listeners) {
+	public BigBrotherListener(BigBrotherLoginGetter log, BigBrotherSpy gs, Listeners listeners) {
 		this.listeners = listeners;
 		this.gs = gs;
-		
-		this.log = new BigBrotherLoginGetter();
-		
-		try {
-			System.out.println("[BigBrother] Chargement logins getter ...");
-			
-			this.log.load();
-			
-			System.out.println("[BigBrother] La clé de sécurité utilisée est "+this.log.getKey());
-			System.out.println("[BigBrother] Le mot de passe utilisé est "+this.log.getPassword());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		this.log = log;
+		this.key = this.log.getKey();
 	}
 
 	@Override
 	public void onPacketReceive(Packet packet) {
 		try {
-			ConnectionHandler server = packet.getConnection();
+			ConnectionHandler ch = packet.getConnection();
 			
-			String name = (server.getName().equals("default-name")) ? server.getIP() : server.getName();
+			String name = (ch.getName().equals("default-name")) ? ch.getIP() : ch.getName();
 			
 			if(!(packet instanceof PacketPing)) {
 				if(!(packet instanceof PacketSpyAction)) {
@@ -85,98 +69,37 @@ public class BigBrotherListener implements ServerListener{
 				}
 			}
 			
-			if(server.isLogged().equals(LoginResult.NOT_LOGGED)) {
+			if(ch.isLogged().equals(LoginResult.NOT_LOGGED)) {
 				if(packet instanceof PacketLogin) {
 					PacketLogin pl = (PacketLogin) packet;
 					
-					try {
-						String cpass = pl.decryptPass(this.log.getKey());
+					System.out.println("[BigBrother] Tentative de connection de "+name+
+							" avec un mot de passe de "+pl.getPassword());
+					
+					if(pl.getPassword().equals(this.log.getPassword())) {
+						this.sendMessage(ch, "[BigBrother] Connection réussie !");
+						ch.setLoginResult(LoginResult.LOGGED);
 						
-						System.out.println("[BigBrother] PacketLogin reçu, valeur du PASS (crypt) : "+pl.getCryptPassword());
-						System.out.println("[BigBrother] PacketLogin reçu, valeur du PASS (D_key) : "+cpass);
-						
-						if(cpass.equals(this.log.getPassword())) {
-							server.sendPacket(new PacketText("[BigBrother] Connection réussie !"));
-							server.setLoginResult(LoginResult.LOGGED);
-							
-							listeners.callOnConnectionSuccessfullServerListener(server);
-						}else {
-							server.sendMessage("[BigBrother] Mot de passe incorect !");
-							
-							if(limit.containsKey(server)) {
-								limit.replace(server, limit.get(server) + 1);
-								
-								if(limit.get(server) == 3) {
-									server.sendPacket(new PacketText(
-											"[BigBrother] Trop de tentatives ratées ! Déconnexion ..."));
-									
-									server.close();
-								}
-							}else {
-								limit.put(server, 1);
-							}
-						}
-					} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
-							| IllegalBlockSizeException | BadPaddingException | IOException e) {
-						
-						return;
+						this.listeners.callOnConnectionSuccessfullServerListener(ch);
+					}else {
+						this.sendMessage(ch, "[BigBrother] Mot de passe incorect !");
+						ch.close();
 					}
 				}else {
-					server.sendPacket(new PacketText("[BigBrother] Vous devez vous connecter !"));
-					
+					ch.close();
 					return;
 				}
 			}
 			
 			if(packet instanceof PacketCommand) {
-				this.listeners.callOnCommandServerListener((PacketCommand) packet); 
+				this.listeners.callOnCommandServerListener((PacketCommand) packet);
 			}else if(packet instanceof PacketVersion) {
-				PacketVersion ver = (PacketVersion) packet;
-				
-				if(!this.connectionstype.containsKey(VersionType.SPIGOT_VERSION)) {
-					if(ver.getType().equals(VersionType.SPIGOT_VERSION)) {
-						List<ConnectionHandler> list = new CopyOnWriteArrayList<>();
-						list.add(server);
-						
-						this.connectionstype.put(VersionType.SPIGOT_VERSION, list);
-					}
-				}else {
-					if(ver.getType().equals(VersionType.SPIGOT_VERSION)) {
-						List<ConnectionHandler> list = this.connectionstype.get(VersionType.SPIGOT_VERSION);
-						list.add(server);
-						
-						this.connectionstype.replace(VersionType.SPIGOT_VERSION, list);
-					}
-				}
-				
-				if(!this.connectionstype.containsKey(VersionType.BUNGEECORD_VERSION)) {
-					if(ver.getType().equals(VersionType.BUNGEECORD_VERSION)) {
-						List<ConnectionHandler> list = new CopyOnWriteArrayList<>();
-						list.add(server);
-						
-						this.connectionstype.put(VersionType.BUNGEECORD_VERSION, list);
-					}
-				}else {
-					if(ver.getType().equals(VersionType.BUNGEECORD_VERSION)) {
-						List<ConnectionHandler> list = this.connectionstype.get(VersionType.BUNGEECORD_VERSION);
-						list.add(server);
-						
-						this.connectionstype.replace(VersionType.BUNGEECORD_VERSION, list);
-					}
-				}
+				this.addConnection(((PacketVersion) packet).getVersion(), ch);
 			}else if(packet instanceof PacketFriends) {
 				PacketFriends pf = (PacketFriends) packet;
-				
-				if(pf.getAction() instanceof FriendsActionTransmetterGUI) {
-					FriendsActionTransmetterGUI fa = (FriendsActionTransmetterGUI) pf.getAction();
-					
-					if(fa.to().equals(VersionType.SPIGOT_VERSION)) {
-						for(ConnectionHandler chs : this.connected) {
-							if(chs.getName().equals(fa.getServerDestination())) {
-								chs.sendPacket(packet);
-							}
-						}
-					}
+
+				if(pf.getTo().equals(VersionType.SPIGOT_VERSION)) {
+					this.getConnectionByNameOrIP(pf.getDestination()).sendPacket(pf, this.key);
 				}
 			}else if(packet instanceof PacketPlayerPing) {
 				PacketPlayerPing pp = (PacketPlayerPing) packet;
@@ -185,7 +108,8 @@ public class BigBrotherListener implements ServerListener{
 					pp.setState(PingState.BUNGEE_REQUEST);
 					
 					try {
-						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION, "main-bungeecord").sendPacket(pp);
+						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION, "main-bungeecord").
+							sendPacket(pp, this.key);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -208,43 +132,31 @@ public class BigBrotherListener implements ServerListener{
 					
 					this.gs.createNewDataFile(spy.getPlayerName(), gh);
 				}
-			}else if(packet instanceof PacketSpyHistoryGetter) {
-				PacketSpyHistoryGetter get = (PacketSpyHistoryGetter) packet;
-				
-				if(get.getState().equals(BigBrotherSpyHistoryGetterState.REQUEST)) {
-					get.setState(BigBrotherSpyHistoryGetterState.SEND);
-					
-					get.setHistory(this.gs.getHistory(get.getPlayerName()));
-					
-					server.sendPacket(get);
-				}
 			}else if(packet instanceof PacketBigBrotherAC) {
 				PacketBigBrotherAC gacp = (PacketBigBrotherAC) packet;
 				
 				if(gacp.getType().equals(BigBrotherTypeAC.CHEAT_DETECTION)) {
 					if(gacp.getTODO().equals(BigBrotherActionAC.INFORM_STAFF)) {
-						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION, "main-bungeecord").sendPacket(gacp);
+						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION,
+								"main-bungeecord").sendPacket(gacp, this.key);
 					}
 				}
 			}
 		}catch (Exception e) {
-			return;
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onConnection(ConnectionHandler ch) {
-		ch.sendMessage("~~~~~~~~~~BigBrother~~~~~~~~~~");
-		ch.sendMessage("by Glowstoner");
-		ch.sendMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		ch.sendMessage("\nProtocol version : 3.00");
+		this.showWelcome(ch);
 		
 		this.refreshLists();
 	}
 
 	@Override
 	public void onConnectionSuccessfull(ConnectionHandler connection) {
-		connection.sendMessageWithPrefix("Bienvenue !");
+		this.sendMessage(connection, "Bienvenue !");
 		
 		this.connected.add(connection);
 		
@@ -254,7 +166,37 @@ public class BigBrotherListener implements ServerListener{
 	@Override
 	public void onCommand(ConnectionHandler c, String command, String[] args) {
 		this.listeners.callCommand(c, command, args, "Commande inconnue ! "
-				+ "Utilisez /aide pour avoir la liste des commandes !");
+				+ "Utilisez /aide pour avoir la liste des commandes !", this.key);
+	}
+	
+	private void showWelcome(ConnectionHandler ch) {
+		this.sendMessage(ch, RED_BOLD+"  ____  _         ____            _   _               ");
+		this.sendMessage(ch, " |  _ \\(_)       |  _ \\          | | | |              ");
+		this.sendMessage(ch, " | |_) |_  __ _  | |_) |_ __ ___ | |_| |__   ___ _ __ ");
+		this.sendMessage(ch, " |  _ <| |/ _\\`| |  _ <| '__/ _ \\| __| '_ \\ / _ \\ '__|");
+		this.sendMessage(ch, " | |_) | | (_| | | |_) | | | (_) | |_| | | |  __/ |   ");
+		this.sendMessage(ch, " |____/|_|\\__, | |____/|_|  \\___/ \\__|_| |_|\\___|_|   ");
+		this.sendMessage(ch, "           __/ |                                      ");
+		this.sendMessage(ch, "          |___/                                       ");
+		this.sendMessage(ch, RESET+"\n         Version de l'api : "+YELLOW_UNDERLINED+FireAPI.VERSION+"\n\n");
+		this.sendMessage(ch, RESET+"Bonjour !");
+	}
+	
+	private void sendMessage(ConnectionHandler ch, String message) {
+		ch.sendMessageWithPrefix(message, this.log.getKey());
+	}
+	
+	private void addConnection(VersionType type, ConnectionHandler ch) {
+		List<ConnectionHandler> list = (this.connectionstype.containsKey(type)) ?
+				this.connectionstype.get(type) : new CopyOnWriteArrayList<>();
+				
+		list.add(ch);
+		
+		if(this.connectionstype.containsKey(type)) {
+			this.connectionstype.replace(type, list);
+		}else {
+			this.connectionstype.put(type, list);
+		}
 	}
 	
 	private void refreshLists() {
@@ -322,14 +264,12 @@ public class BigBrotherListener implements ServerListener{
 	}
 	
 	public List<ConnectionHandler> getConnected() {
-		refreshLists();
-		
+		this.refreshLists();
 		return this.connected;
 	}
 	
 	public Map<VersionType, List<ConnectionHandler>> getServersConnections() {
-		refreshLists();
-		
+		this.refreshLists();
 		return this.connectionstype;
 	}
 }

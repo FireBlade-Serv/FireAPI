@@ -1,5 +1,6 @@
 package fr.glowstoner.fireapi.bigbrother.console.login;
 
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,9 @@ import lombok.Data;
 @Data
 public class BigBrotherConnectionInfos {
 	
-	private String id, key, password;
+	private String id, password;
+	private EncryptionKey key;
+	
 	private VersionType versionType;
 
 }

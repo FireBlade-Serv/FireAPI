@@ -1,29 +1,39 @@
 package fr.glowstoner.fireapi.bigbrother.console.packets;
 
-import java.io.Serializable;
-
-import fr.glowstoner.connectionsapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.Encryptable;
+import fr.glowstoner.fireapi.network.packets.Packet;
 import fr.glowstoner.fireapi.player.enums.VersionType;
-import lombok.Getter;
-import lombok.Setter;
 
-public class PacketVersion extends Packet implements Serializable{
+public class PacketVersion extends Packet implements Encryptable{
 
 	private static final long serialVersionUID = 4715009865236006640L;
 
-	@Getter @Setter private VersionType type;
+	private VersionType version;
 	
-	public PacketVersion(VersionType type) {
-		this.setType(type);
+	public PacketVersion(VersionType version) {
+		this.setVersion(version);
 	}
 	
 	public PacketVersion() {
 		
 	}
 
+	public VersionType getVersion() {
+		return version;
+	}
+
+	public void setVersion(VersionType version) {
+		this.version = version;
+	}
+
+	@Override
+	public String[] encryptedFields() {
+		return new String[] {"version"};
+	}
+	
 	@Override
 	public boolean isCrypted() {
-		return false;
+		return true;
 	}
 	
 }

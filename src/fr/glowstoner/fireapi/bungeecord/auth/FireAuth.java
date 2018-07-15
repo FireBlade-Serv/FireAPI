@@ -11,7 +11,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import fr.glowstoner.fireapi.bungeecord.BungeeMain;
-import fr.glowstoner.fireapi.crypt.FireCrypt;
+import fr.glowstoner.fireapi.crypto.FireEncrypt;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.config.Configuration;
@@ -52,7 +52,7 @@ public class FireAuth {
 	public String getClearPassword(String name) throws UnsupportedEncodingException,
 		NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		
-		FireCrypt crypt = new FireCrypt();
+		FireEncrypt crypt = new FireEncrypt();
 		crypt.setKey(this.key);
 		return crypt.decrypt(this.main.getSQL().getCryptPassword(name));
 	}
@@ -60,7 +60,7 @@ public class FireAuth {
 	public void registerPassword(String name, String clearpassword) throws UnsupportedEncodingException,
 		NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		
-		FireCrypt crypt = new FireCrypt();
+		FireEncrypt crypt = new FireEncrypt();
 		crypt.setKey(this.key);
 		this.main.getSQL().setCryptPassword(name, crypt.encrypt(clearpassword));
 	}
@@ -68,7 +68,7 @@ public class FireAuth {
 	public String getEncryptedPassword(String clearpassword) throws UnsupportedEncodingException,
 		NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		
-		FireCrypt crypt = new FireCrypt();
+		FireEncrypt crypt = new FireEncrypt();
 		crypt.setKey(this.key);
 		return crypt.encrypt(clearpassword);
 	}

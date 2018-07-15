@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
-import fr.glowstoner.connectionsapi.network.client.Client;
-import fr.glowstoner.connectionsapi.network.packets.PacketPing;
-import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
-import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bigbrother.console.check.enums.BigBrotherConnectionCheckType;
 import fr.glowstoner.fireapi.bigbrother.console.check.exceptions.BigBrotherNotConnectedException;
 import fr.glowstoner.fireapi.bigbrother.console.login.BigBrotherConnectionInfos;
 import fr.glowstoner.fireapi.bigbrother.console.packets.PacketVersion;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.client.Client;
+import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
+import fr.glowstoner.fireapi.network.packets.PacketPing;
+import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 import lombok.Getter;
 
 public class BigBrotherConnectionCheck extends TimerTask{
@@ -51,13 +51,13 @@ public class BigBrotherConnectionCheck extends TimerTask{
 			System.out.println("[FireAPI] Reconnection avec IP="+this.client.getIP()+" et PORT="+this.client.getPort());
 			this.client = new Client(this.client.getIP(), this.client.getPort());
 			
-			this.client.start();
+			this.client.open(this.infos.getKey());
 			
 			ConnectionHandler ch = (ConnectionHandler) this.client;
 			
-			ch.sendPacket(new PacketLogin(this.infos.getKey(), this.infos.getPassword()));
-			ch.sendPacket(new PacketVersion(this.infos.getVersionType()));
-			ch.sendPacket(new PacketCommand("name "+this.infos.getId()));
+			ch.sendPacket(new PacketLogin(this.infos.getPassword()), this.infos.getKey());
+			ch.sendPacket(new PacketVersion(this.infos.getVersionType()), this.infos.getKey());
+			ch.sendPacket(new PacketCommand("name "+this.infos.getId()), this.infos.getKey());
 			
 			this.api.setClient((Client) ch);
 			this.api.setChecker(this);

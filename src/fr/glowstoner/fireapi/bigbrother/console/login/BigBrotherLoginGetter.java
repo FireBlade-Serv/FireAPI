@@ -2,9 +2,12 @@ package fr.glowstoner.fireapi.bigbrother.console.login;
 
 import java.io.ObjectInputStream;
 
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
+
 public class BigBrotherLoginGetter {
 	
-	private String key, password;
+	private EncryptionKey key;
+	private String password;
 	
 	public BigBrotherLoginGetter() {
 		
@@ -28,7 +31,7 @@ public class BigBrotherLoginGetter {
 		System.out.println("[BigBrother] (FireAPI) Importé !");
 	}
 
-	public String getKey() {
+	public EncryptionKey getKey() {
 		return key;
 	}
 

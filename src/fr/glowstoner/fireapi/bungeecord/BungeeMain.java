@@ -2,13 +2,6 @@ package fr.glowstoner.fireapi.bungeecord;
 
 import java.io.IOException;
 
-import fr.glowstoner.connectionsapi.ConnectionsAPI;
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
-import fr.glowstoner.connectionsapi.network.client.Client;
-import fr.glowstoner.connectionsapi.network.events.ClientListener;
-import fr.glowstoner.connectionsapi.network.packets.Packet;
-import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
-import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bigbrother.ac.packet.PacketBigBrotherAC;
 import fr.glowstoner.fireapi.bigbrother.ac.packet.enums.BigBrotherActionAC;
@@ -35,6 +28,14 @@ import fr.glowstoner.fireapi.bungeecord.commands.misc.Website;
 import fr.glowstoner.fireapi.bungeecord.events.Events;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.FireNetwork;
+import fr.glowstoner.fireapi.network.client.Client;
+import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
+import fr.glowstoner.fireapi.network.events.ClientListener;
+import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
 import fr.glowstoner.fireapi.rank.Rank;
@@ -82,11 +83,11 @@ public class BungeeMain extends Plugin implements FireAPI{
 		}
 		
 		try {
-			ConnectionsAPI.init();
+			FireNetwork.init();
 			
 			Client c = new Client("62.4.16.89", 2566);
 			
-			c.start();
+			c.open(this.log.getKey());
 			
 			this.c = c;
 			
@@ -94,9 +95,9 @@ public class BungeeMain extends Plugin implements FireAPI{
 			
 			ch.eval();
 			
-			ch.sendPacket(new PacketLogin(this.log.getKey(), log.getPassword()));
-			ch.sendPacket(new PacketVersion(VersionType.BUNGEECORD_VERSION));
-			ch.sendPacket(new PacketCommand("name main-bungeecord"));
+			ch.sendPacket(new PacketLogin(this.log.getPassword()), this.log.getKey());
+			ch.sendPacket(new PacketVersion(VersionType.BUNGEECORD_VERSION), this.log.getKey());
+			ch.sendPacket(new PacketCommand("name main-bungeecord"), this.log.getKey());
 			
 			BigBrotherConnectionCheck check = new BigBrotherConnectionCheck
 					(this, BigBrotherConnectionCheckType.GLOBAL_CHECK, BigBrotherConnectionInfos.builder()
@@ -123,7 +124,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 			check.startChecks();
 		}
 		
-		ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
+		FireNetwork.getListeners().registerClientListener(new ClientListener() {
 			
 			@Override
 			public void onPacketReceive(Packet packet) {
@@ -302,5 +303,10 @@ public class BungeeMain extends Plugin implements FireAPI{
 	@Override
 	public FireTag getTagSystem() {
 		return null;
+	}
+
+	@Override
+	public EncryptionKey encryptionKey() {
+		return this.log.getKey();
 	}
 }

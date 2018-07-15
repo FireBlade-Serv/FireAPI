@@ -1,27 +1,37 @@
 package fr.glowstoner.fireapi.bigbrother.console.packets;
 
-import java.io.Serializable;
+import fr.glowstoner.fireapi.network.packets.Encryptable;
+import fr.glowstoner.fireapi.network.packets.Packet;
 
-import fr.glowstoner.connectionsapi.network.packets.Packet;
-import lombok.Getter;
-import lombok.Setter;
-
-public class PacketExecute extends Packet implements Serializable{
+public class PacketExecute extends Packet implements Encryptable{
 
 	private static final long serialVersionUID = -5731791793346143581L;
 
-	@Getter @Setter private String serverCommand;
+	private String serverCommand;
 	
-	public PacketExecute(String servercommand) {
-		this.serverCommand = servercommand;
+	public PacketExecute(String serverCommand) {
+		this.setServerCommand(serverCommand);
 	}
 	
 	public PacketExecute() {
 		
 	}
 	
+	public String getServerCommand() {
+		return serverCommand;
+	}
+
+	public void setServerCommand(String serverCommand) {
+		this.serverCommand = serverCommand;
+	}
+
+	@Override
+	public String[] encryptedFields() {
+		return new String[] {"serverCommand"};
+	}
+	
 	@Override
 	public boolean isCrypted() {
-		return false;
+		return true;
 	}
 }

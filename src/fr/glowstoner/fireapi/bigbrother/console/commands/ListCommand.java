@@ -1,25 +1,28 @@
 package fr.glowstoner.fireapi.bigbrother.console.commands;
 
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
-import fr.glowstoner.connectionsapi.network.packets.command.CommandExecutor;
 import fr.glowstoner.fireapi.bigbrother.console.BigBrotherListener;
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.command.CommandExecutor;
 
 public class ListCommand implements CommandExecutor {
 
 	private BigBrotherListener gl;
+	private EncryptionKey key;
 
-	public ListCommand(BigBrotherListener gl) {
+	public ListCommand(EncryptionKey key, BigBrotherListener gl) {
 		this.gl = gl;
+		this.key = key;
 	}
 
 	@Override
 	public void execute(ConnectionHandler c, String command, String[] args) {
-		c.sendMessageWithPrefix("Liste des connections :");
+		c.sendMessageWithPrefix("Liste des connections :", this.key);
 		
 		for(ConnectionHandler ch : this.gl.getConnected()) {
 			String name = (ch.getName().equals("default-name")) ? ch.getIP() : ch.getName();
 			
-			c.sendMessageWithPrefix("- "+name+", IP = "+ch.getIP());
+			c.sendMessageWithPrefix("- "+name+", IP = "+ch.getIP(), this.key);
 		}
 	}
 

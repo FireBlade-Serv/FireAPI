@@ -1,6 +1,6 @@
 package fr.glowstoner.fireapi.bigbrother.console.check;
 
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
 
 public interface BigBrotherConnectionCheckListener {
 

@@ -8,13 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import be.goldocelot.admintools.AdminToolsCmd;
 import be.goldocelot.admintools.EventsAT;
-import fr.glowstoner.connectionsapi.ConnectionsAPI;
-import fr.glowstoner.connectionsapi.network.ConnectionHandler;
-import fr.glowstoner.connectionsapi.network.client.Client;
-import fr.glowstoner.connectionsapi.network.events.ClientListener;
-import fr.glowstoner.connectionsapi.network.packets.Packet;
-import fr.glowstoner.connectionsapi.network.packets.command.PacketCommand;
-import fr.glowstoner.connectionsapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.FireAPI;
 import fr.glowstoner.fireapi.bigbrother.ac.BigBrotherAC;
 import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheck;
@@ -31,8 +24,15 @@ import fr.glowstoner.fireapi.bukkit.tag.FireTag;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
-import fr.glowstoner.fireapi.bungeecord.friends.packets.action.FriendsActionTransmetterGUI;
 import fr.glowstoner.fireapi.chat.FireChat;
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
+import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.FireNetwork;
+import fr.glowstoner.fireapi.network.client.Client;
+import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
+import fr.glowstoner.fireapi.network.events.ClientListener;
+import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
 import fr.glowstoner.fireapi.sql.FireSQL;
@@ -100,11 +100,11 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		this.ac.startKillAuraChecks((long) (30 * 20));
 		
 		try {
-			ConnectionsAPI.init();
+			FireNetwork.init();
 			
 			Client c = new Client("62.4.16.89", 2566);
 			
-			c.start();
+			c.open(this.log.getKey());
 			
 			this.c = c;
 			
@@ -112,9 +112,9 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			
 			ch.eval();
 			
-			ch.sendPacket(new PacketLogin(this.log.getKey(), this.log.getPassword()));
-			ch.sendPacket(new PacketVersion(VersionType.SPIGOT_VERSION));
-			ch.sendPacket(new PacketCommand("name "+this.id));
+			ch.sendPacket(new PacketLogin(this.log.getPassword()), this.log.getKey());
+			ch.sendPacket(new PacketVersion(VersionType.SPIGOT_VERSION), this.log.getKey());
+			ch.sendPacket(new PacketCommand("name "+this.id), this.log.getKey());
 
 			BigBrotherConnectionCheck check = new BigBrotherConnectionCheck
 					(this, BigBrotherConnectionCheckType.GLOBAL_CHECK, BigBrotherConnectionInfos.builder()
@@ -141,7 +141,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			check.startChecks();
 		}
 		
-		ConnectionsAPI.getListeners().registerClientListener(new ClientListener() {
+		FireNetwork.getListeners().registerClientListener(new ClientListener() {
 			
 			@Override
 			public void onPacketReceive(Packet packet) {
@@ -151,22 +151,17 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 								((PacketExecute) packet).getServerCommand());
 				}else if(packet instanceof PacketFriends) {
 					PacketFriends pf = (PacketFriends) packet;
-					
-					if(pf.getAction() instanceof FriendsActionTransmetterGUI) {
-						FriendsActionTransmetterGUI fa = (FriendsActionTransmetterGUI) pf.getAction();
 						
-						if(fa.to().equals(VersionType.SPIGOT_VERSION)) {
-							FriendsActionInventoryGUI faig = new FriendsActionInventoryGUI
-									(fa.getName(), fa.getFriends(), fa.getConnected());
+					if(pf.getTo().equals(VersionType.SPIGOT_VERSION)) {
+						FriendsActionInventoryGUI faig = new FriendsActionInventoryGUI
+								(pf.getName(), pf.getFriends(), pf.getConnected());
 							
-							faig.initPlayer(BukkitMain.this);
-							faig.generateInventory();
-							faig.openInventory();
-						}
+						faig.initPlayer(BukkitMain.this);
+						faig.generateInventory();
+						faig.openInventory();
 					}
 				}
 			}
-			
 		});
 		
 		Events events = new Events(this);
@@ -277,5 +272,10 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	@Override
 	public FireTag getTagSystem() {
 		return this.tag;
+	}
+
+	@Override
+	public EncryptionKey encryptionKey() {
+		return this.log.getKey();
 	}
 }
