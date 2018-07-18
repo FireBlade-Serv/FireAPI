@@ -27,7 +27,7 @@ public class EncryptedList extends EncryptFunction<List<?>, String>{
 
 	@Override
 	public List<?> decrypt(String d) throws Exception {
-		if(d.isEmpty()) {
+		if(d == null) {
 			return new ArrayList<>();
 		}
 		

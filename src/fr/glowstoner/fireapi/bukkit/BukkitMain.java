@@ -102,7 +102,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		try {
 			FireNetwork.init();
 			
-			Client c = new Client("62.4.16.89", 2566);
+			Client c = new Client("62.4.16.89", 2568);
 			
 			c.open(this.log.getKey());
 			

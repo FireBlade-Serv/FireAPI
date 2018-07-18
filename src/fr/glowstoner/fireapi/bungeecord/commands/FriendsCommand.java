@@ -72,11 +72,11 @@ public class FriendsCommand extends Command {
 				}else if(args[0].equalsIgnoreCase("accept")) {
 					sender.sendMessage(new TextComponent(this.pre+"§cUsage : /amis accept <pseudo>"));
 				}else if(args[0].equalsIgnoreCase("gui")) {
-					List<String> names = this.api.getBungeePlugin().getProxy().getPlayers()
-							.parallelStream()
-							.collect(() -> new ArrayList<>(),
-									(l, e) -> l.add(e.getName()),
-									(l1, l2) -> l1.addAll(l2));
+					List<String> names = new ArrayList<>();
+					
+					for(ProxiedPlayer ppl : this.api.getBungeePlugin().getProxy().getPlayers()) {
+						names.add(ppl.getName());
+					}
 					
 					try {
 						c.sendPacket(new PacketFriends(FriendsActionType.OPEN_FRIENDSLIST_GUI,

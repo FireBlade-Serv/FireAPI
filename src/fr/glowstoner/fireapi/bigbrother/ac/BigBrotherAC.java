@@ -62,7 +62,7 @@ public class BigBrotherAC implements Listener{
 									BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
 									BigBrotherCheatAC.AUTOCLICK, ((CraftPlayer) p).getHandle().ping), api.encryptionKey());
 							api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
-									"Autoclick "+cps.get(p)+" CPS", SpyAction.PLAYER_BBAC_DETECTION), api.encryptionKey());
+									"Autoclick "+cps.get(p)+" CPS", SpyAction.PLAYER_BBAC_DETECTION, true), api.encryptionKey());
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -84,7 +84,7 @@ public class BigBrotherAC implements Listener{
 					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
 					BigBrotherCheatAC.MOVE, ((CraftPlayer) p).getHandle().ping), api.encryptionKey());
 			this.api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
-					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_BBAC_DETECTION), this.api.encryptionKey());
+					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_BBAC_DETECTION, true), this.api.encryptionKey());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

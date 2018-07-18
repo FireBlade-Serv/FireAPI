@@ -60,13 +60,10 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 			this.instance.getSQL().createFireAccount(pp);
 		}
 		
-		PacketSpyAction ps = new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
-				"Connection sur le proxy principal.", SpyAction.PLAYER_JOIN);
-		
-		ps.setDateToNow();
-		
 		try {
-			this.c.sendPacket(ps, this.instance.encryptionKey());
+			this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
+					"Connection sur le proxy principal.", SpyAction.PLAYER_JOIN, true)
+					, this.instance.encryptionKey());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -114,7 +111,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 		try {
 			this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress()
 					.getHostAddress(),
-					"Le joueur vient de passer les sécurités du login.", SpyAction.PLAYER_LOGGED),
+					"Le joueur vient de passer les sécurités du login.", SpyAction.PLAYER_LOGGED, true),
 					this.instance.encryptionKey());
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -208,11 +205,8 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 			}
 		}else {
 			try {
-				PacketSpyAction ps = new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
-						e.getMessage(), SpyAction.PLAYER_CHAT);
-				ps.setDateToNow();
-				
-				this.c.sendPacket(ps, this.instance.encryptionKey());
+				this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
+						e.getMessage(), SpyAction.PLAYER_CHAT, true), this.instance.encryptionKey());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -242,7 +236,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 			
 			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), 
 					e.getPlayer().getAddress().getAddress().getHostAddress(), "Déconnection du proxy principal.",
-					SpyAction.PLAYER_LEAVE), this.instance.encryptionKey());
+					SpyAction.PLAYER_LEAVE, true), this.instance.encryptionKey());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

@@ -3,12 +3,13 @@ package fr.glowstoner.fireapi.network.packets;
 import java.lang.reflect.Field;
 
 import fr.glowstoner.fireapi.crypto.EncryptFunction;
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
 
 public class PacketEncoder {
 	
-	private String key;
+	private EncryptionKey key;
 	
-	public PacketEncoder(String key) {
+	public PacketEncoder(EncryptionKey key) {
 		this.key = key;
 	}
 	
@@ -22,7 +23,7 @@ public class PacketEncoder {
 				
 				Object av = f.get(packet.getClass().cast(packet));
 				
-				ep.addValue(f.getName(), EncryptFunction.encrypt(this.key, av));
+				ep.addValue(f.getName(), EncryptFunction.encrypt(this.key.getKey(), av));
 			} catch (NoSuchFieldException | SecurityException |
 					IllegalArgumentException | IllegalAccessException e) {
 				
@@ -42,7 +43,7 @@ public class PacketEncoder {
 				
 				f.setAccessible(true);
 				
-				f.set(o, EncryptFunction.decrypt(key, ep.getElement(fs)));
+				f.set(o, EncryptFunction.decrypt(this.key.getKey(), ep.getElement(fs)));
 			}
 			
 			return o;

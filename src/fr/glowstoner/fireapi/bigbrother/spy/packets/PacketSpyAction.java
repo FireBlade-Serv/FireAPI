@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.network.packets.Encryptable;
 import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
 
 public class PacketSpyAction extends Packet implements Encryptable{
 
@@ -14,15 +15,15 @@ public class PacketSpyAction extends Packet implements Encryptable{
 
 	private SpyAction action;
 	private String playerName, actionMsg, ip;
-	private Calendar date;
+	private int dayOfMonth, month, hourOfDay, second, minute, milisecond, year; 
 	
-	public PacketSpyAction(String name, String ip, String actionmsg, SpyAction action) {
+	public PacketSpyAction(String name, String ip, String actionmsg, SpyAction action, boolean setDate) {
 		this.setAction(action);
 		this.setPlayerName(name);
 		this.setActionMsg(actionmsg);
 		this.setIP(ip);
 		
-		this.date = GregorianCalendar.getInstance();
+		if(setDate) this.setDateToNow();
 	}
 	
 	public PacketSpyAction() {
@@ -30,19 +31,33 @@ public class PacketSpyAction extends Packet implements Encryptable{
 	}
 	
 	public void setDateToNow() {
-		this.date.setTime(new Date());
+		Calendar d = GregorianCalendar.getInstance();
+		d.setTime(new Date());
+		
+		this.setDayOfMonth(d.get(Calendar.DAY_OF_MONTH));
+		this.setMonth(d.get(Calendar.MONTH));
+		this.setHourOfDay(d.get(Calendar.HOUR_OF_DAY));
+		this.setSecond(d.get(Calendar.HOUR_OF_DAY));
+		this.setMinute(d.get(Calendar.MINUTE));
+		this.setMilisecond(d.get(Calendar.MILLISECOND));
+		this.setYear(d.get(Calendar.YEAR));
+	}
+	
+	public FireCalendar toFireCalendar() {
+		return FireCalendar.builder()
+				.dayOfMonth(this.dayOfMonth)
+				.hourOfDay(this.hourOfDay)
+				.milisecond(this.milisecond)
+				.minute(this.minute)
+				.month(this.month)
+				.second(this.second)
+				.year(this.year)
+				.build();
 	}
 	
 	public String getFormatedDate() {
-		int ms = this.date.get(Calendar.MILLISECOND);
-		int s = this.date.get(Calendar.SECOND);
-		int m = this.date.get(Calendar.MINUTE);
-		int h = this.date.get(Calendar.HOUR_OF_DAY);
-		int d = this.date.get(Calendar.DAY_OF_MONTH);
-		int mo = this.date.get(Calendar.MONTH);
-		int y = this.date.get(Calendar.YEAR);
-		
-		return h+"h"+m+"min"+s+"sec"+ms+"ms - "+d+"/"+mo+"/"+y;
+		return this.hourOfDay+"h"+this.minute+"min"+this.second+"sec"+
+				this.milisecond+"ms - "+this.dayOfMonth+"/"+this.month+"/"+this.year;
 	}
 	
 	public String getFormatedMsg() {
@@ -68,10 +83,6 @@ public class PacketSpyAction extends Packet implements Encryptable{
 	public void setPlayerName(String playerName) {
 		this.playerName = playerName;
 	}
-	
-	public Calendar getActionDate() {
-		return this.date;
-	}
 
 	public String getActionMsg() {
 		return actionMsg;
@@ -89,9 +100,66 @@ public class PacketSpyAction extends Packet implements Encryptable{
 		this.ip = ip;
 	}
 
+	public int getDayOfMonth() {
+		return dayOfMonth;
+	}
+
+	public void setDayOfMonth(int dayOfMonth) {
+		this.dayOfMonth = dayOfMonth;
+	}
+
+	public int getMonth() {
+		return month;
+	}
+
+	public void setMonth(int month) {
+		this.month = month;
+	}
+
+	public int getHourOfDay() {
+		return hourOfDay;
+	}
+
+	public void setHourOfDay(int hourOfDay) {
+		this.hourOfDay = hourOfDay;
+	}
+
+	public int getSecond() {
+		return second;
+	}
+
+	public void setSecond(int second) {
+		this.second = second;
+	}
+
+	public int getMinute() {
+		return minute;
+	}
+
+	public void setMinute(int minute) {
+		this.minute = minute;
+	}
+
+	public int getMilisecond() {
+		return milisecond;
+	}
+
+	public void setMilisecond(int milisecond) {
+		this.milisecond = milisecond;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
 	@Override
 	public String[] encryptedFields() {
-		return new String[] {"action", "playerName", "actionMsg", "ip"};
+		return new String[] {"action", "playerName", "actionMsg", "ip", "dayOfMonth", "month", "hourOfDay", "second",
+				"minute", "milisecond", "year"};
 	}
 
 	@Override

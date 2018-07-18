@@ -6,7 +6,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.net.Socket;
+import java.net.SocketException;
 
+import fr.glowstoner.fireapi.bigbrother.console.login.BigBrotherLoginGetter;
 import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.network.ConnectionType;
@@ -15,66 +17,77 @@ import fr.glowstoner.fireapi.network.packets.Encryptable;
 import fr.glowstoner.fireapi.network.packets.EncryptedPacket;
 import fr.glowstoner.fireapi.network.packets.Packet;
 import fr.glowstoner.fireapi.network.packets.PacketEncoder;
+import fr.glowstoner.fireapi.network.packets.PacketText;
+import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 
 public class ServerClientThread extends ConnectionHandler implements Runnable{
 	
 	private static final long serialVersionUID = -3378783954703324349L;
 	
-	private transient EncryptionKey key;
-	
-	private Socket socket;
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 	
-	public ServerClientThread(EncryptionKey key, Socket socket) {
+	public ServerClientThread(Socket socket) {
 		super(socket);
-		
-		this.socket = socket;
-		this.key = key;
 	}
 	
 	@Override
 	public void open(EncryptionKey key) throws IOException {
-		this.in = new ObjectInputStream(socket.getInputStream());
-		this.out = new ObjectOutputStream(socket.getOutputStream());
+		this.in = new ObjectInputStream(super.socket.getInputStream());
+		this.out = new ObjectOutputStream(super.socket.getOutputStream());
 		
 		FireNetwork.getListeners().callOnConnectionServerListener(this);
 	}
 	
 	@Override
 	public void close() throws IOException {			
-		if(socket != null) socket.close();
-		if(in != null) in.close();
-		if(out != null) out.close();
+		if(super.socket != null) super.socket.close();
+		if(this.in != null) this.in.close();
+		if(this.out != null) this.out.close();
 	}
 	
 	public Socket getSocket() {
-		return this.socket;
+		return super.socket;
 	}
 	
 	@Override
 	public void run() {
 		Object o = null;
 		
+		BigBrotherLoginGetter bg = new BigBrotherLoginGetter();
+		
+		try {
+			bg.load();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
 		while(true) {
 			try {
 				try {
 					o = this.in.readObject();
 				}catch (EOFException ex) {
-					o = this.in.readObject();
-				}catch (IOException ex) {
-					ex.printStackTrace();
+					try {
+						o = this.in.readObject();
+					}catch (IOException ex2) {
+						if(ex2 instanceof OptionalDataException) {
+							OptionalDataException ode = (OptionalDataException) ex2;
+							
+							ode.printStackTrace();
+							
+							System.out.println("eof = "+ode.eof);
+							System.out.println("available = "+this.in.available());
+							
+							this.in.skipBytes(ode.length);
+							break;
+						}else {
+							break;
+						}
+					}
 					
-					if(ex instanceof OptionalDataException) {
-						OptionalDataException ode = (OptionalDataException) ex;
-						
-						System.out.println("eof = "+ode.eof);
-						System.out.println("available = "+this.in.available());
-						
-						this.in.skipBytes(ode.length);
-						break;
-					}else {
-						break;
+				}catch(SocketException ex) {
+					if(ex.getMessage().equals("Connection reset") || ex.getMessage().equals("Socket closed")) {
+						return;
 					}
 				}
 				
@@ -83,8 +96,26 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 					
 					if(p instanceof EncryptedPacket) {
 						EncryptedPacket ep = (EncryptedPacket) p;
-						   
-						p = new PacketEncoder(this.key.getKey()).decode(ep);
+						
+						try {
+							p = new PacketEncoder(bg.getKey()).decode(ep);
+						}catch (Exception e) {
+							System.out.println("[BigBrother] La clé de chiffrement est fausse !"
+									+ " (error_decode/[list])");
+							
+							this.sendPacket(new PacketText("[BigBrother] Votre clé de chiffrement est fausse :("));
+							break;
+						}
+						
+						if(p instanceof PacketLogin) {
+							if(((PacketLogin) p).getPassword().isEmpty()) {
+								System.out.println("[BigBrother] La clé de chiffrement est fausse !"
+										+ " (empty login/string)");
+								
+								this.sendPacket(new PacketText("[BigBrother] Votre clé de chiffrement est fausse :("));
+								break;
+							}
+						}
 					}
 					
 					FireNetwork.getListeners().callPacketReceiveServerListener(p, this);
@@ -97,7 +128,7 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 		}
 		
 		try {
-			close();
+			this.close();
 		} catch (IOException e) {
 			return;
 		}
@@ -111,7 +142,7 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 	
 	@Override
 	public void sendPacket(Encryptable packet, EncryptionKey key) throws IOException {
-		this.out.writeObject(new PacketEncoder(key.getKey()).
+		this.out.writeObject(new PacketEncoder(key).
 				encode((Encryptable) packet));
 		this.out.flush();
 	}

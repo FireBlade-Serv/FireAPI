@@ -25,6 +25,8 @@ public class ChatCommand implements CommandExecutor {
 			
 			String name = (c.getName().equals("default-name")) ? c.getIP() : c.getName();
 			System.out.println("[BigBrother] "+name+" >> "+builder.toString());
+			
+			c.sendMessageWithPrefix("Vous avez bien envoyé votre message !", this.key);
 		}
 	}
 

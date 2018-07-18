@@ -1,16 +1,18 @@
 package fr.glowstoner.fireapi.bigbrother.console;
 
+import java.io.Console;
+import java.net.SocketException;
 import java.util.Scanner;
 
 import fr.glowstoner.fireapi.bigbrother.console.packets.PacketVersion;
 import fr.glowstoner.fireapi.crypto.EncryptionKey;
-import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.network.FireNetwork;
 import fr.glowstoner.fireapi.network.client.Client;
 import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
 import fr.glowstoner.fireapi.network.events.ClientListener;
 import fr.glowstoner.fireapi.network.events.Listeners;
 import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.PacketPing;
 import fr.glowstoner.fireapi.network.packets.PacketText;
 import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.player.enums.VersionType;
@@ -19,8 +21,11 @@ public class BigBrotherClient implements ClientListener{
 	
 	private EncryptionKey key;
 	private String password;
+	private boolean outTime;
 	
 	public BigBrotherClient() {
+		for(int i = 0 ; i <= 50 ; i++) System.out.println();
+		
 		System.out.println("BigBrother Client");
 		 
 		FireNetwork.init();
@@ -31,11 +36,10 @@ public class BigBrotherClient implements ClientListener{
 	
 	public void connect() {
 		try {
-			Scanner sc = new Scanner(System.in);
+			Console console = System.console();
 			
 			do {
-				System.out.print("\nClé de chiffrement : ");
-				String k = sc.nextLine();
+				String k = new String(console.readPassword("\nClé de chiffrement : "));
 				
 				if(k.length() > 0) {
 					this.key = new EncryptionKey(k);
@@ -43,33 +47,56 @@ public class BigBrotherClient implements ClientListener{
 			} while(this.key == null);
 			
 			do {
-				System.out.print("\nMot de passe : ");
-				String mdp = sc.nextLine();
+				String mdp = new String(console.readPassword("\nMot de passe : "));
 				
 				if(mdp.length() > 0) {
 					this.password = mdp;
 				}
 			} while(this.password == null);
 			
-			Client c = new Client("62.4.16.89", 2566);
+			Client c = new Client("62.4.16.89", 2568);
 			
 			c.open(this.key);
 			
 			c.sendPacket(new PacketLogin(this.password), this.key);
-			c.sendPacket(new PacketVersion(VersionType.CLIENT_BIGBROTHER), this.key);
 			
-			while(((ConnectionHandler) c).isConnectedOrValid()) {
-				String line = sc.nextLine();
+			Thread.sleep(150l);
+			
+			try {
+				c.sendPacket(new PacketVersion(VersionType.CLIENT_BIGBROTHER), this.key);
+				c.sendPacket(new PacketCommand("name RandomPélo"), this.key);
 				
-				if(line.equalsIgnoreCase("stop")) {
-					c.close();
-					break;
+				Thread.sleep(120l);
+				
+				Scanner sc = new Scanner(System.in);
+				
+				while(true) {
+					c.sendPacket(new PacketPing());
+					
+					if(!this.outTime) {
+						Thread.sleep(120l);
+						
+						System.out.print("\n > ");
+						String line = sc.nextLine();
+						
+						if(line.equalsIgnoreCase("quit")) {
+							c.close();
+							break;
+						}else if(line.isEmpty()) {
+							continue;
+						}
+						
+						c.sendPacket(new PacketCommand(line), this.key);
+						
+						this.outTime = true;
+					}
 				}
 				
-				c.sendPacket(new PacketCommand(line), this.key);
+				sc.close();
+			}catch (SocketException se) {
+				System.out.println("\n[BigBrother] Vous avez été déconnecté ("+
+						se.getMessage()+") ! Bye !");
 			}
-			
-			sc.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -78,9 +105,11 @@ public class BigBrotherClient implements ClientListener{
 	@Override
 	public void onPacketReceive(Packet p) {
 		if(p instanceof PacketText) {
-			PacketText tp = (PacketText) p;
+			PacketText pt = (PacketText) p;
 			
-			System.out.println(tp.getText());
+			System.out.print("\n"+pt.getText());
+			
+			this.outTime = false;
 		}
 	}
 }

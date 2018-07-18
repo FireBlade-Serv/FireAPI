@@ -15,7 +15,8 @@ public abstract class ConnectionHandler implements Serializable{
 
 	private static final long serialVersionUID = -3902356770010744218L;
 
-	private Socket socket;
+	protected Socket socket;
+	
 	private ConnectionType conntype;
 	private LoginResult lr;
 	private String surname = "default-name";

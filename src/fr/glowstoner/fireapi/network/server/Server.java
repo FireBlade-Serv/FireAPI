@@ -22,7 +22,7 @@ public class Server implements Runnable {
 	}
 	
 	public void addConnection(Socket socket) {
-		ServerClientThread c = new ServerClientThread(this.key, socket);
+		ServerClientThread c = new ServerClientThread(socket);
 		
 		try {
 			c.open(this.key);
@@ -31,7 +31,7 @@ public class Server implements Runnable {
 		}
 		
 		Thread t = new Thread(c);
-		t.setName("bigbrother-client-thread");
+		t.setName("bigbrother-client-thread-"+c.getIP());
 		t.start();
 	}
 	

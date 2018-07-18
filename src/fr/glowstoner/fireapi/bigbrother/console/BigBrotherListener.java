@@ -29,6 +29,7 @@ import fr.glowstoner.fireapi.network.events.Listeners;
 import fr.glowstoner.fireapi.network.events.ServerListener;
 import fr.glowstoner.fireapi.network.packets.Packet;
 import fr.glowstoner.fireapi.network.packets.PacketPing;
+import fr.glowstoner.fireapi.network.packets.PacketText;
 import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.network.packets.login.enums.LoginResult;
 import fr.glowstoner.fireapi.player.enums.VersionType;
@@ -125,9 +126,9 @@ public class BigBrotherListener implements ServerListener{
 							BigBrotherSpyUtils.mergeHistory(this.gs.getHistory(spy.getPlayerName()), spy));
 				}else {
 					BigBrotherSpyHistory gh = new BigBrotherSpyHistory(spy.getPlayerName(), spy.getIP(),
-							BigBrotherSpyUtils.toFireCalendar(cal));
+							spy.toFireCalendar());
 					
-					gh.putMessage(BigBrotherSpyUtils.toFireCalendar(spy.getActionDate()), spy.getAction(),
+					gh.putMessage(spy.toFireCalendar(), spy.getAction(),
 							spy.getFormatedMsg(), spy.getRawMsg());
 					
 					this.gs.createNewDataFile(spy.getPlayerName(), gh);
@@ -149,13 +150,23 @@ public class BigBrotherListener implements ServerListener{
 
 	@Override
 	public void onConnection(ConnectionHandler ch) {
-		this.showWelcome(ch);
+		System.out.println("[BigBrother] Connection initiale -> "+ch.getIP());
 		
-		this.refreshLists();
+		try {
+			ch.sendPacket(new PacketText("Bonjour !"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void onConnectionSuccessfull(ConnectionHandler connection) {
+		try {
+			this.showWelcome(connection);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		this.sendMessage(connection, "Bienvenue !");
 		
 		this.connected.add(connection);
@@ -169,17 +180,17 @@ public class BigBrotherListener implements ServerListener{
 				+ "Utilisez /aide pour avoir la liste des commandes !", this.key);
 	}
 	
-	private void showWelcome(ConnectionHandler ch) {
-		this.sendMessage(ch, RED_BOLD+"  ____  _         ____            _   _               ");
-		this.sendMessage(ch, " |  _ \\(_)       |  _ \\          | | | |              ");
-		this.sendMessage(ch, " | |_) |_  __ _  | |_) |_ __ ___ | |_| |__   ___ _ __ ");
-		this.sendMessage(ch, " |  _ <| |/ _\\`| |  _ <| '__/ _ \\| __| '_ \\ / _ \\ '__|");
-		this.sendMessage(ch, " | |_) | | (_| | | |_) | | | (_) | |_| | | |  __/ |   ");
-		this.sendMessage(ch, " |____/|_|\\__, | |____/|_|  \\___/ \\__|_| |_|\\___|_|   ");
-		this.sendMessage(ch, "           __/ |                                      ");
-		this.sendMessage(ch, "          |___/                                       ");
-		this.sendMessage(ch, RESET+"\n         Version de l'api : "+YELLOW_UNDERLINED+FireAPI.VERSION+"\n\n");
-		this.sendMessage(ch, RESET+"Bonjour !");
+	private void showWelcome(ConnectionHandler ch) throws IOException {
+		ch.sendPacket(new PacketText(RED_BOLD+"[BigBrother]  ____  _         ____            _   _               "));
+		ch.sendPacket(new PacketText("[BigBrother] |  _ \\(_)       |  _ \\          | | | |              "));
+		ch.sendPacket(new PacketText("[BigBrother] | |_) |_  __ _  | |_) |_ __ ___ | |_| |__   ___ _ __ "));
+		ch.sendPacket(new PacketText("[BigBrother] |  _ <| |/ _\\`| |  _ <| '__/ _ \\| __| '_ \\ / _ \\ '__|"));
+		ch.sendPacket(new PacketText("[BigBrother] | |_) | | (_| | | |_) | | | (_) | |_| | | |  __/ |   "));
+		ch.sendPacket(new PacketText("[BigBrother] |____/|_|\\__, | |____/|_|  \\___/ \\__|_| |_|\\___|_|   "));
+		ch.sendPacket(new PacketText("[BigBrother]           __/ |                                      "));
+		ch.sendPacket(new PacketText("[BigBrother]          |___/                                       "));
+		ch.sendPacket(new PacketText(RESET+"\n[BigBrother]         Version de l'api : "+YELLOW_UNDERLINED+
+				FireAPI.VERSION+"\n\n"+RESET));
 	}
 	
 	private void sendMessage(ConnectionHandler ch, String message) {

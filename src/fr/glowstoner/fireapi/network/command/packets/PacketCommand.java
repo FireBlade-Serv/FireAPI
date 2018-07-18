@@ -21,6 +21,10 @@ public class PacketCommand extends Packet implements Encryptable{
 		this.setArguments(c.getArguments()); 
 	}
 	
+	public PacketCommand() {
+		
+	}
+	
 	public String getCommand() {
 		return command;
 	}
@@ -30,6 +34,8 @@ public class PacketCommand extends Packet implements Encryptable{
 	}
 
 	public String[] getArguments() {
+		if(this.arguments == null) return new String[0];
+		
 		String[] a = new String[this.arguments.size()];
 		
 		for(int i = 0 ; i < this.arguments.size() ; i++) {

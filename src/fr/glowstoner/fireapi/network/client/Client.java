@@ -8,9 +8,11 @@ import java.net.Socket;
 import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.network.ConnectionType;
+import fr.glowstoner.fireapi.network.exceptions.UnsecureConnectionException;
 import fr.glowstoner.fireapi.network.packets.Encryptable;
 import fr.glowstoner.fireapi.network.packets.Packet;
 import fr.glowstoner.fireapi.network.packets.PacketEncoder;
+import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 
 public class Client extends ConnectionHandler{
 	
@@ -27,13 +29,17 @@ public class Client extends ConnectionHandler{
 
 	@Override
 	public void sendPacket(Packet packet) throws IOException {
+		if(packet instanceof PacketLogin) {
+			throw new UnsecureConnectionException(packet.getClass().getName());
+		}
+		
 		this.out.writeObject(packet);
 		this.out.flush();
 	}
 	
 	@Override
 	public void sendPacket(Encryptable packet, EncryptionKey key) throws IOException {
-		this.out.writeObject(new PacketEncoder(key.getKey()).
+		this.out.writeObject(new PacketEncoder(key).
 				encode((Encryptable) packet));
 		this.out.flush();
 	}
@@ -43,7 +49,7 @@ public class Client extends ConnectionHandler{
 		this.out = new ObjectOutputStream(socket.getOutputStream());
 		this.in = new ObjectInputStream(socket.getInputStream());
       
-		ClientServerThread re = new ClientServerThread(key.getKey(), this, this.in);
+		ClientServerThread re = new ClientServerThread(key, this, this.in);
 		re.start();
 	}
       

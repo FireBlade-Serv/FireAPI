@@ -23,7 +23,7 @@ public abstract class Packet implements Serializable{
 	}
 	
 	public boolean hasLocalConnection() {
-		return this.local == null;
+		return this.local != null;
 	}
 	
 	public abstract boolean isCrypted();

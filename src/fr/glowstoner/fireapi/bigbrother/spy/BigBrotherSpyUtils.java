@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +18,11 @@ import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
 import fr.glowstoner.fireapi.utils.calendar.enums.FireCalendarFormat;
-import lombok.NonNull;
 
 public class BigBrotherSpyUtils {
 	
 	public static BigBrotherSpyHistory mergeHistory(BigBrotherSpyHistory base, PacketSpyAction ps) {
-		base.putMessage(BigBrotherSpyUtils.toFireCalendar(ps.getActionDate()), ps.getAction(), ps.getFormatedMsg(), ps.getRawMsg());
+		base.putMessage(ps.toFireCalendar(), ps.getAction(), ps.getFormatedMsg(), ps.getRawMsg());
 		
 		return base;
 	}
@@ -100,7 +98,7 @@ public class BigBrotherSpyUtils {
 	}
 	
 	public static File[] getAllSpyFiles() {
-		@NonNull Path path = null;
+		Path path = null;
 		
 		try {
 			path = Paths.get(ClassLoader.getSystemResource("").toURI());
@@ -111,28 +109,10 @@ public class BigBrotherSpyUtils {
 		return new File(path.toString()+"/spy/").listFiles();
 	}
 	
-	public static String getFormatedDate(Calendar date) {
-		int ms = date.get(Calendar.MILLISECOND);
-		int s = date.get(Calendar.SECOND);
-		int m = date.get(Calendar.MINUTE);
-		int h = date.get(Calendar.HOUR_OF_DAY);
-		int d = date.get(Calendar.DAY_OF_MONTH);
-		int mo = date.get(Calendar.MONTH);
-		int y = date.get(Calendar.YEAR);
-		
-		return h+"h"+m+"min"+s+"sec"+ms+"ms - "+d+"/"+mo+"/"+y;
-	}
-	
 	public static String getFormatedDate(FireCalendar date) {
-		int ms = date.get(FireCalendarFormat.MILISECOND);
-		int s = date.get(FireCalendarFormat.SECOND);
-		int m = date.get(FireCalendarFormat.MINUTE);
-		int h = date.get(FireCalendarFormat.HOUR_OF_DAY);
-		int d = date.get(FireCalendarFormat.DAY_OF_MOUTH);
-		int mo = date.get(FireCalendarFormat.MOUTH);
-		int y = date.get(FireCalendarFormat.YEAR);
 		
-		return h+"h"+m+"min"+s+"sec"+ms+"ms - "+d+"/"+mo+"/"+y;
+		return date.getHourOfDay()+"h"+date.getMinute()+"min"+date.getSecond()+"sec"+date.getMilisecond()+"ms - "+
+				date.getDayOfMonth()+"/"+date.getMonth()+"/"+date.getYear();
 	}
 	
 	public static List<BigBrotherSpyHistoryData> getAllMessagesContainsMessage(String message, BigBrotherSpyHistory history) {
@@ -152,17 +132,5 @@ public class BigBrotherSpyUtils {
 		}
 		
 		return list;
-	}
-	
-	public static FireCalendar toFireCalendar(Calendar date) {
-		return FireCalendar.builder()
-				.dayOfMonth(date.get(Calendar.DAY_OF_MONTH))
-				.hourOfDay(date.get(Calendar.HOUR_OF_DAY))
-				.milisecond(date.get(Calendar.MILLISECOND))
-				.minute(date.get(Calendar.MINUTE))
-				.second(date.get(Calendar.SECOND))
-				.month((date.get(Calendar.MONTH) + 1))
-				.year(date.get(Calendar.YEAR))
-				.build();
 	}
 }

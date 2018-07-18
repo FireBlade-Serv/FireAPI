@@ -2,21 +2,23 @@ package fr.glowstoner.fireapi.network.client;
 
 import java.io.EOFException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 
+import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.FireNetwork;
 import fr.glowstoner.fireapi.network.packets.EncryptedPacket;
 import fr.glowstoner.fireapi.network.packets.Packet;
 import fr.glowstoner.fireapi.network.packets.PacketEncoder;
-import fr.glowstoner.fireapi.network.packets.PacketPing;
 
 public class ClientServerThread extends Thread {
 	   
 	   private ObjectInputStream in;
 	   private Client c;
-	   private String key;
+	   private EncryptionKey key;
 	   
-	   public ClientServerThread(String key, Client c, ObjectInputStream in) {
+	   public ClientServerThread(EncryptionKey key, Client c, ObjectInputStream in) {
 		   this.in = in;
+		   this.key = key;
 	   }
 	   
 	   @Override
@@ -33,14 +35,13 @@ public class ClientServerThread extends Thread {
 					   }catch (EOFException ex) {
 						   break;
 					   }
+				   }catch (SocketException se) {
+					   System.out.println("\n[BigBrother] Vous avez été déconnecté ("+se.getMessage()+")! Bye !");
+					   break;
 				   }
 				   
 				   if(o != null && o instanceof Packet) {
 					   Packet p = (Packet) o;
-					   
-					   if(p instanceof PacketPing) {
-						   this.c.sendPacket(p);
-					   }
 					   
 					   if(p instanceof EncryptedPacket) {
 						   EncryptedPacket ep = (EncryptedPacket) p;
@@ -56,6 +57,6 @@ public class ClientServerThread extends Thread {
 			   }
 		   }
 		   
-		   this.interrupt();
+		   super.interrupt();
 	   	}
 	}

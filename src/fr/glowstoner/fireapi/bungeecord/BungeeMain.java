@@ -82,10 +82,13 @@ public class BungeeMain extends Plugin implements FireAPI{
 			e1.printStackTrace();
 		}
 		
+		System.out.println("(BigBrother) Utilisation de la clé de chiffrement suivante : "+this.log.getKey()
+			.getKey());
+		
 		try {
 			FireNetwork.init();
 			
-			Client c = new Client("62.4.16.89", 2566);
+			Client c = new Client("62.4.16.89", 2568);
 			
 			c.open(this.log.getKey());
 			
@@ -182,7 +185,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 		this.wl = new FireWL(this);
 		this.wl.loadConfiguration();
 		
-		super.getLogger().info("Clé de sécurité utilisée : "+this.auth.getSecurityKey());
+		super.getLogger().info("(FireAuth) Clé de sécurité utilisée : "+this.auth.getSecurityKey());
 		
 		PluginManager man = super.getProxy().getPluginManager();
 		

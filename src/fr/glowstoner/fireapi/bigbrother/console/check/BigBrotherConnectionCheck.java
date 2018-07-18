@@ -39,7 +39,7 @@ public class BigBrotherConnectionCheck extends TimerTask{
 	
 	public void check() throws BigBrotherNotConnectedException {
 		try {
-			client.sendPacket(new PacketPing());
+			this.client.sendPacket(new PacketPing());
 		}catch (Exception ex) {
 			ex.printStackTrace();
 			throw new BigBrotherNotConnectedException("Erreur sur l'envoi d'un packet (ping).");
