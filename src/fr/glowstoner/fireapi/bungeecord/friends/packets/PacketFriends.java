@@ -81,7 +81,7 @@ public class PacketFriends extends Packet implements Encryptable{
 
 	@Override
 	public String[] encryptedFields() {
-		return new String[] {};
+		return new String[] {"actionType", "to", "friends", "connected", "destination", "name"};
 	}
 
 	@Override

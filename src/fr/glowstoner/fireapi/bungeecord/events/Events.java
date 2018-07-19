@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheckListener;
+import fr.glowstoner.fireapi.bigbrother.console.server.check.BigBrotherConnectionCheckListener;
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.bungeecord.commands.StaffChatCommand;

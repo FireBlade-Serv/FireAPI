@@ -1,6 +1,6 @@
 package fr.glowstoner.fireapi;
 
-import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheck;
+import fr.glowstoner.fireapi.bigbrother.console.server.check.BigBrotherConnectionCheck;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;
 import fr.glowstoner.fireapi.bukkit.tag.FireTag;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
@@ -15,7 +15,7 @@ import fr.glowstoner.fireapi.wl.FireWL;
 
 public interface FireAPI {
 	
-	public static final String VERSION = "4.1.1 (Branche Alpha)";
+	public static final String VERSION = "4.2 (Branche Alpha)";
 	
 	//bungeecord
 	net.md_5.bungee.api.plugin.Plugin getBungeePlugin();

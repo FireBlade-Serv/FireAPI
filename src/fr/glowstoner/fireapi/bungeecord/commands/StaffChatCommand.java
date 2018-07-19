@@ -1,7 +1,6 @@
 package fr.glowstoner.fireapi.bungeecord.commands;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import fr.glowstoner.fireapi.FireAPI;
@@ -71,13 +70,9 @@ public class StaffChatCommand extends Command{
 		String pname = this.api.getChatUtils().getStringRank(p.getName()) + " " 
 				+ this.api.getChatUtils().getRankColor(p.getName()) + p.getName();
 		
-		Iterator<ProxiedPlayer> it = this.players.keySet().iterator();
-		
-		while(it.hasNext()) {
-			ProxiedPlayer next = it.next();
-			
-			if(this.players.get(next)) {
-				next.sendMessage(new TextComponent(this.pre+pname+"§r§o : "+message));
+		for(ProxiedPlayer pp : this.players.keySet()) {
+			if(this.players.get(pp)) {
+				pp.sendMessage(TextComponent.fromLegacyText(this.pre+pname+"§r§o : "+message));
 			}
 		}
 	}

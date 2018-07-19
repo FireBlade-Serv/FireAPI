@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bigbrother.console.check.BigBrotherConnectionCheckListener;
+import fr.glowstoner.fireapi.bigbrother.console.server.check.BigBrotherConnectionCheckListener;
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.bukkit.nms.packetlistener.FireInjector;

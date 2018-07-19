@@ -9,8 +9,8 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import fr.glowstoner.fireapi.FireAPI;
-import fr.glowstoner.fireapi.bigbrother.console.packets.ping.PacketPlayerPing;
-import fr.glowstoner.fireapi.bigbrother.console.packets.ping.enums.PingState;
+import fr.glowstoner.fireapi.bigbrother.console.server.packets.ping.PacketPlayerPing;
+import fr.glowstoner.fireapi.bigbrother.console.server.packets.ping.enums.PingState;
 
 public class PingCommand implements CommandExecutor {
 	

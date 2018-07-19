@@ -1,7 +1,7 @@
 package fr.glowstoner.fireapi;
 
 import fr.glowstoner.fireapi.bigbrother.BigBrother;
-import fr.glowstoner.fireapi.bigbrother.console.BigBrotherClient;
+import fr.glowstoner.fireapi.bigbrother.console.client.BigBrotherClient;
 
 public class Main {
 
@@ -13,12 +13,14 @@ public class Main {
 				g.init();
 			}else if(args[0].equalsIgnoreCase("client")) {
 				BigBrotherClient c = new BigBrotherClient();
+				c.askPassword();
 				c.connect();
 			}else {
 				System.out.println("Argument inconnu pour "+args[0]+" !");
 			}
 		}else {
-			System.out.println("L'execution de ce plugin doit être faite par Spigot ou Bungeecord !");
+			System.out.println("[FireAPI] L'execution de ce plugin doit être faite par spigot ou bungeecord "
+					+ "ou en utilisant les arguments BigBrother.");
 		}
 	}
 }

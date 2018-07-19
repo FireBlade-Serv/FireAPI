@@ -2,14 +2,14 @@ package fr.glowstoner.fireapi.bigbrother;
 
 import java.io.IOException;
 
-import fr.glowstoner.fireapi.bigbrother.console.BigBrotherListener;
-import fr.glowstoner.fireapi.bigbrother.console.commands.ChatCommand;
-import fr.glowstoner.fireapi.bigbrother.console.commands.ExecuteCommand;
-import fr.glowstoner.fireapi.bigbrother.console.commands.HelpCommand;
-import fr.glowstoner.fireapi.bigbrother.console.commands.ListCommand;
-import fr.glowstoner.fireapi.bigbrother.console.commands.NameCommand;
-import fr.glowstoner.fireapi.bigbrother.console.commands.SpyCommand;
-import fr.glowstoner.fireapi.bigbrother.console.login.BigBrotherLoginGetter;
+import fr.glowstoner.fireapi.bigbrother.console.server.BigBrotherListener;
+import fr.glowstoner.fireapi.bigbrother.console.server.commands.ChatCommand;
+import fr.glowstoner.fireapi.bigbrother.console.server.commands.ExecuteCommand;
+import fr.glowstoner.fireapi.bigbrother.console.server.commands.HelpCommand;
+import fr.glowstoner.fireapi.bigbrother.console.server.commands.ListCommand;
+import fr.glowstoner.fireapi.bigbrother.console.server.commands.NameCommand;
+import fr.glowstoner.fireapi.bigbrother.console.server.commands.SpyCommand;
+import fr.glowstoner.fireapi.bigbrother.console.server.login.BigBrotherLoginGetter;
 import fr.glowstoner.fireapi.bigbrother.spy.BigBrotherSpy;
 import fr.glowstoner.fireapi.network.FireNetwork;
 import fr.glowstoner.fireapi.network.events.Listeners;

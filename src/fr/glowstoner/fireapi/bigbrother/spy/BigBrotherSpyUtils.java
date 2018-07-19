@@ -14,10 +14,10 @@ import java.util.Map;
 
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
+import fr.glowstoner.fireapi.calendar.FireCalendar;
+import fr.glowstoner.fireapi.calendar.enums.FireCalendarFormat;
 import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
-import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
-import fr.glowstoner.fireapi.utils.calendar.enums.FireCalendarFormat;
 
 public class BigBrotherSpyUtils {
 	

@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
+import fr.glowstoner.fireapi.calendar.FireCalendar;
 import fr.glowstoner.fireapi.network.packets.Encryptable;
 import fr.glowstoner.fireapi.network.packets.Packet;
-import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
 
 public class PacketSpyAction extends Packet implements Encryptable{
 

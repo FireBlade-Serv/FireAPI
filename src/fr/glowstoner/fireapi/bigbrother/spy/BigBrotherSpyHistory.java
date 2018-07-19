@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
-import fr.glowstoner.fireapi.utils.calendar.FireCalendar;
+import fr.glowstoner.fireapi.calendar.FireCalendar;
 
 public class BigBrotherSpyHistory implements Serializable{
 	

@@ -8,7 +8,7 @@ import java.io.OptionalDataException;
 import java.net.Socket;
 import java.net.SocketException;
 
-import fr.glowstoner.fireapi.bigbrother.console.login.BigBrotherLoginGetter;
+import fr.glowstoner.fireapi.bigbrother.console.server.login.BigBrotherLoginGetter;
 import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.network.ConnectionType;
