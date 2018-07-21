@@ -17,7 +17,7 @@ public class BigBrotherLoginGetter {
 		System.out.println("[BigBrother] (FireAPI) Chargement du fichier secret ...");
 
 		ObjectInputStream in = new ObjectInputStream(super.getClass().
-				getResourceAsStream("/fr/glowstoner/fireapi/bigbrother/console/login/bigbrother.dat"));
+				getResourceAsStream("/fr/glowstoner/fireapi/bigbrother/console/server/login/bigbrother.dat"));
 		
 		BigBrotherLogin o = (BigBrotherLogin) in.readObject();
 		
