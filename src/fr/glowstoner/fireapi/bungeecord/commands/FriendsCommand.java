@@ -81,8 +81,7 @@ public class FriendsCommand extends Command {
 					try {
 						c.sendPacket(new PacketFriends(FriendsActionType.OPEN_FRIENDSLIST_GUI,
 								VersionType.SPIGOT_VERSION, this.friends.getAllFriends(pp.getName()),
-								names, pp.getServer().getInfo().getName().concat("-spigot"), pp.getName()),
-								this.api.encryptionKey());
+								names, pp.getServer().getInfo().getName().concat("-spigot"), pp.getName()));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

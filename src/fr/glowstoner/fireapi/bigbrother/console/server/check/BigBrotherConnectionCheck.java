@@ -51,13 +51,13 @@ public class BigBrotherConnectionCheck extends TimerTask{
 			System.out.println("[FireAPI] Reconnection avec IP="+this.client.getIP()+" et PORT="+this.client.getPort());
 			this.client = new Client(this.client.getIP(), this.client.getPort());
 			
-			this.client.open(this.infos.getKey());
+			this.client.open();
 			
 			ConnectionHandler ch = (ConnectionHandler) this.client;
 			
-			ch.sendPacket(new PacketLogin(this.infos.getPassword()), this.infos.getKey());
-			ch.sendPacket(new PacketVersion(this.infos.getVersionType()), this.infos.getKey());
-			ch.sendPacket(new PacketCommand("name "+this.infos.getId()), this.infos.getKey());
+			ch.sendPacket(new PacketLogin(this.infos.getPassword()));
+			ch.sendPacket(new PacketVersion(this.infos.getVersionType()));
+			ch.sendPacket(new PacketCommand("name "+this.infos.getId()));
 			
 			this.api.setClient((Client) ch);
 			this.api.setChecker(this);

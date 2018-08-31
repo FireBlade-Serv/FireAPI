@@ -60,9 +60,9 @@ public class BigBrotherAC implements Listener{
 						try {
 							api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), "Autoclick "+cps.get(p)+" CPS",
 									BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
-									BigBrotherCheatAC.AUTOCLICK, ((CraftPlayer) p).getHandle().ping), api.encryptionKey());
+									BigBrotherCheatAC.AUTOCLICK, ((CraftPlayer) p).getHandle().ping));
 							api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
-									"Autoclick "+cps.get(p)+" CPS", SpyAction.PLAYER_BBAC_DETECTION, true), api.encryptionKey());
+									"Autoclick "+cps.get(p)+" CPS", SpyAction.PLAYER_BBAC_DETECTION, true));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -82,9 +82,9 @@ public class BigBrotherAC implements Listener{
 			
 			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), message,
 					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
-					BigBrotherCheatAC.MOVE, ((CraftPlayer) p).getHandle().ping), api.encryptionKey());
+					BigBrotherCheatAC.MOVE, ((CraftPlayer) p).getHandle().ping));
 			this.api.getClient().sendPacket(new PacketSpyAction(p.getName(), p.getAddress().getAddress().getHostAddress(),
-					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_BBAC_DETECTION, true), this.api.encryptionKey());
+					"Flyhack ("+packets+" paquets)", SpyAction.PLAYER_BBAC_DETECTION, true));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -115,7 +115,7 @@ public class BigBrotherAC implements Listener{
 		try {
 			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), "Reach "+distance+" pl+",
 					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF, BigBrotherCheatAC.REACH,
-					((CraftPlayer) p).getHandle().ping), this.api.encryptionKey());
+					((CraftPlayer) p).getHandle().ping));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -125,7 +125,7 @@ public class BigBrotherAC implements Listener{
 		try {
 			this.api.getClient().sendPacket(new PacketBigBrotherAC(p.getName(), "FastSneak",
 					BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF,
-					BigBrotherCheatAC.FASTSNEAK, ((CraftPlayer) p).getHandle().ping), this.api.encryptionKey());
+					BigBrotherCheatAC.FASTSNEAK, ((CraftPlayer) p).getHandle().ping));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

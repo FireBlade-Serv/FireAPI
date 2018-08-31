@@ -34,25 +34,17 @@ public class PacketEncoder {
 		return ep;
 	}
 	
-	public Packet decode(EncryptedPacket ep) {
-		try {
-			Packet o = (Packet) ep.getPacketClass().newInstance();
+	public Packet decode(EncryptedPacket ep) throws Exception {
+		Packet o = (Packet) ep.getPacketClass().newInstance();
+		
+		for(String fs : ep.getData().keySet()) {
+			Field f = o.getClass().getDeclaredField(fs);
 			
-			for(String fs : ep.getData().keySet()) {
-				Field f = o.getClass().getDeclaredField(fs);
-				
-				f.setAccessible(true);
-				
-				f.set(o, EncryptFunction.decrypt(this.key.getKey(), ep.getElement(fs)));
-			}
+			f.setAccessible(true);
 			
-			return o;
-		} catch (InstantiationException | IllegalAccessException |
-				NoSuchFieldException | SecurityException e) {
-			
-			e.printStackTrace();
+			f.set(o, EncryptFunction.decrypt(this.key.getKey(), ep.getElement(fs)));
 		}
 		
-		return null;
+		return o;
 	}
 }

@@ -23,26 +23,26 @@ public class EncryptedPacket extends Packet{
 	public void setData(Map<String, EncryptedObject> data) {
 		this.data = data;
 	}
-	
-	public void addValue(String name, EncryptedObject data) {
-		this.data.put(name, data);
-	}
-	
-	public EncryptedObject getElement(String name) {
-		return this.data.get(name);
-	}
 
 	public Class<?> getPacketClass() {
 		return this.klass;
 	}
 	
+	public void addValue(String name, EncryptedObject data) {
+		this.data.put(name, data);
+	}
+
+	public EncryptedObject getElement(String el) {
+		return this.data.get(el);
+	}
+	
 	@Override
-	public boolean isCrypted() {
+	public boolean encrypted() {
 		return true;
 	}
 	
 	@Override
 	public String toString() {
-		return this.data.toString()+"/"+this.klass.getName();
+		return "data: "+this.data.toString()+"/ klass: "+this.klass.getName();
 	}
 }

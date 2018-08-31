@@ -9,7 +9,7 @@ public abstract class Packet implements Serializable{
 	private static final long serialVersionUID = -400610387591075416L;
 	
 	private ConnectionHandler local;
-	
+
 	public Packet() {
 		
 	}
@@ -26,5 +26,5 @@ public abstract class Packet implements Serializable{
 		return this.local != null;
 	}
 	
-	public abstract boolean isCrypted();
+	public abstract boolean encrypted();
 }

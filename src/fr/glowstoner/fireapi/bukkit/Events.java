@@ -47,8 +47,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener{
 		
 		try {
 			this.client.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()
-					.getAddress().getAddress().getHostAddress(), this.id, SpyAction.PLAYER_SERVER_CONNECTION, true),
-					this.api.encryptionKey());
+					.getAddress().getAddress().getHostAddress(), this.id, SpyAction.PLAYER_SERVER_CONNECTION, true));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -68,8 +67,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener{
 		
 		try {
 			this.client.sendPacket(new PacketSpyAction(e.getPlayer().getName(), e.getPlayer()
-					.getAddress().getAddress().getHostAddress(), this.id, SpyAction.PLAYER_SERVER_DISCONNECT, true),
-					this.api.encryptionKey());
+					.getAddress().getAddress().getHostAddress(), this.id, SpyAction.PLAYER_SERVER_DISCONNECT, true));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

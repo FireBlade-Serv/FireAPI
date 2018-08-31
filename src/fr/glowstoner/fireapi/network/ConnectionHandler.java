@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.Socket;
 
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
-import fr.glowstoner.fireapi.network.packets.Encryptable;
 import fr.glowstoner.fireapi.network.packets.Packet;
 import fr.glowstoner.fireapi.network.packets.PacketPing;
 import fr.glowstoner.fireapi.network.packets.PacketText;
@@ -17,32 +15,18 @@ public abstract class ConnectionHandler implements Serializable{
 
 	protected Socket socket;
 	
-	private ConnectionType conntype;
-	private LoginResult lr;
+	private LoginResult lr = LoginResult.NOT_LOGGED;
 	private String surname = "default-name";
 	
 	public ConnectionHandler(Socket socket) {
-		this.conntype = this.type();
-		this.eval();
 		this.socket = socket;
 	}
 	
 	public ConnectionHandler() {
-		this.conntype = this.type();
-		this.eval();
-	}
-	
-	public void eval() {
-		this.conntype = this.type();
 		
-		if(this.conntype.equals(ConnectionType.SERVER_CONNECTION)) {
-			this.lr = LoginResult.SERVER;
-		}else {
-			this.lr = LoginResult.NOT_LOGGED;
-		}
 	}
 	
-	public void setSocket(Socket socket) {
+	protected void setSocket(Socket socket) {
 		this.socket = socket;
 	}
 	
@@ -58,10 +42,6 @@ public abstract class ConnectionHandler implements Serializable{
 		return this.socket.getPort();
 	}
 	
-	public ConnectionType getType() {
-		return this.conntype;
-	}
-	
 	public LoginResult isLogged() {
 		return this.lr;
 	}
@@ -70,16 +50,16 @@ public abstract class ConnectionHandler implements Serializable{
 		this.lr = lr;
 	}
 	
-	public void sendMessage(String text, EncryptionKey key) {
+	public void sendMessage(String text) {
 		try {
-			this.sendPacket(new PacketText(text), key);
+			this.sendPacket(new PacketText(text));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void sendMessageWithPrefix(String text, EncryptionKey key) {
-		this.sendMessage("[BigBrother] "+text, key);
+	public void sendMessageWithPrefix(String text) {
+		this.sendMessage("[BigBrother] "+text);
 	}
 	
 	public String getName() {
@@ -102,11 +82,9 @@ public abstract class ConnectionHandler implements Serializable{
 
 	public abstract void sendPacket(Packet packet) throws IOException;
 	
-	public abstract void sendPacket(Encryptable packet, EncryptionKey key) throws IOException;
-	
 	public abstract void close() throws IOException;
 	
-	public abstract void open(EncryptionKey key) throws IOException;
+	public abstract void open() throws IOException;
 	
 	public abstract ConnectionType type();
 }

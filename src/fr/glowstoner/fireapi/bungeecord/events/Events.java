@@ -62,8 +62,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 		
 		try {
 			this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
-					"Connection sur le proxy principal.", SpyAction.PLAYER_JOIN, true)
-					, this.instance.encryptionKey());
+					"Connection sur le proxy principal.", SpyAction.PLAYER_JOIN, true));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -111,8 +110,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 		try {
 			this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress()
 					.getHostAddress(),
-					"Le joueur vient de passer les sécurités du login.", SpyAction.PLAYER_LOGGED, true),
-					this.instance.encryptionKey());
+					"Le joueur vient de passer les sécurités du login.", SpyAction.PLAYER_LOGGED, true));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -206,7 +204,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 		}else {
 			try {
 				this.c.sendPacket(new PacketSpyAction(pp.getName(), pp.getAddress().getAddress().getHostAddress(),
-						e.getMessage(), SpyAction.PLAYER_CHAT, true), this.instance.encryptionKey());
+						e.getMessage(), SpyAction.PLAYER_CHAT, true));
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -236,7 +234,7 @@ public class Events implements Listener, BigBrotherConnectionCheckListener {
 			
 			this.c.sendPacket(new PacketSpyAction(e.getPlayer().getName(), 
 					e.getPlayer().getAddress().getAddress().getHostAddress(), "Déconnection du proxy principal.",
-					SpyAction.PLAYER_LEAVE, true), this.instance.encryptionKey());
+					SpyAction.PLAYER_LEAVE, true));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

@@ -28,8 +28,7 @@ import fr.glowstoner.fireapi.bungeecord.commands.misc.Website;
 import fr.glowstoner.fireapi.bungeecord.events.Events;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
-import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.ConnectionType;
 import fr.glowstoner.fireapi.network.FireNetwork;
 import fr.glowstoner.fireapi.network.client.Client;
 import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
@@ -62,6 +61,8 @@ public class BungeeMain extends Plugin implements FireAPI{
 	private BigBrotherLoginGetter log;
 	private Client c;
 
+	private FireNetwork fn;
+
 	@Override
 	public void onEnable() {
 		super.getLogger().info("FireAPI actif !");
@@ -86,21 +87,16 @@ public class BungeeMain extends Plugin implements FireAPI{
 			.getKey());
 		
 		try {
-			FireNetwork.init();
+			this.fn = new FireNetwork(this.log.getKey());
+			this.fn.start(ConnectionType.CLIENT_CONNECTION, false);
+
+			Client ch = (Client) this.fn.getBaseConnector();
 			
-			Client c = new Client("62.4.16.89", 2568);
+			this.c = ch;
 			
-			c.open(this.log.getKey());
-			
-			this.c = c;
-			
-			ConnectionHandler ch = c;
-			
-			ch.eval();
-			
-			ch.sendPacket(new PacketLogin(this.log.getPassword()), this.log.getKey());
-			ch.sendPacket(new PacketVersion(VersionType.BUNGEECORD_VERSION), this.log.getKey());
-			ch.sendPacket(new PacketCommand("name main-bungeecord"), this.log.getKey());
+			ch.sendPacket(new PacketLogin(this.log.getPassword()));
+			ch.sendPacket(new PacketVersion(VersionType.BUNGEECORD_VERSION));
+			ch.sendPacket(new PacketCommand("name main-bungeecord"));
 			
 			BigBrotherConnectionCheck check = new BigBrotherConnectionCheck
 					(this, BigBrotherConnectionCheckType.GLOBAL_CHECK, BigBrotherConnectionInfos.builder()
@@ -127,7 +123,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 			check.startChecks();
 		}
 		
-		FireNetwork.getListeners().registerClientListener(new ClientListener() {
+		this.fn.getListeners().registerClientListener(new ClientListener() {
 			
 			@Override
 			public void onPacketReceive(Packet packet) {
@@ -306,10 +302,5 @@ public class BungeeMain extends Plugin implements FireAPI{
 	@Override
 	public FireTag getTagSystem() {
 		return null;
-	}
-
-	@Override
-	public EncryptionKey encryptionKey() {
-		return this.log.getKey();
 	}
 }

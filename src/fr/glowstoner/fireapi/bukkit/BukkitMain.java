@@ -25,8 +25,7 @@ import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.bungeecord.friends.packets.PacketFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
-import fr.glowstoner.fireapi.network.ConnectionHandler;
+import fr.glowstoner.fireapi.network.ConnectionType;
 import fr.glowstoner.fireapi.network.FireNetwork;
 import fr.glowstoner.fireapi.network.client.Client;
 import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
@@ -51,8 +50,8 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	private FireTag tag;
 	private BigBrotherConnectionCheck check;
 	private BigBrotherAC ac;
-	
 	private String id;
+	private FireNetwork fn;
 
 	@Override
 	public void onEnable() {
@@ -100,21 +99,15 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 		this.ac.startKillAuraChecks((long) (30 * 20));
 		
 		try {
-			FireNetwork.init();
+			this.fn = new FireNetwork(this.log.getKey());
+			this.fn.start(ConnectionType.CLIENT_CONNECTION, false);
 			
-			Client c = new Client("62.4.16.89", 2568);
+			Client ch = (Client) fn.getBaseConnector();
+			this.c = ch;
 			
-			c.open(this.log.getKey());
-			
-			this.c = c;
-			
-			ConnectionHandler ch = c;
-			
-			ch.eval();
-			
-			ch.sendPacket(new PacketLogin(this.log.getPassword()), this.log.getKey());
-			ch.sendPacket(new PacketVersion(VersionType.SPIGOT_VERSION), this.log.getKey());
-			ch.sendPacket(new PacketCommand("name "+this.id), this.log.getKey());
+			ch.sendPacket(new PacketLogin(this.log.getPassword()));
+			ch.sendPacket(new PacketVersion(VersionType.SPIGOT_VERSION));
+			ch.sendPacket(new PacketCommand("name "+this.id));
 
 			BigBrotherConnectionCheck check = new BigBrotherConnectionCheck
 					(this, BigBrotherConnectionCheckType.GLOBAL_CHECK, BigBrotherConnectionInfos.builder()
@@ -141,7 +134,7 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 			check.startChecks();
 		}
 		
-		FireNetwork.getListeners().registerClientListener(new ClientListener() {
+		this.fn.getListeners().registerClientListener(new ClientListener() {
 			
 			@Override
 			public void onPacketReceive(Packet packet) {
@@ -272,10 +265,5 @@ public class BukkitMain extends JavaPlugin implements FireAPI{
 	@Override
 	public FireTag getTagSystem() {
 		return this.tag;
-	}
-
-	@Override
-	public EncryptionKey encryptionKey() {
-		return this.log.getKey();
 	}
 }

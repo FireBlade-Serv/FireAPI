@@ -31,7 +31,7 @@ public class PacketLogin extends Packet implements Encryptable{
 	}
 
 	@Override
-	public boolean isCrypted() {
+	public boolean encrypted() {
 		return true;
 	}
 }

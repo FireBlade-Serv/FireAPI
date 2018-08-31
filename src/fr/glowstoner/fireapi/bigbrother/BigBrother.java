@@ -1,7 +1,5 @@
 package fr.glowstoner.fireapi.bigbrother;
 
-import java.io.IOException;
-
 import fr.glowstoner.fireapi.bigbrother.console.server.BigBrotherListener;
 import fr.glowstoner.fireapi.bigbrother.console.server.commands.ChatCommand;
 import fr.glowstoner.fireapi.bigbrother.console.server.commands.ExecuteCommand;
@@ -11,23 +9,18 @@ import fr.glowstoner.fireapi.bigbrother.console.server.commands.NameCommand;
 import fr.glowstoner.fireapi.bigbrother.console.server.commands.SpyCommand;
 import fr.glowstoner.fireapi.bigbrother.console.server.login.BigBrotherLoginGetter;
 import fr.glowstoner.fireapi.bigbrother.spy.BigBrotherSpy;
+import fr.glowstoner.fireapi.network.ConnectionType;
 import fr.glowstoner.fireapi.network.FireNetwork;
-import fr.glowstoner.fireapi.network.events.Listeners;
-import fr.glowstoner.fireapi.network.server.Server;
 
 public class BigBrother {
 	
 	private BigBrotherLoginGetter log;
-	private int port;
-	private Server server;
 	
-	public BigBrother(int port) {
-		this.port = port;
+	public BigBrother() {
+		
 	}
 	
 	public void init() {
-		FireNetwork.init();
-		
 		System.out.println("~~~~~~~~~~BigBrother~~~~~~~~~~");
 		System.out.println("by Glowstoner");
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -54,43 +47,27 @@ public class BigBrother {
 			e.printStackTrace();
 		}
 		
-		BigBrotherListener gl = new BigBrotherListener(this.log, gs, getListeners());
+		FireNetwork fn = new FireNetwork(this.log.getKey());
 		
-		getListeners().registerServerListener(gl);
+		fn.start(ConnectionType.SERVER_CONNECTION, false);
+		
+		BigBrotherListener gl = new BigBrotherListener(this.log, gs, fn.getListeners());
+		
+		fn.getListeners().registerServerListener(gl);
 		System.out.println("[BigBrother] Listener lancés !");
 		
-		try {
-			System.out.println("[BigBrother] Lancement du serveur BigBrother ...");
-			this.server = new Server(this.log.getKey(), this.port);
-			System.out.println("[BigBrother] Serveur BigBrother lancé !");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		System.out.println("[BigBrother] Serveur BigBrother (FireNetwork) lancé !");
 		
-		this.server.start();
+		fn.getListeners().registerCommand("chat", new ChatCommand(gl));
+		fn.getListeners().registerCommand("name", new NameCommand());
+		fn.getListeners().registerCommand("help", new HelpCommand(fn.getListeners()));
+		fn.getListeners().registerCommand("list", new ListCommand(gl));
+		fn.getListeners().registerCommand("execute", new ExecuteCommand(gl));
+		fn.getListeners().registerCommand("spy", new SpyCommand(gs));
 		
-		getListeners().registerCommand("chat", new ChatCommand(this.log.getKey()));
-		getListeners().registerCommand("name", new NameCommand(this.log.getKey()));
-		getListeners().registerCommand("help", new HelpCommand(this.log.getKey(), this.getListeners()));
-		getListeners().registerCommand("list", new ListCommand(this.log.getKey(), gl));
-		getListeners().registerCommand("execute", new ExecuteCommand(gl, this.log.getKey()));
-		getListeners().registerCommand("spy", new SpyCommand(this.log.getKey(), gs));
-		
-		getListeners().addAlias("help", "aide");
-		getListeners().addAlias("help", "?");
-		getListeners().addAlias("execute", "exec");
-		getListeners().addAlias("execute", "ex");
-	}
-	
-	public Listeners getListeners() {
-		return FireNetwork.getListeners();
-	}
-
-	public int getPort() {
-		return port;
-	}
-	
-	public Server getServer() {
-		return this.server;
+		fn.getListeners().addAlias("help", "aide");
+		fn.getListeners().addAlias("help", "?");
+		fn.getListeners().addAlias("execute", "exec");
+		fn.getListeners().addAlias("execute", "ex");
 	}
 }

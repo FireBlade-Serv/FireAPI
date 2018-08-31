@@ -6,7 +6,6 @@ import fr.glowstoner.fireapi.bukkit.tag.FireTag;
 import fr.glowstoner.fireapi.bungeecord.auth.FireAuth;
 import fr.glowstoner.fireapi.bungeecord.friends.FireFriends;
 import fr.glowstoner.fireapi.chat.FireChat;
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.client.Client;
 import fr.glowstoner.fireapi.player.enums.VersionType;
 import fr.glowstoner.fireapi.rank.FireRank;
@@ -15,7 +14,7 @@ import fr.glowstoner.fireapi.wl.FireWL;
 
 public interface FireAPI {
 	
-	public static final String VERSION = "4.2 (Branche Alpha)";
+	public static final String VERSION = "4.3 (Branche Alpha)";
 	
 	//bungeecord
 	net.md_5.bungee.api.plugin.Plugin getBungeePlugin();
@@ -53,6 +52,4 @@ public interface FireAPI {
 	String id();
 	
 	VersionType type();
-	
-	EncryptionKey encryptionKey();
 }

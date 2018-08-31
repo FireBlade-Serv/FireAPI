@@ -47,24 +47,19 @@ public abstract class EncryptFunction<E, D> {
 		return null;
 	}
 	
-	public static Object decrypt(String key, EncryptedObject eo) {
-		try {
-			switch (eo.getType()) {
-				case ENCRYPT_ENUM:
-					return new EncryptedEnum(key).decrypt((String) eo.getData());
-				case ENCRYPT_INT:
-					return new EncryptedInt(key).decrypt((String) eo.getData());
-				case ENCRYPT_LIST:
-					return new EncryptedList(key).decrypt((String) eo.getData());
-				case ENCRYPT_STRING:
-					return new EncryptedString(key).decrypt((String) eo.getData());
-				case OTHER:
-					return null;
-			}
-		}catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		
+	public static Object decrypt(String key, EncryptedObject eo) throws Exception {
+		switch (eo.getType()) {
+			case ENCRYPT_ENUM:
+				return new EncryptedEnum(key).decrypt((String) eo.getData());
+			case ENCRYPT_INT:
+				return new EncryptedInt(key).decrypt((String) eo.getData());
+			case ENCRYPT_LIST:
+				return new EncryptedList(key).decrypt((String) eo.getData());
+			case ENCRYPT_STRING:
+				return new EncryptedString(key).decrypt((String) eo.getData());
+			case OTHER:
+				return null;
+		}	
 		return null;
 	}
 }

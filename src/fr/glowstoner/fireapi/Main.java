@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args) {
 		if(args.length == 1) {
 			if(args[0].equalsIgnoreCase("server")) {
-				BigBrother g = new BigBrother(2568);
+				BigBrother g = new BigBrother();
 				
 				g.init();
 			}else if(args[0].equalsIgnoreCase("client")) {

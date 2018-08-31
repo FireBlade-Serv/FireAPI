@@ -10,7 +10,7 @@ public class PacketPing extends Packet {
 	}
 
 	@Override
-	public boolean isCrypted() {
+	public boolean encrypted() {
 		return false;
 	}
 }

@@ -30,8 +30,7 @@ public class PingCommand implements CommandExecutor {
 			p.sendMessage("§6[§ePing§6]§r Ton ping §eserveur§r est de §e"+ping+" ms§r !");
 			
 			try {
-				this.api.getClient().sendPacket(new PacketPlayerPing(p.getName(), PingState.INIT_SERVER),
-						this.api.encryptionKey());
+				this.api.getClient().sendPacket(new PacketPlayerPing(p.getName(), PingState.INIT_SERVER));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

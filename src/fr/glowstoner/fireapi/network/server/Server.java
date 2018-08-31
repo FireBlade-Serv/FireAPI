@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
+import fr.glowstoner.fireapi.network.BaseConnector;
 
-public class Server implements Runnable {
+public class Server implements BaseConnector, Runnable {
 
-	private EncryptionKey key;
 	private ServerSocket server;
 	private Thread t;
 	
-	public Server(EncryptionKey key, int port) throws IOException {
+	public Server(int port) throws IOException {
 		this.server = new ServerSocket(port);
 	}
 	
-	public void start() {
+	@Override
+	public void open() {
 		this.t = new Thread(this);
 		t.start();
 	}
@@ -25,7 +25,7 @@ public class Server implements Runnable {
 		ServerClientThread c = new ServerClientThread(socket);
 		
 		try {
-			c.open(this.key);
+			c.open();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -35,6 +35,7 @@ public class Server implements Runnable {
 		t.start();
 	}
 	
+	@Override
 	public void close() {
 		if(this.server != null) {
 			try {

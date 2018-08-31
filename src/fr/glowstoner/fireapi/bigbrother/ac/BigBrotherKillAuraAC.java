@@ -104,7 +104,7 @@ public class BigBrotherKillAuraAC {
 						try {
 							api.getClient().sendPacket(new PacketBigBrotherAC(getPlayer().getName(), "KillAura 5/5",
 									BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF, BigBrotherCheatAC.KILLAURA,
-									((CraftPlayer) getPlayer()).getHandle().ping), api.encryptionKey());
+									((CraftPlayer) getPlayer()).getHandle().ping));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -117,7 +117,7 @@ public class BigBrotherKillAuraAC {
 						try {
 							api.getClient().sendPacket(new PacketBigBrotherAC(getPlayer().getName(), "KillAura 4/5",
 									BigBrotherTypeAC.CHEAT_DETECTION, BigBrotherActionAC.INFORM_STAFF, BigBrotherCheatAC.KILLAURA,
-									((CraftPlayer) getPlayer()).getHandle().ping), api.encryptionKey());
+									((CraftPlayer) getPlayer()).getHandle().ping));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

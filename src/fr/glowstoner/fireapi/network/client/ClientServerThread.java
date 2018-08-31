@@ -1,10 +1,10 @@
 package fr.glowstoner.fireapi.network.client;
 
 import java.io.EOFException;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.SocketException;
 
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.FireNetwork;
 import fr.glowstoner.fireapi.network.packets.EncryptedPacket;
 import fr.glowstoner.fireapi.network.packets.Packet;
@@ -14,11 +14,10 @@ public class ClientServerThread extends Thread {
 	   
 	   private ObjectInputStream in;
 	   private Client c;
-	   private EncryptionKey key;
 	   
-	   public ClientServerThread(EncryptionKey key, Client c, ObjectInputStream in) {
+	   public ClientServerThread(Client c, ObjectInputStream in) {
 		   this.in = in;
-		   this.key = key;
+		   this.c = c;
 	   }
 	   
 	   @Override
@@ -36,7 +35,6 @@ public class ClientServerThread extends Thread {
 						   break;
 					   }
 				   }catch (SocketException se) {
-					   System.out.println("\n[BigBrother] Vous avez été déconnecté ("+se.getMessage()+")! Bye !");
 					   break;
 				   }
 				   
@@ -46,16 +44,24 @@ public class ClientServerThread extends Thread {
 					   if(p instanceof EncryptedPacket) {
 						   EncryptedPacket ep = (EncryptedPacket) p;
 						   
-						   p = new PacketEncoder(this.key).decode(ep);
+						   p = new PacketEncoder(FireNetwork.getInstance().getKey())
+								   .decode(ep);
 					   }
 					   
-					   FireNetwork.getListeners().callOnPacketReceiveClientListener(p, this.c);
+					   FireNetwork.getInstance().getListeners()
+					   		.callOnPacketReceiveClientListener(p, this.c);
 				   }
 			   } catch (Exception e) {
 				   e.printStackTrace();
 				   break;
 			   }
 		   }
+		   
+		   try {
+			this.c.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		   
 		   super.interrupt();
 	   	}

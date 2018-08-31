@@ -16,7 +16,6 @@ import fr.glowstoner.fireapi.bigbrother.spy.enums.SpyAction;
 import fr.glowstoner.fireapi.bigbrother.spy.packets.PacketSpyAction;
 import fr.glowstoner.fireapi.calendar.FireCalendar;
 import fr.glowstoner.fireapi.calendar.enums.FireCalendarFormat;
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
 
 public class BigBrotherSpyUtils {
@@ -27,7 +26,7 @@ public class BigBrotherSpyUtils {
 		return base;
 	}
 
-	public static void sendInfosToClient(ConnectionHandler c, String name, EncryptionKey key) throws IOException, 
+	public static void sendInfosToClient(ConnectionHandler c, String name) throws IOException, 
 		ClassNotFoundException, URISyntaxException {
 		
 		Path path = Paths.get(ClassLoader.getSystemResource("").toURI());
@@ -38,24 +37,24 @@ public class BigBrotherSpyUtils {
 		
 		BigBrotherSpyHistory h = (BigBrotherSpyHistory) oi.readObject();
 		
-		c.sendMessageWithPrefix("--------------SPY--------------", key);
-		c.sendMessageWithPrefix("size = "+h.getMessages().size(), key);
-		c.sendMessageWithPrefix("name = "+h.getPlayerName(), key);
-		c.sendMessageWithPrefix("IP = "+h.getIP(), key);
-		c.sendMessageWithPrefix("-------------------------------\n", key);
+		c.sendMessageWithPrefix("--------------SPY--------------");
+		c.sendMessageWithPrefix("size = "+h.getMessages().size());
+		c.sendMessageWithPrefix("name = "+h.getPlayerName());
+		c.sendMessageWithPrefix("IP = "+h.getIP());
+		c.sendMessageWithPrefix("-------------------------------\n");
 		
 		for(int i = 0 ; i < h.getMessages().size() ; i++) {
 			BigBrotherSpyHistoryData dat = h.getMessages().get(i);
 			
-			c.sendMessageWithPrefix(dat.getFormatedMessage(), key);
+			c.sendMessageWithPrefix(dat.getFormatedMessage());
 		}
 		
 		oi.close();
 		fi.close();
 	}
 	
-	public static void sendInfosChatToClient(ConnectionHandler c, String name, EncryptionKey key) throws IOException,
-		URISyntaxException, ClassNotFoundException{
+	public static void sendInfosChatToClient(ConnectionHandler c, String name) throws IOException,
+		URISyntaxException, ClassNotFoundException {
 		
 		Path path = Paths.get(ClassLoader.getSystemResource("").toURI());
 		
@@ -69,7 +68,7 @@ public class BigBrotherSpyUtils {
 			BigBrotherSpyHistoryData data = h.getMessages().get(i);
 			
 			if(data.getAction().equals(SpyAction.PLAYER_CHAT)) {
-				c.sendMessageWithPrefix(data.getFormatedMessage(), key);
+				c.sendMessageWithPrefix(data.getFormatedMessage());
 			}
 		}
 		

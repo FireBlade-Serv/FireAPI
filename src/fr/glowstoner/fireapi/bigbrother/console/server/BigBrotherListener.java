@@ -27,7 +27,9 @@ import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.network.command.packets.PacketCommand;
 import fr.glowstoner.fireapi.network.events.Listeners;
 import fr.glowstoner.fireapi.network.events.ServerListener;
+import fr.glowstoner.fireapi.network.packets.ConnectionErrorValues;
 import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.PacketConnectionError;
 import fr.glowstoner.fireapi.network.packets.PacketText;
 import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 import fr.glowstoner.fireapi.network.packets.login.enums.LoginResult;
@@ -58,7 +60,8 @@ public class BigBrotherListener implements ServerListener{
 		try {
 			ConnectionHandler ch = packet.getConnection();
 			
-			String name = (ch.getName().equals("default-name")) ? ch.getIP() : ch.getName();
+			String name = (ch.getName().equals("default-name")) ? ch.getIP() : ch.getName() +
+					ch.isLogged().name();
 			
 			if(!(packet instanceof PacketSpyAction)) {
 				System.out.println("[BigBrother] Packet reçu : "+name+" -> "+packet.getClass().getSimpleName());
@@ -75,15 +78,20 @@ public class BigBrotherListener implements ServerListener{
 							" avec un mot de passe de "+pl.getPassword());
 					
 					if(pl.getPassword().equals(this.log.getPassword())) {
-						this.sendMessage(ch, "[BigBrother] Connection réussie !");
+						ch.sendMessageWithPrefix("Connection réussie !");
 						ch.setLoginResult(LoginResult.LOGGED);
 						
 						this.listeners.callOnConnectionSuccessfullServerListener(ch);
 					}else {
-						this.sendMessage(ch, "[BigBrother] Mot de passe incorect !");
+						ch.sendPacket(new PacketConnectionError("[BigBrother] Mot de passe invalide.", 
+								ConnectionErrorValues.INVALID_PASSWORD));
 						ch.close();
+						return;
 					}
 				}else {
+					ch.sendPacket(new PacketConnectionError("[BigBrother] Vous devez envoyer en premier un packet de login !",
+							 ConnectionErrorValues.INVALID_PACKET));
+					
 					ch.close();
 					return;
 				}
@@ -97,7 +105,7 @@ public class BigBrotherListener implements ServerListener{
 				PacketFriends pf = (PacketFriends) packet;
 
 				if(pf.getTo().equals(VersionType.SPIGOT_VERSION)) {
-					this.getConnectionByNameOrIP(pf.getDestination()).sendPacket(pf, this.key);
+					this.getConnectionByNameOrIP(pf.getDestination()).sendPacket(pf);
 				}
 			}else if(packet instanceof PacketPlayerPing) {
 				PacketPlayerPing pp = (PacketPlayerPing) packet;
@@ -107,7 +115,7 @@ public class BigBrotherListener implements ServerListener{
 					
 					try {
 						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION, "main-bungeecord").
-							sendPacket(pp, this.key);
+							sendPacket(pp);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -136,7 +144,7 @@ public class BigBrotherListener implements ServerListener{
 				if(gacp.getType().equals(BigBrotherTypeAC.CHEAT_DETECTION)) {
 					if(gacp.getTODO().equals(BigBrotherActionAC.INFORM_STAFF)) {
 						this.getServerConnectionByNameUnsafe(VersionType.BUNGEECORD_VERSION,
-								"main-bungeecord").sendPacket(gacp, this.key);
+								"main-bungeecord").sendPacket(gacp);
 					}
 				}
 			}
@@ -150,7 +158,8 @@ public class BigBrotherListener implements ServerListener{
 		System.out.println("[BigBrother] Connection initiale -> "+ch.getIP());
 		
 		try {
-			ch.sendPacket(new PacketText("Bonjour !"));
+			ch.sendPacket(new PacketConnectionError("[BigBrother] Bonjour !",
+					ConnectionErrorValues.WELCOME));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -164,7 +173,7 @@ public class BigBrotherListener implements ServerListener{
 			e.printStackTrace();
 		}
 		
-		this.sendMessage(connection, "Bienvenue !");
+		connection.sendMessageWithPrefix("Bienvenue !");
 		
 		this.connected.add(connection);
 		
@@ -188,10 +197,6 @@ public class BigBrotherListener implements ServerListener{
 		ch.sendPacket(new PacketText("[BigBrother]          |___/                                       "));
 		ch.sendPacket(new PacketText(RESET+"\n[BigBrother]         Version de l'api : "+YELLOW_UNDERLINED+
 				FireAPI.VERSION+"\n\n"+RESET));
-	}
-	
-	private void sendMessage(ConnectionHandler ch, String message) {
-		ch.sendMessageWithPrefix(message, this.log.getKey());
 	}
 	
 	private void addConnection(VersionType type, ConnectionHandler ch) {

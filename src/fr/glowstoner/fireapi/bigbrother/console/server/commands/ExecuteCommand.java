@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import fr.glowstoner.fireapi.bigbrother.console.server.BigBrotherListener;
 import fr.glowstoner.fireapi.bigbrother.console.server.packets.PacketExecute;
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.network.command.CommandExecutor;
 import fr.glowstoner.fireapi.player.enums.VersionType;
@@ -12,24 +11,22 @@ import fr.glowstoner.fireapi.player.enums.VersionType;
 public class ExecuteCommand implements CommandExecutor {
 
 	private BigBrotherListener gl;
-	private EncryptionKey key;
 
-	public ExecuteCommand(BigBrotherListener gl, EncryptionKey key) {
+	public ExecuteCommand(BigBrotherListener gl) {
 		this.gl = gl;
-		this.key = key;
 	}
 
 	@Override
 	public void execute(ConnectionHandler c, String command, String[] args) {
 		if(args.length == 0) {
-			c.sendMessageWithPrefix("Usage : /execute <spigot/bungeecord> cmd", this.key);
+			c.sendMessageWithPrefix("Usage : /execute <spigot/bungeecord> cmd");
 		}else if(args.length == 1) {
 			if(args[0].equalsIgnoreCase("spigot")) {
-				c.sendMessageWithPrefix("Usage : /execute spigot cmd", this.key);
+				c.sendMessageWithPrefix("Usage : /execute spigot cmd");
 			}else if(args[0].equalsIgnoreCase("bungeecord")) {
-				c.sendMessageWithPrefix("Usage : /execute bungeecord cmd", this.key);
+				c.sendMessageWithPrefix("Usage : /execute bungeecord cmd");
 			}else {
-				c.sendMessageWithPrefix("Usage : /execute <spigot/bungeecord> cmd", this.key);
+				c.sendMessageWithPrefix("Usage : /execute <spigot/bungeecord> cmd");
 			}
 		}else {
 			StringBuilder builder = new StringBuilder();
@@ -52,18 +49,18 @@ public class ExecuteCommand implements CommandExecutor {
 					for(ConnectionHandler ch : this.gl.getServersConnections().
 							get(VersionType.SPIGOT_VERSION)) {
 						
-						c.sendMessageWithPrefix("Vous avez bien envoyé votre commande à "+ch.getName(), this.key);
-						ch.sendPacket(new PacketExecute(builder.toString()), this.key);
+						c.sendMessageWithPrefix("Vous avez bien envoyé votre commande à "+ch.getName());
+						ch.sendPacket(new PacketExecute(builder.toString()));
 					}
 				}else if(args[0].equalsIgnoreCase("bungeecord")) {
 					for(ConnectionHandler ch : this.gl.getServersConnections().
 							get(VersionType.BUNGEECORD_VERSION)) {
 						
-						c.sendMessageWithPrefix("Vous avez bien envoyé votre commande à "+ch.getName(), this.key);
-						ch.sendPacket(new PacketExecute(builder.toString()), this.key);
+						c.sendMessageWithPrefix("Vous avez bien envoyé votre commande à "+ch.getName());
+						ch.sendPacket(new PacketExecute(builder.toString()));
 					}
 				}else {
-					c.sendMessageWithPrefix("Usage : /execute <spigot/bungeecord> cmd", this.key);
+					c.sendMessageWithPrefix("Usage : /execute <spigot/bungeecord> cmd");
 				}
 			}catch (IOException ex) {
 				ex.printStackTrace();

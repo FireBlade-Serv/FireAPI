@@ -8,16 +8,16 @@ import java.io.OptionalDataException;
 import java.net.Socket;
 import java.net.SocketException;
 
-import fr.glowstoner.fireapi.bigbrother.console.server.login.BigBrotherLoginGetter;
-import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.ConnectionHandler;
 import fr.glowstoner.fireapi.network.ConnectionType;
 import fr.glowstoner.fireapi.network.FireNetwork;
+import fr.glowstoner.fireapi.network.exceptions.UnsecureConnectionException;
+import fr.glowstoner.fireapi.network.packets.ConnectionErrorValues;
 import fr.glowstoner.fireapi.network.packets.Encryptable;
 import fr.glowstoner.fireapi.network.packets.EncryptedPacket;
 import fr.glowstoner.fireapi.network.packets.Packet;
+import fr.glowstoner.fireapi.network.packets.PacketConnectionError;
 import fr.glowstoner.fireapi.network.packets.PacketEncoder;
-import fr.glowstoner.fireapi.network.packets.PacketText;
 import fr.glowstoner.fireapi.network.packets.login.PacketLogin;
 
 public class ServerClientThread extends ConnectionHandler implements Runnable{
@@ -32,11 +32,11 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 	}
 	
 	@Override
-	public void open(EncryptionKey key) throws IOException {
+	public void open() throws IOException {
 		this.in = new ObjectInputStream(super.socket.getInputStream());
 		this.out = new ObjectOutputStream(super.socket.getOutputStream());
 		
-		FireNetwork.getListeners().callOnConnectionServerListener(this);
+		FireNetwork.getInstance().getListeners().callOnConnectionServerListener(this);
 	}
 	
 	@Override
@@ -53,14 +53,6 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 	@Override
 	public void run() {
 		Object o = null;
-		
-		BigBrotherLoginGetter bg = new BigBrotherLoginGetter();
-		
-		try {
-			bg.load();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
 		
 		while(true) {
 			try {
@@ -98,12 +90,15 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 						EncryptedPacket ep = (EncryptedPacket) p;
 						
 						try {
-							p = new PacketEncoder(bg.getKey()).decode(ep);
+							p = new PacketEncoder(FireNetwork.getInstance().getKey())
+									.decode(ep);
 						}catch (Exception e) {
 							System.out.println("[BigBrother] La clé de chiffrement est fausse !"
-									+ " (error_decode/[list])");
+									+ " (error_decode/[list], ex: "+e.getMessage()+")");
 							
-							this.sendPacket(new PacketText("[BigBrother] Votre clé de chiffrement est fausse :("));
+							this.sendPacket(new PacketConnectionError
+									("[BigBrother] Votre clé de chiffrement est fausse :("
+											, ConnectionErrorValues.INVALID_KEY));
 							break;
 						}
 						
@@ -112,13 +107,16 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 								System.out.println("[BigBrother] La clé de chiffrement est fausse !"
 										+ " (empty login/string)");
 								
-								this.sendPacket(new PacketText("[BigBrother] Votre clé de chiffrement est fausse :("));
+								this.sendPacket(new PacketConnectionError
+										("[BigBrother] Votre clé de chiffrement est fausse :(",
+												ConnectionErrorValues.INVALID_KEY));
 								break;
 							}
 						}
 					}
 					
-					FireNetwork.getListeners().callPacketReceiveServerListener(p, this);
+					FireNetwork.getInstance().getListeners()
+						.callPacketReceiveServerListener(p, this);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -136,19 +134,24 @@ public class ServerClientThread extends ConnectionHandler implements Runnable{
 
 	@Override
 	public void sendPacket(Packet packet) throws IOException {
-		this.out.writeObject(packet);
-		this.out.flush();
-	}
-	
-	@Override
-	public void sendPacket(Encryptable packet, EncryptionKey key) throws IOException {
-		this.out.writeObject(new PacketEncoder(key).
-				encode((Encryptable) packet));
+		if(packet.encrypted()) {
+			EncryptedPacket ep = new PacketEncoder(FireNetwork.getInstance().getKey())
+					.encode((Encryptable) packet);
+			
+			this.out.writeObject(ep);
+		}else {
+			if(packet instanceof PacketLogin) {
+				throw new UnsecureConnectionException(packet.getClass().getName());
+			}
+			
+			this.out.writeObject(packet);
+		}
+		
 		this.out.flush();
 	}
 
 	@Override
 	public ConnectionType type() {
-		return ConnectionType.CLIENT_CONNECTION;
+		return ConnectionType.SERVER_CONNECTION;
 	}
 }
