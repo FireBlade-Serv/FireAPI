@@ -49,7 +49,7 @@ public class BigBrother {
 		
 		FireNetwork fn = new FireNetwork(this.log.getKey());
 		
-		fn.start(ConnectionType.SERVER_CONNECTION, false);
+		fn.start(ConnectionType.SERVER_CONNECTION, this.log.getPassword(), false);
 		
 		BigBrotherListener gl = new BigBrotherListener(this.log, gs, fn.getListeners());
 		

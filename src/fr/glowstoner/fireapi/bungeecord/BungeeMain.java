@@ -88,7 +88,7 @@ public class BungeeMain extends Plugin implements FireAPI{
 		
 		try {
 			this.fn = new FireNetwork(this.log.getKey());
-			this.fn.start(ConnectionType.CLIENT_CONNECTION, false);
+			this.fn.start(ConnectionType.CLIENT_CONNECTION, this.log.getPassword(), false);
 
 			Client ch = (Client) this.fn.getBaseConnector();
 			

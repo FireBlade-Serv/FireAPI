@@ -97,7 +97,7 @@ public class BigBrotherClient implements ClientListener{
 			
 			fn.getListeners().registerClientListener(this);
 			
-			fn.start(ConnectionType.CLIENT_CONNECTION, true);
+			fn.start(ConnectionType.CLIENT_CONNECTION, this.password, true);
 			
 			Client c = (Client) fn.getBaseConnector();
 			

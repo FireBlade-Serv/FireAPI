@@ -14,7 +14,7 @@ import fr.glowstoner.fireapi.wl.FireWL;
 
 public interface FireAPI {
 	
-	public static final String VERSION = "4.3 (Branche Alpha)";
+	public static final String VERSION = "4.3.1 (Branche Alpha)";
 	
 	//bungeecord
 	net.md_5.bungee.api.plugin.Plugin getBungeePlugin();

@@ -1,7 +1,5 @@
 package fr.glowstoner.fireapi.network;
 
-import java.io.IOException;
-
 import fr.glowstoner.fireapi.crypto.EncryptionKey;
 import fr.glowstoner.fireapi.network.client.Client;
 import fr.glowstoner.fireapi.network.events.Listeners;
@@ -25,7 +23,7 @@ public class FireNetwork {
 		this.key = key;
 	}
 	
-	public void start(ConnectionType type, boolean sleepTime) {
+	public void start(ConnectionType type, String password, boolean sleepTime) {
 		try {
 			switch (type) {
 				case CLIENT_CONNECTION:
@@ -34,6 +32,8 @@ public class FireNetwork {
 					this.baseConnector = c;
 					
 					c.open();
+					
+					c.sendPacket(new PacketLogin(password));
 					
 					System.out.println("[BigBrother] Connection initiale client -> serveur ... "
 							+ "(sleep: "+sleepTime+")");
@@ -56,18 +56,6 @@ public class FireNetwork {
 			}
 		}catch (Exception ex) {
 			ex.printStackTrace();
-		}
-	}
-	
-	public void clientLogin(String password) {
-		if(this.baseConnector instanceof Server) {
-			return;
-		}
-		
-		try {
-			((Client) this.baseConnector).sendPacket(new PacketLogin(password));
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
